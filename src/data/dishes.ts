@@ -1,3 +1,13 @@
+import pekingDuckImg from "@/assets/dishes/peking-duck.jpg";
+import xiaolongbaoImg from "@/assets/dishes/xiaolongbao.jpg";
+import hotpotImg from "@/assets/dishes/chongqing-hotpot.jpg";
+import mapoTofuImg from "@/assets/dishes/mapo-tofu.jpg";
+import buddhasDelightImg from "@/assets/dishes/buddhas-delight.jpg";
+import eggFriedRiceImg from "@/assets/dishes/egg-fried-rice.jpg";
+import biangbiangImg from "@/assets/dishes/biangbiang-noodles.jpg";
+import lambSkewersImg from "@/assets/dishes/lamb-skewers.jpg";
+import roujiamoImg from "@/assets/dishes/roujiamo.jpg";
+
 export interface Dish {
   id: string;
   name: string;
@@ -7,6 +17,7 @@ export interface Dish {
   tip: string;
   emoji: string;
   bg: string;
+  image: string;
   spice: number; // 0-3
   vegetarian: boolean;
   halal: boolean;
