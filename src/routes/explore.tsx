@@ -552,8 +552,14 @@ function Explore() {
             className="w-full max-w-md bg-background rounded-t-3xl max-h-[85vh] overflow-y-auto pb-8 animate-in slide-in-from-bottom duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className={`relative h-32 bg-gradient-to-br ${selectedDish.bg} flex items-center justify-center rounded-t-3xl`}>
-              <span className="text-6xl">{selectedDish.emoji}</span>
+            <div className={`relative h-40 bg-gradient-to-br ${selectedDish.bg} overflow-hidden rounded-t-3xl`}>
+              <img
+                src={selectedDish.image}
+                alt={selectedDish.name}
+                width={800}
+                height={600}
+                className="w-full h-full object-cover"
+              />
               <button
                 onClick={() => setSelectedDishId(null)}
                 className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background/85 backdrop-blur flex items-center justify-center"
