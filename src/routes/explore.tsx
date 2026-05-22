@@ -4,7 +4,7 @@ import { useAppStore } from "@/store/useAppStore";
 import { pois } from "@/data/pois";
 import { cities } from "@/data/cities";
 import { CityMap } from "@/components/CityMap";
-import { ArrowRight, Heart, Plus, X } from "lucide-react";
+import { ArrowRight, Heart, Plus, X, ChevronDown, ArrowUpRight, Lightbulb } from "lucide-react";
 import { useMemo, useState } from "react";
 
 export const Route = createFileRoute("/explore")({
@@ -25,20 +25,69 @@ const GUIDES = [
 ];
 
 const DIGITAL_TOOLS = [
-  { id: "wechat", name: "WeChat", subtitle: "Messaging & Pay", emoji: "💬", bg: "bg-emerald-100", url: "https://www.wechat.com/" },
-  { id: "alipay", name: "Alipay", subtitle: "Payments", emoji: "💙", bg: "bg-indigo-100", url: "https://www.alipay.com/" },
-  { id: "didi", name: "DiDi", subtitle: "Ride Hailing", emoji: "🚗", bg: "bg-orange-100", url: "https://www.didiglobal.com/" },
+  {
+    id: "wechat",
+    name: "WeChat",
+    tag: "Messaging & Payments",
+    tagClass: "bg-emerald-100 text-emerald-700",
+    description: "China's super-app for messaging, social, and mobile payments.",
+    emoji: "💬",
+    bg: "bg-emerald-100",
+    url: "https://www.wechat.com/",
+    ctaLabel: "Open WeChat",
+    steps: [
+      "Download WeChat from App Store or Google Play",
+      "Sign up with your phone number",
+      "Verify with an existing WeChat user if prompted",
+      "Link an international card via WeChat Pay (Tenpay)",
+      "Used for chat, QR payments, mini-programs and more",
+    ],
+    tip: "Ask a friend with WeChat to verify your account — it's the fastest way through sign-up.",
+  },
+  {
+    id: "alipay",
+    name: "Alipay",
+    tag: "Mobile Payments",
+    tagClass: "bg-indigo-100 text-indigo-700",
+    description: "Ant Group's payment platform with a dedicated international setup.",
+    emoji: "💙",
+    bg: "bg-indigo-100",
+    url: "https://www.alipay.com/",
+    ctaLabel: "Alipay International",
+    steps: [
+      "Download Alipay from App Store or Google Play",
+      'Select "International" on the sign-up screen',
+      "Link your international Visa/Mastercard directly",
+      'Use "Tour Pass" feature if direct card link fails',
+      "Accepted at most shops, taxis, attractions, and vending machines",
+    ],
+    tip: "Tour Pass tops up a digital wallet — great backup if card linking fails.",
+  },
+  {
+    id: "didi",
+    name: "DiDi",
+    tag: "Ride Hailing",
+    tagClass: "bg-orange-100 text-orange-700",
+    description: "China's Uber equivalent. Has English in-app and accepts foreign cards.",
+    emoji: "🚗",
+    bg: "bg-orange-100",
+    url: "https://www.didiglobal.com/",
+    ctaLabel: "Open DiDi",
+    steps: [
+      "Download DiDi from App Store or Google Play",
+      "Switch the app language to English in settings",
+      "Sign up with your phone number",
+      "Add an international Visa/Mastercard for payment",
+      "Save your hotel address in Chinese for easier pickup",
+    ],
+    tip: "Show the driver your destination in Chinese characters to avoid miscommunication.",
+  },
 ];
 
 const STATUS_META: Record<string, { label: string; className: string }> = {
   not_started: { label: "NOT STARTED", className: "text-muted-foreground" },
   in_progress: { label: "IN PROGRESS", className: "text-amber-600" },
   done: { label: "DONE", className: "text-emerald-600" },
-};
-const NEXT_STATUS: Record<string, string> = {
-  not_started: "in_progress",
-  in_progress: "done",
-  done: "not_started",
 };
 
 const CATEGORY_LABEL: Record<string, string> = {
@@ -57,6 +106,7 @@ function Explore() {
   const digitalTools = useAppStore((s) => s.digitalTools);
   const updateDigitalTool = useAppStore((s) => s.updateDigitalTool);
   const [filter, setFilter] = useState("all");
+  const [openTool, setOpenTool] = useState<string | null>("alipay");
   const city = (cities as any)[trip.currentCityId];
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected: any = selectedId ? (pois as any)[selectedId] : null;
@@ -231,50 +281,88 @@ function Explore() {
             Setup Guide <ArrowRight className="w-4 h-4" />
           </a>
         </div>
-        <div className="rounded-2xl bg-card border border-border overflow-hidden divide-y divide-border">
+        <div className="flex flex-col gap-3">
           {DIGITAL_TOOLS.map((tool) => {
             const status = digitalTools[tool.id] || "not_started";
             const meta = STATUS_META[status];
+            const open = openTool === tool.id;
+            const isDone = status === "done";
             return (
-              <a
+              <div
                 key={tool.id}
-                href={tool.url}
-                target="_blank"
-                rel="noreferrer"
-                onClick={() => {
-                  if (status === "not_started") updateDigitalTool(tool.id, "in_progress");
-                }}
-                className="w-full flex items-center gap-3 p-4 text-left hover:bg-muted/40 transition-colors"
+                className="rounded-2xl bg-card border border-border overflow-hidden"
               >
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0 ${tool.bg}`}>
-                  {tool.emoji}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-bold text-foreground leading-tight">{tool.name}</div>
-                  <div className="text-xs text-muted-foreground mt-0.5">{tool.subtitle}</div>
-                </div>
-                <span className={`text-[11px] font-bold tracking-wide shrink-0 ${meta.className}`}>
-                  {meta.label}
-                </span>
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    updateDigitalTool(tool.id, NEXT_STATUS[status]);
-                  }}
-                  className="ml-2 text-[11px] text-muted-foreground hover:text-foreground shrink-0"
-                  aria-label="Cycle status"
+                  onClick={() => setOpenTool(open ? null : tool.id)}
+                  className="w-full flex items-center gap-3 p-4 text-left"
                 >
-                  ✎
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0 ${tool.bg}`}>
+                    {tool.emoji}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-bold text-foreground leading-tight">{tool.name}</span>
+                      <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${tool.tagClass}`}>
+                        {tool.tag}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                      {tool.description}
+                    </p>
+                    <span className={`text-[10px] font-bold tracking-wide ${meta.className}`}>
+                      {meta.label}
+                    </span>
+                  </div>
+                  <ChevronDown
+                    className={"w-5 h-5 text-muted-foreground shrink-0 transition-transform " + (open ? "rotate-180" : "")}
+                  />
                 </button>
-              </a>
+
+                {open && (
+                  <div className="px-4 pb-4 border-t border-border">
+                    <ol className="mt-4 space-y-3">
+                      {tool.steps.map((step, i) => (
+                        <li key={i} className="flex gap-3 text-sm text-foreground">
+                          <span className="font-bold text-primary shrink-0 w-5">{i + 1}.</span>
+                          <span className="leading-snug">{step}</span>
+                        </li>
+                      ))}
+                    </ol>
+
+                    <div className="mt-4 rounded-xl bg-amber-50 border border-amber-100 p-3 flex gap-2 text-xs text-amber-900">
+                      <Lightbulb className="w-4 h-4 shrink-0 mt-0.5" />
+                      <span className="leading-snug">{tool.tip}</span>
+                    </div>
+
+                    <div className="mt-4 flex gap-2">
+                      <a
+                        href={tool.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={() => {
+                          if (status === "not_started") updateDigitalTool(tool.id, "in_progress");
+                        }}
+                        className="flex-1 h-11 rounded-full bg-foreground text-background font-semibold text-sm inline-flex items-center justify-center gap-1.5"
+                      >
+                        {tool.ctaLabel} <ArrowUpRight className="w-4 h-4" />
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          updateDigitalTool(tool.id, isDone ? "not_started" : "done")
+                        }
+                        className="flex-1 h-11 rounded-full bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90"
+                      >
+                        {isDone ? "Mark Undone" : "Mark Done"}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>
-        <p className="text-[11px] text-muted-foreground mt-2 text-center">
-          Tap a tool to open its official site · ✎ to update status
-        </p>
       </section>
 
       {selected && (
