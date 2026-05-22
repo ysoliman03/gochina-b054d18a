@@ -303,16 +303,6 @@ function Explore() {
 
       <section className="px-5 pb-8">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-xl font-bold text-foreground">Essential Digital Tools</h2>
-          <span className="hidden" />
-        </div>
-      </section>
-
-      {/* placeholder swap below */}
-      <section className="hidden" />
-
-      <section className="px-5 pb-8 -mt-8">
-        <div className="flex items-center justify-between mb-3">
           <h2 className="text-xl font-bold text-foreground">Compatible Flavors</h2>
           <Link
             to="/explore"
