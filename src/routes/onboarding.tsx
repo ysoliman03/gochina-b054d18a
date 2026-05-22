@@ -148,22 +148,6 @@ function Onboarding() {
             </div>
           </div>
           <div>
-            <p className="text-sm text-muted-foreground mb-2">Cuisine</p>
-            <div className="flex flex-wrap gap-2">
-              {CUISINES.map((c) => (
-                <button
-                  key={c}
-                  onClick={() => toggleArr("cuisine", c)}
-                  className={`rounded-full border px-3 py-1.5 text-sm ${
-                    draft.cuisine.includes(c) ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card"
-                  }`}
-                >
-                  {c}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div>
             <p className="text-sm text-muted-foreground mb-2">Dietary restrictions</p>
             <div className="flex flex-wrap gap-2">
               {DIET.map((d) => (
