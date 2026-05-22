@@ -6,6 +6,8 @@ import { cities } from "@/data/cities";
 import { CityMap } from "@/components/CityMap";
 import { ArrowRight, Heart, Plus, X, ChevronDown, ArrowUpRight, Lightbulb } from "lucide-react";
 import { useMemo, useState } from "react";
+import { dishes as allDishes, type Dish } from "@/data/dishes";
+import { AlertTriangle } from "lucide-react";
 
 export const Route = createFileRoute("/explore")({
   component: Explore,
@@ -107,6 +109,7 @@ function Explore() {
   const updateDigitalTool = useAppStore((s) => s.updateDigitalTool);
   const [filter, setFilter] = useState("all");
   const [openTool, setOpenTool] = useState<string | null>("alipay");
+  const [selectedDishId, setSelectedDishId] = useState<string | null>(null);
   const city = (cities as any)[trip.currentCityId];
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected: any = selectedId ? (pois as any)[selectedId] : null;
@@ -146,6 +149,35 @@ function Explore() {
     if (p === 0) return "Free";
     return "¥".repeat(Math.max(1, Math.min(4, p)));
   }
+
+  const profile = useAppStore((s) => s.profile);
+  const dietary = profile.dietaryRestrictions || [];
+  const isVeg = dietary.includes("Vegetarian") || dietary.includes("Vegan");
+  const isHalal = dietary.includes("Halal");
+  const noPork = isHalal || dietary.includes("No Pork");
+  const filteredDishes = useMemo(() => {
+    return allDishes.filter((d) => {
+      if (isVeg && !d.vegetarian) return false;
+      if (isHalal && !d.halal) return false;
+      if (noPork && d.containsPork) return false;
+      return true;
+    });
+  }, [isVeg, isHalal, noPork]);
+  const selectedDish = selectedDishId
+    ? allDishes.find((d) => d.id === selectedDishId) || null
+    : null;
+  const dishRestaurants = useMemo(() => {
+    if (!selectedDish) return [] as any[];
+    const ids = Object.values(selectedDish.restaurantsByCity).flat();
+    return ids.map((id) => (pois as any)[id]).filter(Boolean);
+  }, [selectedDish]);
+  const dietaryLabel = isVeg
+    ? "Vegetarian"
+    : isHalal
+      ? "Halal"
+      : noPork
+        ? "No Pork"
+        : null;
 
   return (
     <MobileShell>
@@ -266,6 +298,79 @@ function Explore() {
               <span className="text-xs font-medium text-foreground leading-tight">{g.label}</span>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="px-5 pb-8">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-xl font-bold text-foreground">Compatible Flavors</h2>
+          <Link
+            to="/explore"
+            className="text-sm font-medium text-primary inline-flex items-center gap-1"
+          >
+            Full Guide <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+        {dietaryLabel && (
+          <div className="mb-3 text-sm text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-2.5">
+            Filtered for: {dietaryLabel}
+          </div>
+        )}
+        <div className="flex flex-col gap-4">
+          {filteredDishes.map((d) => (
+            <button
+              key={d.id}
+              onClick={() => setSelectedDishId(d.id)}
+              className="text-left rounded-2xl bg-card border border-border overflow-hidden hover:border-primary/40 transition-colors"
+            >
+              <div className={`relative h-40 bg-gradient-to-br ${d.bg} flex items-center justify-center`}>
+                <span className="text-6xl">{d.emoji}</span>
+                <div className="absolute top-3 left-3 flex gap-1.5">
+                  {d.halal && (
+                    <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white">Halal</span>
+                  )}
+                  {d.vegetarian && (
+                    <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-teal-600 text-white">Veg</span>
+                  )}
+                </div>
+              </div>
+              <div className="p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <h3 className="font-bold text-foreground leading-tight">{d.name}</h3>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {d.nameZh} · {d.region}
+                    </p>
+                  </div>
+                  {d.spice > 0 && (
+                    <span className="text-sm shrink-0" aria-label={`Spice level ${d.spice}`}>
+                      {"🌶️".repeat(d.spice)}
+                    </span>
+                  )}
+                </div>
+                {d.allergens.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {d.allergens.map((a) => (
+                      <span
+                        key={a}
+                        className="text-[11px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-100"
+                      >
+                        <AlertTriangle className="w-3 h-3" /> {a}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <p className="text-sm italic text-muted-foreground mt-2 leading-snug">
+                  Tip: {d.tip}
+                </p>
+              </div>
+            </button>
+          ))}
+          {filteredDishes.length === 0 && (
+            <p className="text-sm text-muted-foreground text-center py-6">
+              No dishes match your dietary preferences yet.
+            </p>
+          )}
         </div>
       </section>
 
@@ -426,6 +531,87 @@ function Explore() {
                   <Plus className="w-4 h-4" /> Add to Trip
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedDish && (
+        <div
+          className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center"
+          onClick={() => setSelectedDishId(null)}
+        >
+          <div
+            className="w-full max-w-md bg-background rounded-t-3xl max-h-[85vh] overflow-y-auto pb-8 animate-in slide-in-from-bottom duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={`relative h-32 bg-gradient-to-br ${selectedDish.bg} flex items-center justify-center rounded-t-3xl`}>
+              <span className="text-6xl">{selectedDish.emoji}</span>
+              <button
+                onClick={() => setSelectedDishId(null)}
+                className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background/85 backdrop-blur flex items-center justify-center"
+                aria-label="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="px-5 pt-4">
+              <h2 className="text-xl font-bold text-foreground">{selectedDish.name}</h2>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {selectedDish.nameZh} · {selectedDish.region}
+                {selectedDish.spice > 0 ? ` · ${"🌶️".repeat(selectedDish.spice)}` : ""}
+              </p>
+              <p className="text-sm text-muted-foreground mt-3 leading-snug">
+                {selectedDish.description}
+              </p>
+
+              <h3 className="mt-5 text-sm font-bold text-foreground">
+                Places that serve it ({dishRestaurants.length})
+              </h3>
+              {dishRestaurants.length === 0 ? (
+                <p className="text-sm text-muted-foreground mt-2">
+                  No curated spots yet in your current cities.
+                </p>
+              ) : (
+                <div className="mt-3 flex flex-col gap-2.5">
+                  {dishRestaurants.map((r: any) => {
+                    const inThisTrip = trip.cities.some((c: any) => c.cityId === r.cityId);
+                    return (
+                      <div
+                        key={r.id}
+                        className="rounded-xl border border-border p-3 flex items-center gap-3"
+                      >
+                        <div className="w-11 h-11 rounded-lg bg-gradient-to-br from-accent/40 to-primary/20 flex items-center justify-center text-xl shrink-0">
+                          🍜
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-semibold text-foreground text-sm leading-tight truncate">
+                            {r.name}
+                          </div>
+                          <div className="text-[11px] text-muted-foreground mt-0.5">
+                            {(cities as any)[r.cityId]?.name || r.cityId} · {r.district}
+                            {r.price != null ? ` · ${priceLabel(r.price)}` : ""}
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => {
+                            const dayIdx = Math.max(
+                              0,
+                              (trip.itinerary[r.cityId] || []).length - 1,
+                            );
+                            addPOIToDay(r.cityId, dayIdx, r);
+                          }}
+                          disabled={!inThisTrip}
+                          className="shrink-0 h-9 px-3 rounded-full bg-primary text-primary-foreground text-xs font-semibold inline-flex items-center gap-1 hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed"
+                          title={inThisTrip ? "Add to trip" : "City not in your trip"}
+                        >
+                          <Plus className="w-3.5 h-3.5" /> Add
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
         </div>
