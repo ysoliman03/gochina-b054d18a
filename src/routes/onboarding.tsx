@@ -54,16 +54,19 @@ function Onboarding() {
             value={draft.name}
             onChange={(e) => setDraft({ ...draft, name: e.target.value })}
           />
-          <select
-            className="w-full rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-primary"
-            value={draft.nationality}
-            onChange={(e) => setDraft({ ...draft, nationality: e.target.value })}
-          >
-            <option value="">Select nationality</option>
-            {COUNTRIES.map((c) => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
+          <div className="relative">
+            <select
+              className={`w-full appearance-none rounded-xl border border-border bg-card px-4 py-3 pr-10 outline-none focus:border-primary ${draft.nationality ? "text-foreground" : "text-muted-foreground"}`}
+              value={draft.nationality}
+              onChange={(e) => setDraft({ ...draft, nationality: e.target.value })}
+            >
+              <option value="" disabled>Select nationality</option>
+              {COUNTRIES.map((c) => (
+                <option key={c} value={c} className="text-foreground">{c}</option>
+              ))}
+            </select>
+            <ChevronRight className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 rotate-90 text-muted-foreground" />
+          </div>
         </div>
       ),
     },
