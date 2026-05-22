@@ -24,6 +24,23 @@ const GUIDES = [
   { id: "apps", emoji: "📱", label: "Must-have Apps" },
 ];
 
+const DIGITAL_TOOLS = [
+  { id: "wechat", name: "WeChat", subtitle: "Messaging & Pay", emoji: "💬", bg: "bg-emerald-100", url: "https://www.wechat.com/" },
+  { id: "alipay", name: "Alipay", subtitle: "Payments", emoji: "💙", bg: "bg-indigo-100", url: "https://www.alipay.com/" },
+  { id: "didi", name: "DiDi", subtitle: "Ride Hailing", emoji: "🚗", bg: "bg-orange-100", url: "https://www.didiglobal.com/" },
+];
+
+const STATUS_META: Record<string, { label: string; className: string }> = {
+  not_started: { label: "NOT STARTED", className: "text-muted-foreground" },
+  in_progress: { label: "IN PROGRESS", className: "text-amber-600" },
+  done: { label: "DONE", className: "text-emerald-600" },
+};
+const NEXT_STATUS: Record<string, string> = {
+  not_started: "in_progress",
+  in_progress: "done",
+  done: "not_started",
+};
+
 const CATEGORY_LABEL: Record<string, string> = {
   attraction: "Attraction",
   restaurant: "Restaurant",
@@ -37,6 +54,8 @@ function Explore() {
   const savedPois = useAppStore((s) => s.savedPois);
   const toggleSavePoi = useAppStore((s) => s.toggleSavePoi);
   const addPOIToDay = useAppStore((s) => s.addPOIToDay);
+  const digitalTools = useAppStore((s) => s.digitalTools);
+  const updateDigitalTool = useAppStore((s) => s.updateDigitalTool);
   const [filter, setFilter] = useState("all");
   const city = (cities as any)[trip.currentCityId];
   const [selectedId, setSelectedId] = useState<string | null>(null);
