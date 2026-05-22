@@ -349,22 +349,6 @@ function Explore() {
         </div>
       </section>
 
-      <section className="px-5 pb-6">
-        <h2 className="text-xl font-bold text-foreground mb-3">Guides & Info</h2>
-        <div className="grid grid-cols-3 gap-3">
-          {GUIDES.map((g) => (
-            <Link
-              key={g.id}
-              to={g.to}
-              className="rounded-2xl bg-card border border-border p-4 flex flex-col items-center text-center gap-2 aspect-square justify-center hover:border-primary/40 transition-colors"
-            >
-              <span className="text-3xl">{g.emoji}</span>
-              <span className="text-xs font-semibold text-foreground leading-tight">{g.label}</span>
-            </Link>
-          ))}
-        </div>
-      </section>
-
       <section className="px-5 pb-8">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-xl font-bold text-foreground">Compatible Flavors</h2>
