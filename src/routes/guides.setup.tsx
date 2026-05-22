@@ -3,6 +3,7 @@ import { MobileShell } from "@/components/MobileShell";
 import { GuideHeader } from "@/components/GuideHeader";
 import { useAppStore } from "@/store/useAppStore";
 import { Check, Circle, Clock } from "lucide-react";
+import type { ReactNode } from "react";
 
 export const Route = createFileRoute("/guides/setup")({
   component: SetupGuide,
@@ -37,7 +38,7 @@ const PHASES = [
   },
 ];
 
-const STATUS_ICON: Record<string, JSX.Element> = {
+const STATUS_ICON: Record<string, ReactNode> = {
   not_started: <Circle className="w-4 h-4 text-muted-foreground" />,
   in_progress: <Clock className="w-4 h-4 text-amber-600" />,
   done: <Check className="w-4 h-4 text-emerald-600" />,

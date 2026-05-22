@@ -16,6 +16,7 @@ import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as GuidesVisaRouteImport } from './routes/guides.visa'
 import { Route as GuidesTransitRouteImport } from './routes/guides.transit'
+import { Route as GuidesSetupRouteImport } from './routes/guides.setup'
 import { Route as GuidesFoodRouteImport } from './routes/guides.food'
 import { Route as GuidesEtiquetteRouteImport } from './routes/guides.etiquette'
 import { Route as GuidesDigitalRouteImport } from './routes/guides.digital'
@@ -57,6 +58,11 @@ const GuidesTransitRoute = GuidesTransitRouteImport.update({
   path: '/guides/transit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GuidesSetupRoute = GuidesSetupRouteImport.update({
+  id: '/guides/setup',
+  path: '/guides/setup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GuidesFoodRoute = GuidesFoodRouteImport.update({
   id: '/guides/food',
   path: '/guides/food',
@@ -94,6 +100,7 @@ export interface FileRoutesByFullPath {
   '/guides/digital': typeof GuidesDigitalRoute
   '/guides/etiquette': typeof GuidesEtiquetteRoute
   '/guides/food': typeof GuidesFoodRoute
+  '/guides/setup': typeof GuidesSetupRoute
   '/guides/transit': typeof GuidesTransitRoute
   '/guides/visa': typeof GuidesVisaRoute
 }
@@ -108,6 +115,7 @@ export interface FileRoutesByTo {
   '/guides/digital': typeof GuidesDigitalRoute
   '/guides/etiquette': typeof GuidesEtiquetteRoute
   '/guides/food': typeof GuidesFoodRoute
+  '/guides/setup': typeof GuidesSetupRoute
   '/guides/transit': typeof GuidesTransitRoute
   '/guides/visa': typeof GuidesVisaRoute
 }
@@ -123,6 +131,7 @@ export interface FileRoutesById {
   '/guides/digital': typeof GuidesDigitalRoute
   '/guides/etiquette': typeof GuidesEtiquetteRoute
   '/guides/food': typeof GuidesFoodRoute
+  '/guides/setup': typeof GuidesSetupRoute
   '/guides/transit': typeof GuidesTransitRoute
   '/guides/visa': typeof GuidesVisaRoute
 }
@@ -139,6 +148,7 @@ export interface FileRouteTypes {
     | '/guides/digital'
     | '/guides/etiquette'
     | '/guides/food'
+    | '/guides/setup'
     | '/guides/transit'
     | '/guides/visa'
   fileRoutesByTo: FileRoutesByTo
@@ -153,6 +163,7 @@ export interface FileRouteTypes {
     | '/guides/digital'
     | '/guides/etiquette'
     | '/guides/food'
+    | '/guides/setup'
     | '/guides/transit'
     | '/guides/visa'
   id:
@@ -167,6 +178,7 @@ export interface FileRouteTypes {
     | '/guides/digital'
     | '/guides/etiquette'
     | '/guides/food'
+    | '/guides/setup'
     | '/guides/transit'
     | '/guides/visa'
   fileRoutesById: FileRoutesById
@@ -181,6 +193,7 @@ export interface RootRouteChildren {
   GuidesDigitalRoute: typeof GuidesDigitalRoute
   GuidesEtiquetteRoute: typeof GuidesEtiquetteRoute
   GuidesFoodRoute: typeof GuidesFoodRoute
+  GuidesSetupRoute: typeof GuidesSetupRoute
   GuidesTransitRoute: typeof GuidesTransitRoute
   GuidesVisaRoute: typeof GuidesVisaRoute
 }
@@ -234,6 +247,13 @@ declare module '@tanstack/react-router' {
       path: '/guides/transit'
       fullPath: '/guides/transit'
       preLoaderRoute: typeof GuidesTransitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/setup': {
+      id: '/guides/setup'
+      path: '/guides/setup'
+      fullPath: '/guides/setup'
+      preLoaderRoute: typeof GuidesSetupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/guides/food': {
@@ -295,6 +315,7 @@ const rootRouteChildren: RootRouteChildren = {
   GuidesDigitalRoute: GuidesDigitalRoute,
   GuidesEtiquetteRoute: GuidesEtiquetteRoute,
   GuidesFoodRoute: GuidesFoodRoute,
+  GuidesSetupRoute: GuidesSetupRoute,
   GuidesTransitRoute: GuidesTransitRoute,
   GuidesVisaRoute: GuidesVisaRoute,
 }
