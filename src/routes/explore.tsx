@@ -323,8 +323,15 @@ function Explore() {
               onClick={() => setSelectedDishId(d.id)}
               className="text-left rounded-2xl bg-card border border-border overflow-hidden hover:border-primary/40 transition-colors"
             >
-              <div className={`relative h-40 bg-gradient-to-br ${d.bg} flex items-center justify-center`}>
-                <span className="text-6xl">{d.emoji}</span>
+              <div className={`relative h-40 bg-gradient-to-br ${d.bg} overflow-hidden`}>
+                <img
+                  src={d.image}
+                  alt={d.name}
+                  loading="lazy"
+                  width={800}
+                  height={600}
+                  className="w-full h-full object-cover"
+                />
                 <div className="absolute top-3 left-3 flex gap-1.5">
                   {d.halal && (
                     <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white">Halal</span>
@@ -545,8 +552,14 @@ function Explore() {
             className="w-full max-w-md bg-background rounded-t-3xl max-h-[85vh] overflow-y-auto pb-8 animate-in slide-in-from-bottom duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className={`relative h-32 bg-gradient-to-br ${selectedDish.bg} flex items-center justify-center rounded-t-3xl`}>
-              <span className="text-6xl">{selectedDish.emoji}</span>
+            <div className={`relative h-40 bg-gradient-to-br ${selectedDish.bg} overflow-hidden rounded-t-3xl`}>
+              <img
+                src={selectedDish.image}
+                alt={selectedDish.name}
+                width={800}
+                height={600}
+                className="w-full h-full object-cover"
+              />
               <button
                 onClick={() => setSelectedDishId(null)}
                 className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background/85 backdrop-blur flex items-center justify-center"

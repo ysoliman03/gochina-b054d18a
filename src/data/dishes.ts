@@ -1,3 +1,13 @@
+import pekingDuckImg from "@/assets/dishes/peking-duck.jpg";
+import xiaolongbaoImg from "@/assets/dishes/xiaolongbao.jpg";
+import hotpotImg from "@/assets/dishes/chongqing-hotpot.jpg";
+import mapoTofuImg from "@/assets/dishes/mapo-tofu.jpg";
+import buddhasDelightImg from "@/assets/dishes/buddhas-delight.jpg";
+import eggFriedRiceImg from "@/assets/dishes/egg-fried-rice.jpg";
+import biangbiangImg from "@/assets/dishes/biangbiang-noodles.jpg";
+import lambSkewersImg from "@/assets/dishes/lamb-skewers.jpg";
+import roujiamoImg from "@/assets/dishes/roujiamo.jpg";
+
 export interface Dish {
   id: string;
   name: string;
@@ -7,6 +17,7 @@ export interface Dish {
   tip: string;
   emoji: string;
   bg: string;
+  image: string;
   spice: number; // 0-3
   vegetarian: boolean;
   halal: boolean;
@@ -18,6 +29,7 @@ export interface Dish {
 export const dishes: Dish[] = [
   {
     id: "peking-duck",
+    image: pekingDuckImg,
     name: "Peking Duck",
     nameZh: "北京烤鸭",
     region: "Beijing",
@@ -34,6 +46,7 @@ export const dishes: Dish[] = [
   },
   {
     id: "xiaolongbao",
+    image: xiaolongbaoImg,
     name: "Xiaolongbao",
     nameZh: "小笼包",
     region: "Shanghai",
@@ -50,6 +63,7 @@ export const dishes: Dish[] = [
   },
   {
     id: "chongqing-hotpot",
+    image: hotpotImg,
     name: "Chongqing Hotpot",
     nameZh: "重庆火锅",
     region: "Chongqing",
@@ -66,6 +80,7 @@ export const dishes: Dish[] = [
   },
   {
     id: "mapo-tofu",
+    image: mapoTofuImg,
     name: "Mapo Tofu",
     nameZh: "麻婆豆腐",
     region: "Sichuan",
@@ -82,6 +97,7 @@ export const dishes: Dish[] = [
   },
   {
     id: "buddhas-delight",
+    image: buddhasDelightImg,
     name: "Buddha's Delight",
     nameZh: "罗汉斋",
     region: "All China",
@@ -98,6 +114,7 @@ export const dishes: Dish[] = [
   },
   {
     id: "egg-fried-rice",
+    image: eggFriedRiceImg,
     name: "Egg Fried Rice",
     nameZh: "蛋炒饭",
     region: "All China",
@@ -119,6 +136,7 @@ export const dishes: Dish[] = [
   },
   {
     id: "biangbiang-noodles",
+    image: biangbiangImg,
     name: "Biangbiang Noodles",
     nameZh: "Biang Biang 面",
     region: "Xi'an",
@@ -135,6 +153,7 @@ export const dishes: Dish[] = [
   },
   {
     id: "lamb-skewers",
+    image: lambSkewersImg,
     name: "Lamb Skewers",
     nameZh: "羊肉串",
     region: "Northwest",
@@ -151,6 +170,7 @@ export const dishes: Dish[] = [
   },
   {
     id: "roujiamo",
+    image: roujiamoImg,
     name: "Roujiamo",
     nameZh: "肉夹馍",
     region: "Xi'an",
