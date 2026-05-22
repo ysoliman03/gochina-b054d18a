@@ -24,6 +24,23 @@ const GUIDES = [
   { id: "apps", emoji: "📱", label: "Must-have Apps" },
 ];
 
+const DIGITAL_TOOLS = [
+  { id: "wechat", name: "WeChat", subtitle: "Messaging & Pay", emoji: "💬", bg: "bg-emerald-100", url: "https://www.wechat.com/" },
+  { id: "alipay", name: "Alipay", subtitle: "Payments", emoji: "💙", bg: "bg-indigo-100", url: "https://www.alipay.com/" },
+  { id: "didi", name: "DiDi", subtitle: "Ride Hailing", emoji: "🚗", bg: "bg-orange-100", url: "https://www.didiglobal.com/" },
+];
+
+const STATUS_META: Record<string, { label: string; className: string }> = {
+  not_started: { label: "NOT STARTED", className: "text-muted-foreground" },
+  in_progress: { label: "IN PROGRESS", className: "text-amber-600" },
+  done: { label: "DONE", className: "text-emerald-600" },
+};
+const NEXT_STATUS: Record<string, string> = {
+  not_started: "in_progress",
+  in_progress: "done",
+  done: "not_started",
+};
+
 const CATEGORY_LABEL: Record<string, string> = {
   attraction: "Attraction",
   restaurant: "Restaurant",
@@ -37,6 +54,8 @@ function Explore() {
   const savedPois = useAppStore((s) => s.savedPois);
   const toggleSavePoi = useAppStore((s) => s.toggleSavePoi);
   const addPOIToDay = useAppStore((s) => s.addPOIToDay);
+  const digitalTools = useAppStore((s) => s.digitalTools);
+  const updateDigitalTool = useAppStore((s) => s.updateDigitalTool);
   const [filter, setFilter] = useState("all");
   const city = (cities as any)[trip.currentCityId];
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -198,6 +217,47 @@ function Explore() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section className="px-5 pb-8">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-xl font-bold text-foreground">Essential Digital Tools</h2>
+          <a
+            href="https://docs.lovable.dev"
+            target="_blank"
+            rel="noreferrer"
+            className="text-sm font-medium text-primary inline-flex items-center gap-1"
+          >
+            Setup Guide <ArrowRight className="w-4 h-4" />
+          </a>
+        </div>
+        <div className="rounded-2xl bg-card border border-border overflow-hidden divide-y divide-border">
+          {DIGITAL_TOOLS.map((tool) => {
+            const status = digitalTools[tool.id] || "not_started";
+            const meta = STATUS_META[status];
+            return (
+              <button
+                key={tool.id}
+                onClick={() => updateDigitalTool(tool.id, NEXT_STATUS[status])}
+                className="w-full flex items-center gap-3 p-4 text-left hover:bg-muted/40 transition-colors"
+              >
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0 ${tool.bg}`}>
+                  {tool.emoji}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-bold text-foreground leading-tight">{tool.name}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">{tool.subtitle}</div>
+                </div>
+                <span className={`text-[11px] font-bold tracking-wide shrink-0 ${meta.className}`}>
+                  {meta.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+        <p className="text-[11px] text-muted-foreground mt-2 text-center">
+          Tap to cycle status: Not Started → In Progress → Done
+        </p>
       </section>
 
       {selected && (
