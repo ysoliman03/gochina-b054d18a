@@ -20,15 +20,6 @@ const FILTERS = [
   { id: "restaurant", label: "Restaurant" },
 ];
 
-const GUIDES = [
-  { id: "food", emoji: "🍜", label: "Food Guide", to: "/guides/food" },
-  { id: "etiquette", emoji: "🎎", label: "Cultural Etiquette", to: "/guides/etiquette" },
-  { id: "digital", emoji: "📱", label: "Digital Tools", to: "/guides/digital" },
-  { id: "transit", emoji: "🚇", label: "Transit Help", to: "/guides/transit" },
-  { id: "visa", emoji: "🛂", label: "Visa Info", to: "/guides/visa" },
-  { id: "air", emoji: "🌫️", label: "Air Quality", to: "/guides/air" },
-];
-
 const DIGITAL_TOOLS = [
   {
     id: "wechat",
@@ -50,42 +41,105 @@ const DIGITAL_TOOLS = [
     tip: "Ask a friend with WeChat to verify your account — it's the fastest way through sign-up.",
   },
   {
-    id: "alipay",
-    name: "Alipay",
+    id: "payments",
+    name: "Money & Payments",
     tag: "Mobile Payments",
     tagClass: "bg-indigo-100 text-indigo-700",
-    description: "Ant Group's payment platform with a dedicated international setup.",
+    description: "Set up Alipay/WeChat Pay, link a foreign card, and pay by QR.",
     emoji: "💙",
     bg: "bg-indigo-100",
     url: "https://www.alipay.com/",
     ctaLabel: "Alipay International",
     steps: [
-      "Download Alipay from App Store or Google Play",
-      'Select "International" on the sign-up screen',
-      "Link your international Visa/Mastercard directly",
-      'Use "Tour Pass" feature if direct card link fails',
-      "Accepted at most shops, taxis, attractions, and vending machines",
+      "Install Alipay and WeChat from your app store before flying",
+      'In Alipay, choose "International" sign-up and verify your passport',
+      "Link your Visa/Mastercard directly, or top up Alipay Tour Pass",
+      "Enable WeChat Pay (Tenpay) and link the same card as backup",
+      "Carry ~¥500 cash for small vendors that still refuse foreign cards",
+      "Pay by scanning merchant QR codes, or show your own pay-code",
     ],
-    tip: "Tour Pass tops up a digital wallet — great backup if card linking fails.",
+    tip: "Always have BOTH Alipay and WeChat Pay set up — some merchants only accept one.",
   },
   {
     id: "didi",
-    name: "DiDi",
-    tag: "Ride Hailing",
+    name: "DiDi & Transit",
+    tag: "Ride Hailing & Transit",
     tagClass: "bg-orange-100 text-orange-700",
-    description: "China's Uber equivalent. Has English in-app and accepts foreign cards.",
+    description: "China's Uber equivalent with English in-app, plus metro & bus guidance.",
     emoji: "🚗",
     bg: "bg-orange-100",
     url: "https://www.didiglobal.com/",
     ctaLabel: "Open DiDi",
     steps: [
-      "Download DiDi from App Store or Google Play",
-      "Switch the app language to English in settings",
-      "Sign up with your phone number",
-      "Add an international Visa/Mastercard for payment",
-      "Save your hotel address in Chinese for easier pickup",
+      "Install DiDi, switch to English in Settings, link a foreign card",
+      "Save your hotel address in Chinese to share with drivers",
+      "Metro: buy single tickets at machines (English option) or scan via Alipay/WeChat",
+      "Tap your QR code at the turnstile to enter and exit — fares ¥3–¥10",
+      "Buses: pay by Alipay/WeChat QR; have small cash as a fallback",
+      "Get a rechargeable transit card (Yikatong in Beijing, SPTC in Shanghai) for buses + metro",
+      "Between cities: book high-speed rail on Trip.com or the 12306 app with your passport",
     ],
-    tip: "Show the driver your destination in Chinese characters to avoid miscommunication.",
+    tip: "DiDi is safest at night and in bad weather. For short hops, metro is faster than taxis.",
+  },
+  {
+    id: "visa",
+    name: "Visa Info",
+    tag: "Entry & Documents",
+    tagClass: "bg-sky-100 text-sky-700",
+    description: "Visa types, entry requirements, and what to prepare before arrival.",
+    emoji: "🛂",
+    bg: "bg-sky-100",
+    url: "https://bio.visaforchina.cn/",
+    ctaLabel: "Apply for Visa",
+    steps: [
+      "Check if your nationality qualifies for visa-free transit (up to 240 hours)",
+      "Otherwise apply for an L (tourist) visa via your nearest Chinese visa center",
+      "Prepare: passport valid 6+ months, return flight, hotel bookings, photo",
+      "Complete the COVA online application form and book a biometrics appointment",
+      "Allow 4–7 working days for processing; rush service is available at extra cost",
+      "On arrival, fill the arrival card and keep your passport on you at all times",
+    ],
+    tip: "Register your address with local police within 24h of arrival — most hotels do this for you automatically.",
+  },
+  {
+    id: "vpn",
+    name: "VPN",
+    tag: "Connectivity",
+    tagClass: "bg-purple-100 text-purple-700",
+    description: "Access Google, Instagram, WhatsApp and other blocked apps from inside China.",
+    emoji: "🛡️",
+    bg: "bg-purple-100",
+    url: "https://www.expressvpn.com/",
+    ctaLabel: "Get a VPN",
+    steps: [
+      "Choose a paid VPN known to work in China: ExpressVPN, Astrill, or LetsVPN",
+      "Buy and install the app BEFORE you arrive — provider sites are blocked in China",
+      "Download apps for every device (phone, laptop, tablet) while still home",
+      "Sign in and run a connection test to a Hong Kong or Japan server",
+      "Enable auto-connect on untrusted Wi-Fi for reliability",
+      "If a server gets blocked, switch protocols (Lightway / OpenVPN / WireGuard)",
+    ],
+    tip: "Free VPNs almost never work in China. Pay for one with a money-back guarantee.",
+  },
+  {
+    id: "esim",
+    name: "eSIM",
+    tag: "Connectivity",
+    tagClass: "bg-rose-100 text-rose-700",
+    description: "Get mobile data the moment you land — recommended eSIM providers and steps.",
+    emoji: "📶",
+    bg: "bg-rose-100",
+    url: "https://www.airalo.com/china-esim",
+    ctaLabel: "Browse eSIMs",
+    steps: [
+      "Confirm your phone supports eSIM (iPhone XS+ and most modern Androids)",
+      "Pick a provider: Airalo, Holafly, or Nomad — choose Hong Kong-routed plans for open internet",
+      "Buy a data plan sized to your trip (1GB/day works for most travelers)",
+      "Install the eSIM via QR code BEFORE leaving home — keep your home SIM active",
+      "On landing, switch the data line to the China eSIM in Settings → Cellular",
+      "Enable data roaming for the eSIM line only; keep your home line on Wi-Fi calling",
+    ],
+    tip: "Hong Kong-routed eSIMs often bypass the Great Firewall — no VPN needed for Google or WhatsApp.",
   },
 ];
 
@@ -94,6 +148,12 @@ const STATUS_META: Record<string, { label: string; className: string }> = {
   in_progress: { label: "IN PROGRESS", className: "text-amber-600" },
   done: { label: "DONE", className: "text-emerald-600" },
 };
+
+const STATUS_ORDER = ["not_started", "in_progress", "done"] as const;
+function nextStatus(s: string) {
+  const i = STATUS_ORDER.indexOf(s as any);
+  return STATUS_ORDER[(i + 1) % STATUS_ORDER.length];
+}
 
 const CATEGORY_LABEL: Record<string, string> = {
   attraction: "Attraction",
@@ -289,22 +349,6 @@ function Explore() {
         </div>
       </section>
 
-      <section className="px-5 pb-6">
-        <h2 className="text-xl font-bold text-foreground mb-3">Guides & Info</h2>
-        <div className="grid grid-cols-3 gap-3">
-          {GUIDES.map((g) => (
-            <Link
-              key={g.id}
-              to={g.to}
-              className="rounded-2xl bg-card border border-border p-4 flex flex-col items-center text-center gap-2 aspect-square justify-center hover:border-primary/40 transition-colors"
-            >
-              <span className="text-3xl">{g.emoji}</span>
-              <span className="text-xs font-semibold text-foreground leading-tight">{g.label}</span>
-            </Link>
-          ))}
-        </div>
-      </section>
-
       <section className="px-5 pb-8">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-xl font-bold text-foreground">Compatible Flavors</h2>
@@ -387,15 +431,13 @@ function Explore() {
 
       <section className="px-5 pb-8">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-xl font-bold text-foreground">Essential Digital Tools</h2>
-          <a
-            href="https://docs.lovable.dev"
-            target="_blank"
-            rel="noreferrer"
+          <h2 className="text-xl font-bold text-foreground">Essential Tools</h2>
+          <Link
+            to="/guides/setup"
             className="text-sm font-medium text-primary inline-flex items-center gap-1"
           >
             Setup Guide <ArrowRight className="w-4 h-4" />
-          </a>
+          </Link>
         </div>
         <div className="flex flex-col gap-3">
           {DIGITAL_TOOLS.map((tool) => {
@@ -408,10 +450,17 @@ function Explore() {
                 key={tool.id}
                 className="rounded-2xl bg-card border border-border overflow-hidden"
               >
-                <button
-                  type="button"
+                <div
+                  role="button"
+                  tabIndex={0}
                   onClick={() => setOpenTool(open ? null : tool.id)}
-                  className="w-full flex items-center gap-3 p-4 text-left"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setOpenTool(open ? null : tool.id);
+                    }
+                  }}
+                  className="w-full flex items-center gap-3 p-4 text-left cursor-pointer"
                 >
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0 ${tool.bg}`}>
                     {tool.emoji}
@@ -426,14 +475,22 @@ function Explore() {
                     <p className="text-xs text-muted-foreground mt-0.5 truncate">
                       {tool.description}
                     </p>
-                    <span className={`text-[10px] font-bold tracking-wide ${meta.className}`}>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        updateDigitalTool(tool.id, nextStatus(status));
+                      }}
+                      className={`mt-0.5 inline-flex items-center text-[10px] font-bold tracking-wide hover:underline ${meta.className}`}
+                      aria-label="Change status"
+                    >
                       {meta.label}
-                    </span>
+                    </button>
                   </div>
                   <ChevronDown
                     className={"w-5 h-5 text-muted-foreground shrink-0 transition-transform " + (open ? "rotate-180" : "")}
                   />
-                </button>
+                </div>
 
                 {open && (
                   <div className="px-4 pb-4 border-t border-border">
