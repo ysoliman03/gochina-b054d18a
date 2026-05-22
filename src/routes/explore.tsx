@@ -431,15 +431,13 @@ function Explore() {
 
       <section className="px-5 pb-8">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-xl font-bold text-foreground">Essential Digital Tools</h2>
-          <a
-            href="https://docs.lovable.dev"
-            target="_blank"
-            rel="noreferrer"
+          <h2 className="text-xl font-bold text-foreground">Essential Tools</h2>
+          <Link
+            to="/guides/setup"
             className="text-sm font-medium text-primary inline-flex items-center gap-1"
           >
             Setup Guide <ArrowRight className="w-4 h-4" />
-          </a>
+          </Link>
         </div>
         <div className="flex flex-col gap-3">
           {DIGITAL_TOOLS.map((tool) => {
@@ -470,9 +468,17 @@ function Explore() {
                     <p className="text-xs text-muted-foreground mt-0.5 truncate">
                       {tool.description}
                     </p>
-                    <span className={`text-[10px] font-bold tracking-wide ${meta.className}`}>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        updateDigitalTool(tool.id, nextStatus(status));
+                      }}
+                      className={`mt-0.5 inline-flex items-center text-[10px] font-bold tracking-wide hover:underline ${meta.className}`}
+                      aria-label="Change status"
+                    >
                       {meta.label}
-                    </span>
+                    </button>
                   </div>
                   <ChevronDown
                     className={"w-5 h-5 text-muted-foreground shrink-0 transition-transform " + (open ? "rotate-180" : "")}
