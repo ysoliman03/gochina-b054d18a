@@ -21,9 +21,12 @@ const FILTERS = [
 ];
 
 const GUIDES = [
-  { id: "etiquette", emoji: "🍽️", label: "Dining Etiquette" },
-  { id: "tipping", emoji: "💴", label: "Tipping & Cash" },
-  { id: "apps", emoji: "📱", label: "Must-have Apps" },
+  { id: "food", emoji: "🍜", label: "Food Guide", to: "/guides/food" },
+  { id: "etiquette", emoji: "🎎", label: "Cultural Etiquette", to: "/guides/etiquette" },
+  { id: "digital", emoji: "📱", label: "Digital Tools", to: "/guides/digital" },
+  { id: "transit", emoji: "🚇", label: "Transit Help", to: "/guides/transit" },
+  { id: "visa", emoji: "🛂", label: "Visa Info", to: "/guides/visa" },
+  { id: "air", emoji: "🌫️", label: "Air Quality", to: "/guides/air" },
 ];
 
 const DIGITAL_TOOLS = [
@@ -290,13 +293,14 @@ function Explore() {
         <h2 className="text-xl font-bold text-foreground mb-3">Guides & Info</h2>
         <div className="grid grid-cols-3 gap-3">
           {GUIDES.map((g) => (
-            <div
+            <Link
               key={g.id}
-              className="rounded-2xl bg-card border border-border p-4 flex flex-col items-center text-center gap-2 aspect-square justify-center"
+              to={g.to}
+              className="rounded-2xl bg-card border border-border p-4 flex flex-col items-center text-center gap-2 aspect-square justify-center hover:border-primary/40 transition-colors"
             >
               <span className="text-3xl">{g.emoji}</span>
-              <span className="text-xs font-medium text-foreground leading-tight">{g.label}</span>
-            </div>
+              <span className="text-xs font-semibold text-foreground leading-tight">{g.label}</span>
+            </Link>
           ))}
         </div>
       </section>
