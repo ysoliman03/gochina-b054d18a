@@ -19,10 +19,12 @@ export function CityMap({
   center,
   markers,
   className,
+  onMarkerClick,
 }: {
   center: { lat: number; lng: number };
   markers: Marker[];
   className?: string;
+  onMarkerClick?: (id: string) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
@@ -49,6 +51,7 @@ export function CityMap({
             title: m.name,
             content: `<div style="width:22px;height:28px;transform:translate(-11px,-28px);filter:drop-shadow(0 2px 3px rgba(0,0,0,.3))"><svg viewBox="0 0 22 28" xmlns="http://www.w3.org/2000/svg"><path d="M11 0C4.9 0 0 4.9 0 11c0 8 11 17 11 17s11-9 11-17C22 4.9 17.1 0 11 0z" fill="${color}"/><circle cx="11" cy="11" r="4" fill="#fff"/></svg></div>`,
           });
+          if (onMarkerClick) marker.on("click", () => onMarkerClick(m.id));
           map.add(marker);
         });
       })
@@ -60,7 +63,7 @@ export function CityMap({
         mapRef.current = null;
       }
     };
-  }, [center.lat, center.lng, markers]);
+  }, [center.lat, center.lng, markers, onMarkerClick]);
 
   if (!KEY) {
     // Fallback styled placeholder when no AMap key configured
@@ -77,9 +80,11 @@ export function CityMap({
           const top = 18 + ((i * 37) % 60);
           const color = CATEGORY_COLOR[m.category || "attraction"] || "#9b2c2c";
           return (
-            <div
+            <button
               key={m.id}
-              className="absolute"
+              type="button"
+              onClick={() => onMarkerClick?.(m.id)}
+              className="absolute cursor-pointer"
               style={{ left: `${left}%`, top: `${top}%`, transform: "translate(-50%,-100%)" }}
               title={m.name}
             >
@@ -87,7 +92,7 @@ export function CityMap({
                 <path d="M11 0C4.9 0 0 4.9 0 11c0 8 11 17 11 17s11-9 11-17C22 4.9 17.1 0 11 0z" fill={color} />
                 <circle cx="11" cy="11" r="4" fill="#fff" />
               </svg>
-            </div>
+            </button>
           );
         })}
         <div className="absolute bottom-2 left-2 text-[10px] text-muted-foreground bg-background/70 px-2 py-0.5 rounded">

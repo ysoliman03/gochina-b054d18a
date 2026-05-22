@@ -4,7 +4,7 @@ import { useAppStore } from "@/store/useAppStore";
 import { pois } from "@/data/pois";
 import { cities } from "@/data/cities";
 import { CityMap } from "@/components/CityMap";
-import { ArrowRight, Heart, Plus } from "lucide-react";
+import { ArrowRight, Heart, Plus, X } from "lucide-react";
 import { useMemo, useState } from "react";
 
 export const Route = createFileRoute("/explore")({
@@ -39,6 +39,8 @@ function Explore() {
   const addPOIToDay = useAppStore((s) => s.addPOIToDay);
   const [filter, setFilter] = useState("all");
   const city = (cities as any)[trip.currentCityId];
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selected: any = selectedId ? (pois as any)[selectedId] : null;
 
   const cityPois = useMemo(
     () => Object.values(pois).filter((p: any) => p.cityId === trip.currentCityId),
@@ -115,6 +117,7 @@ function Explore() {
           center={{ lat: city?.lat ?? 39.9, lng: city?.lng ?? 116.4 }}
           markers={mapMarkers}
           className="h-64"
+          onMarkerClick={(id) => setSelectedId(id)}
         />
       </div>
 
@@ -196,6 +199,72 @@ function Explore() {
           ))}
         </div>
       </section>
+
+      {selected && (
+        <div className="fixed inset-x-0 bottom-0 z-40 flex justify-center pointer-events-none">
+          <div className="w-full max-w-md pointer-events-auto px-3 pb-20">
+            <div className="rounded-2xl bg-card border border-border shadow-2xl p-4 animate-in slide-in-from-bottom-4 duration-200">
+              <div className="flex items-start gap-3">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-accent/50 to-primary/20 flex items-center justify-center text-2xl shrink-0">
+                  {selected.category === "restaurant"
+                    ? "🍜"
+                    : selected.category === "experience"
+                      ? "🎭"
+                      : selected.category === "nightlife"
+                        ? "🌃"
+                        : selected.category === "shopping"
+                          ? "🛍️"
+                          : "🗺️"}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="font-bold text-foreground leading-tight truncate">
+                      {selected.name}
+                    </h3>
+                    <button
+                      onClick={() => setSelectedId(null)}
+                      className="p-1 -m-1 text-muted-foreground hover:text-foreground shrink-0"
+                      aria-label="Close"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {CATEGORY_LABEL[selected.category] || selected.category} · {selected.district}
+                    {selected.duration ? ` · ${formatDuration(selected.duration)}` : ""}
+                    {selected.price != null ? ` · ${priceLabel(selected.price)}` : ""}
+                  </p>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
+                {selected.description}
+              </p>
+              <div className="flex gap-2 mt-3">
+                <button
+                  onClick={() => toggleSavePoi(selected.id, selected.name)}
+                  className="w-11 h-11 rounded-full border border-border flex items-center justify-center shrink-0"
+                  aria-label="Save"
+                >
+                  <Heart
+                    className={"w-4 h-4 " + (savedPois.includes(selected.id) ? "text-primary" : "text-muted-foreground")}
+                    fill={savedPois.includes(selected.id) ? "currentColor" : "none"}
+                  />
+                </button>
+                <button
+                  onClick={() => {
+                    const dayIdx = Math.max(0, (trip.itinerary[trip.currentCityId] || []).length - 1);
+                    addPOIToDay(trip.currentCityId, dayIdx, selected);
+                    setSelectedId(null);
+                  }}
+                  className="flex-1 h-11 rounded-full bg-primary text-primary-foreground font-semibold text-sm inline-flex items-center justify-center gap-1.5 hover:bg-primary/90"
+                >
+                  <Plus className="w-4 h-4" /> Add to Trip
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </MobileShell>
   );
 }
