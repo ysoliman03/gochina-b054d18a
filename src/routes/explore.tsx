@@ -4,7 +4,7 @@ import { useAppStore } from "@/store/useAppStore";
 import { pois } from "@/data/pois";
 import { cities } from "@/data/cities";
 import { CityMap } from "@/components/CityMap";
-import { ArrowRight, Heart, Plus, X } from "lucide-react";
+import { ArrowRight, Heart, Plus, X, ChevronDown, ArrowUpRight, Lightbulb } from "lucide-react";
 import { useMemo, useState } from "react";
 
 export const Route = createFileRoute("/explore")({
@@ -25,20 +25,69 @@ const GUIDES = [
 ];
 
 const DIGITAL_TOOLS = [
-  { id: "wechat", name: "WeChat", subtitle: "Messaging & Pay", emoji: "💬", bg: "bg-emerald-100", url: "https://www.wechat.com/" },
-  { id: "alipay", name: "Alipay", subtitle: "Payments", emoji: "💙", bg: "bg-indigo-100", url: "https://www.alipay.com/" },
-  { id: "didi", name: "DiDi", subtitle: "Ride Hailing", emoji: "🚗", bg: "bg-orange-100", url: "https://www.didiglobal.com/" },
+  {
+    id: "wechat",
+    name: "WeChat",
+    tag: "Messaging & Payments",
+    tagClass: "bg-emerald-100 text-emerald-700",
+    description: "China's super-app for messaging, social, and mobile payments.",
+    emoji: "💬",
+    bg: "bg-emerald-100",
+    url: "https://www.wechat.com/",
+    ctaLabel: "Open WeChat",
+    steps: [
+      "Download WeChat from App Store or Google Play",
+      "Sign up with your phone number",
+      "Verify with an existing WeChat user if prompted",
+      "Link an international card via WeChat Pay (Tenpay)",
+      "Used for chat, QR payments, mini-programs and more",
+    ],
+    tip: "Ask a friend with WeChat to verify your account — it's the fastest way through sign-up.",
+  },
+  {
+    id: "alipay",
+    name: "Alipay",
+    tag: "Mobile Payments",
+    tagClass: "bg-indigo-100 text-indigo-700",
+    description: "Ant Group's payment platform with a dedicated international setup.",
+    emoji: "💙",
+    bg: "bg-indigo-100",
+    url: "https://www.alipay.com/",
+    ctaLabel: "Alipay International",
+    steps: [
+      "Download Alipay from App Store or Google Play",
+      'Select "International" on the sign-up screen',
+      "Link your international Visa/Mastercard directly",
+      'Use "Tour Pass" feature if direct card link fails',
+      "Accepted at most shops, taxis, attractions, and vending machines",
+    ],
+    tip: "Tour Pass tops up a digital wallet — great backup if card linking fails.",
+  },
+  {
+    id: "didi",
+    name: "DiDi",
+    tag: "Ride Hailing",
+    tagClass: "bg-orange-100 text-orange-700",
+    description: "China's Uber equivalent. Has English in-app and accepts foreign cards.",
+    emoji: "🚗",
+    bg: "bg-orange-100",
+    url: "https://www.didiglobal.com/",
+    ctaLabel: "Open DiDi",
+    steps: [
+      "Download DiDi from App Store or Google Play",
+      "Switch the app language to English in settings",
+      "Sign up with your phone number",
+      "Add an international Visa/Mastercard for payment",
+      "Save your hotel address in Chinese for easier pickup",
+    ],
+    tip: "Show the driver your destination in Chinese characters to avoid miscommunication.",
+  },
 ];
 
 const STATUS_META: Record<string, { label: string; className: string }> = {
   not_started: { label: "NOT STARTED", className: "text-muted-foreground" },
   in_progress: { label: "IN PROGRESS", className: "text-amber-600" },
   done: { label: "DONE", className: "text-emerald-600" },
-};
-const NEXT_STATUS: Record<string, string> = {
-  not_started: "in_progress",
-  in_progress: "done",
-  done: "not_started",
 };
 
 const CATEGORY_LABEL: Record<string, string> = {
