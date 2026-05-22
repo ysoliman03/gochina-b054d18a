@@ -535,6 +535,87 @@ function Explore() {
           </div>
         </div>
       )}
+
+      {selectedDish && (
+        <div
+          className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center"
+          onClick={() => setSelectedDishId(null)}
+        >
+          <div
+            className="w-full max-w-md bg-background rounded-t-3xl max-h-[85vh] overflow-y-auto pb-8 animate-in slide-in-from-bottom duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={`relative h-32 bg-gradient-to-br ${selectedDish.bg} flex items-center justify-center rounded-t-3xl`}>
+              <span className="text-6xl">{selectedDish.emoji}</span>
+              <button
+                onClick={() => setSelectedDishId(null)}
+                className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background/85 backdrop-blur flex items-center justify-center"
+                aria-label="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="px-5 pt-4">
+              <h2 className="text-xl font-bold text-foreground">{selectedDish.name}</h2>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {selectedDish.nameZh} · {selectedDish.region}
+                {selectedDish.spice > 0 ? ` · ${"🌶️".repeat(selectedDish.spice)}` : ""}
+              </p>
+              <p className="text-sm text-muted-foreground mt-3 leading-snug">
+                {selectedDish.description}
+              </p>
+
+              <h3 className="mt-5 text-sm font-bold text-foreground">
+                Places that serve it ({dishRestaurants.length})
+              </h3>
+              {dishRestaurants.length === 0 ? (
+                <p className="text-sm text-muted-foreground mt-2">
+                  No curated spots yet in your current cities.
+                </p>
+              ) : (
+                <div className="mt-3 flex flex-col gap-2.5">
+                  {dishRestaurants.map((r: any) => {
+                    const inThisTrip = trip.cities.some((c: any) => c.cityId === r.cityId);
+                    return (
+                      <div
+                        key={r.id}
+                        className="rounded-xl border border-border p-3 flex items-center gap-3"
+                      >
+                        <div className="w-11 h-11 rounded-lg bg-gradient-to-br from-accent/40 to-primary/20 flex items-center justify-center text-xl shrink-0">
+                          🍜
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-semibold text-foreground text-sm leading-tight truncate">
+                            {r.name}
+                          </div>
+                          <div className="text-[11px] text-muted-foreground mt-0.5">
+                            {(cities as any)[r.cityId]?.name || r.cityId} · {r.district}
+                            {r.price != null ? ` · ${priceLabel(r.price)}` : ""}
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => {
+                            const dayIdx = Math.max(
+                              0,
+                              (trip.itinerary[r.cityId] || []).length - 1,
+                            );
+                            addPOIToDay(r.cityId, dayIdx, r);
+                          }}
+                          disabled={!inThisTrip}
+                          className="shrink-0 h-9 px-3 rounded-full bg-primary text-primary-foreground text-xs font-semibold inline-flex items-center gap-1 hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed"
+                          title={inThisTrip ? "Add to trip" : "City not in your trip"}
+                        >
+                          <Plus className="w-3.5 h-3.5" /> Add
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </MobileShell>
   );
 }
