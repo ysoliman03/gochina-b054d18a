@@ -450,10 +450,17 @@ function Explore() {
                 key={tool.id}
                 className="rounded-2xl bg-card border border-border overflow-hidden"
               >
-                <button
-                  type="button"
+                <div
+                  role="button"
+                  tabIndex={0}
                   onClick={() => setOpenTool(open ? null : tool.id)}
-                  className="w-full flex items-center gap-3 p-4 text-left"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setOpenTool(open ? null : tool.id);
+                    }
+                  }}
+                  className="w-full flex items-center gap-3 p-4 text-left cursor-pointer"
                 >
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0 ${tool.bg}`}>
                     {tool.emoji}
@@ -483,7 +490,7 @@ function Explore() {
                   <ChevronDown
                     className={"w-5 h-5 text-muted-foreground shrink-0 transition-transform " + (open ? "rotate-180" : "")}
                   />
-                </button>
+                </div>
 
                 {open && (
                   <div className="px-4 pb-4 border-t border-border">
