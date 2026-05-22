@@ -9,7 +9,23 @@ export const Route = createFileRoute("/onboarding")({
 
 const CUISINES = ["Spicy", "Street Food", "Vegetarian-friendly", "Seafood", "Noodles", "Dim Sum"];
 const INTERESTS = ["historical", "food", "nightlife", "shopping", "nature", "art", "modern"];
-const DIET = ["Vegetarian", "Vegan", "Pescatarian", "Halal", "No Pork", "No Beef", "Dairy Free", "No Spicy", "Gluten Free"];
+const DIET = [
+  "Vegetarian",
+  "Vegan",
+  "Pescatarian",
+  "Halal",
+  "Kosher",
+  "Gluten Free",
+  "Dairy Free",
+  "Nut Free",
+  "Shellfish Free",
+  "Egg Free",
+  "Soy Free",
+  "No Pork",
+  "No Beef",
+  "No Alcohol",
+  "Low Spice",
+];
 
 function Onboarding() {
   const navigate = useNavigate();
