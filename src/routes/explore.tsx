@@ -219,6 +219,47 @@ function Explore() {
         </div>
       </section>
 
+      <section className="px-5 pb-8">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-xl font-bold text-foreground">Essential Digital Tools</h2>
+          <a
+            href="https://docs.lovable.dev"
+            target="_blank"
+            rel="noreferrer"
+            className="text-sm font-medium text-primary inline-flex items-center gap-1"
+          >
+            Setup Guide <ArrowRight className="w-4 h-4" />
+          </a>
+        </div>
+        <div className="rounded-2xl bg-card border border-border overflow-hidden divide-y divide-border">
+          {DIGITAL_TOOLS.map((tool) => {
+            const status = digitalTools[tool.id] || "not_started";
+            const meta = STATUS_META[status];
+            return (
+              <button
+                key={tool.id}
+                onClick={() => updateDigitalTool(tool.id, NEXT_STATUS[status])}
+                className="w-full flex items-center gap-3 p-4 text-left hover:bg-muted/40 transition-colors"
+              >
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0 ${tool.bg}`}>
+                  {tool.emoji}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-bold text-foreground leading-tight">{tool.name}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">{tool.subtitle}</div>
+                </div>
+                <span className={`text-[11px] font-bold tracking-wide shrink-0 ${meta.className}`}>
+                  {meta.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+        <p className="text-[11px] text-muted-foreground mt-2 text-center">
+          Tap to cycle status: Not Started → In Progress → Done
+        </p>
+      </section>
+
       {selected && (
         <div className="fixed inset-x-0 bottom-0 z-40 flex justify-center pointer-events-none">
           <div className="w-full max-w-md pointer-events-auto px-3 pb-20">
