@@ -14,6 +14,12 @@ import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as ItineraryRouteImport } from './routes/itinerary'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as GuidesVisaRouteImport } from './routes/guides.visa'
+import { Route as GuidesTransitRouteImport } from './routes/guides.transit'
+import { Route as GuidesFoodRouteImport } from './routes/guides.food'
+import { Route as GuidesEtiquetteRouteImport } from './routes/guides.etiquette'
+import { Route as GuidesDigitalRouteImport } from './routes/guides.digital'
+import { Route as GuidesAirRouteImport } from './routes/guides.air'
 import { Route as ExploreCategoryRouteImport } from './routes/explore.$category'
 
 const ProfileRoute = ProfileRouteImport.update({
@@ -41,6 +47,36 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GuidesVisaRoute = GuidesVisaRouteImport.update({
+  id: '/guides/visa',
+  path: '/guides/visa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuidesTransitRoute = GuidesTransitRouteImport.update({
+  id: '/guides/transit',
+  path: '/guides/transit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuidesFoodRoute = GuidesFoodRouteImport.update({
+  id: '/guides/food',
+  path: '/guides/food',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuidesEtiquetteRoute = GuidesEtiquetteRouteImport.update({
+  id: '/guides/etiquette',
+  path: '/guides/etiquette',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuidesDigitalRoute = GuidesDigitalRouteImport.update({
+  id: '/guides/digital',
+  path: '/guides/digital',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuidesAirRoute = GuidesAirRouteImport.update({
+  id: '/guides/air',
+  path: '/guides/air',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreCategoryRoute = ExploreCategoryRouteImport.update({
   id: '/$category',
   path: '/$category',
@@ -54,6 +90,12 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
   '/explore/$category': typeof ExploreCategoryRoute
+  '/guides/air': typeof GuidesAirRoute
+  '/guides/digital': typeof GuidesDigitalRoute
+  '/guides/etiquette': typeof GuidesEtiquetteRoute
+  '/guides/food': typeof GuidesFoodRoute
+  '/guides/transit': typeof GuidesTransitRoute
+  '/guides/visa': typeof GuidesVisaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +104,12 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
   '/explore/$category': typeof ExploreCategoryRoute
+  '/guides/air': typeof GuidesAirRoute
+  '/guides/digital': typeof GuidesDigitalRoute
+  '/guides/etiquette': typeof GuidesEtiquetteRoute
+  '/guides/food': typeof GuidesFoodRoute
+  '/guides/transit': typeof GuidesTransitRoute
+  '/guides/visa': typeof GuidesVisaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +119,12 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
   '/explore/$category': typeof ExploreCategoryRoute
+  '/guides/air': typeof GuidesAirRoute
+  '/guides/digital': typeof GuidesDigitalRoute
+  '/guides/etiquette': typeof GuidesEtiquetteRoute
+  '/guides/food': typeof GuidesFoodRoute
+  '/guides/transit': typeof GuidesTransitRoute
+  '/guides/visa': typeof GuidesVisaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,6 +135,12 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/profile'
     | '/explore/$category'
+    | '/guides/air'
+    | '/guides/digital'
+    | '/guides/etiquette'
+    | '/guides/food'
+    | '/guides/transit'
+    | '/guides/visa'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -89,6 +149,12 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/profile'
     | '/explore/$category'
+    | '/guides/air'
+    | '/guides/digital'
+    | '/guides/etiquette'
+    | '/guides/food'
+    | '/guides/transit'
+    | '/guides/visa'
   id:
     | '__root__'
     | '/'
@@ -97,6 +163,12 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/profile'
     | '/explore/$category'
+    | '/guides/air'
+    | '/guides/digital'
+    | '/guides/etiquette'
+    | '/guides/food'
+    | '/guides/transit'
+    | '/guides/visa'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -105,6 +177,12 @@ export interface RootRouteChildren {
   ItineraryRoute: typeof ItineraryRoute
   OnboardingRoute: typeof OnboardingRoute
   ProfileRoute: typeof ProfileRoute
+  GuidesAirRoute: typeof GuidesAirRoute
+  GuidesDigitalRoute: typeof GuidesDigitalRoute
+  GuidesEtiquetteRoute: typeof GuidesEtiquetteRoute
+  GuidesFoodRoute: typeof GuidesFoodRoute
+  GuidesTransitRoute: typeof GuidesTransitRoute
+  GuidesVisaRoute: typeof GuidesVisaRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -144,6 +222,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/guides/visa': {
+      id: '/guides/visa'
+      path: '/guides/visa'
+      fullPath: '/guides/visa'
+      preLoaderRoute: typeof GuidesVisaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/transit': {
+      id: '/guides/transit'
+      path: '/guides/transit'
+      fullPath: '/guides/transit'
+      preLoaderRoute: typeof GuidesTransitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/food': {
+      id: '/guides/food'
+      path: '/guides/food'
+      fullPath: '/guides/food'
+      preLoaderRoute: typeof GuidesFoodRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/etiquette': {
+      id: '/guides/etiquette'
+      path: '/guides/etiquette'
+      fullPath: '/guides/etiquette'
+      preLoaderRoute: typeof GuidesEtiquetteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/digital': {
+      id: '/guides/digital'
+      path: '/guides/digital'
+      fullPath: '/guides/digital'
+      preLoaderRoute: typeof GuidesDigitalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/air': {
+      id: '/guides/air'
+      path: '/guides/air'
+      fullPath: '/guides/air'
+      preLoaderRoute: typeof GuidesAirRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/$category': {
       id: '/explore/$category'
       path: '/$category'
@@ -171,6 +291,12 @@ const rootRouteChildren: RootRouteChildren = {
   ItineraryRoute: ItineraryRoute,
   OnboardingRoute: OnboardingRoute,
   ProfileRoute: ProfileRoute,
+  GuidesAirRoute: GuidesAirRoute,
+  GuidesDigitalRoute: GuidesDigitalRoute,
+  GuidesEtiquetteRoute: GuidesEtiquetteRoute,
+  GuidesFoodRoute: GuidesFoodRoute,
+  GuidesTransitRoute: GuidesTransitRoute,
+  GuidesVisaRoute: GuidesVisaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
