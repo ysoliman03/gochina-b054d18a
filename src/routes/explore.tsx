@@ -106,6 +106,7 @@ function Explore() {
   const digitalTools = useAppStore((s) => s.digitalTools);
   const updateDigitalTool = useAppStore((s) => s.updateDigitalTool);
   const [filter, setFilter] = useState("all");
+  const [openTool, setOpenTool] = useState<string | null>("alipay");
   const city = (cities as any)[trip.currentCityId];
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected: any = selectedId ? (pois as any)[selectedId] : null;
