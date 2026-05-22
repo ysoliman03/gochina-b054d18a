@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useAppStore } from "@/store/useAppStore";
 import { ChevronRight, ChevronLeft } from "lucide-react";
+import { COUNTRIES } from "@/data/countries";
 
 export const Route = createFileRoute("/onboarding")({
   component: Onboarding,
