@@ -6,6 +6,8 @@ import { cities } from "@/data/cities";
 import { CityMap } from "@/components/CityMap";
 import { ArrowRight, Heart, Plus, X, ChevronDown, ArrowUpRight, Lightbulb } from "lucide-react";
 import { useMemo, useState } from "react";
+import { dishes as allDishes, type Dish } from "@/data/dishes";
+import { AlertTriangle } from "lucide-react";
 
 export const Route = createFileRoute("/explore")({
   component: Explore,
