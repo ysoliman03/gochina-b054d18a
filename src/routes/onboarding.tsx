@@ -54,12 +54,16 @@ function Onboarding() {
             value={draft.name}
             onChange={(e) => setDraft({ ...draft, name: e.target.value })}
           />
-          <input
+          <select
             className="w-full rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-primary"
-            placeholder="Nationality"
             value={draft.nationality}
             onChange={(e) => setDraft({ ...draft, nationality: e.target.value })}
-          />
+          >
+            <option value="">Select nationality</option>
+            {COUNTRIES.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
         </div>
       ),
     },
