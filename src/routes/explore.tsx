@@ -236,9 +236,14 @@ function Explore() {
             const status = digitalTools[tool.id] || "not_started";
             const meta = STATUS_META[status];
             return (
-              <button
+              <a
                 key={tool.id}
-                onClick={() => updateDigitalTool(tool.id, NEXT_STATUS[status])}
+                href={tool.url}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => {
+                  if (status === "not_started") updateDigitalTool(tool.id, "in_progress");
+                }}
                 className="w-full flex items-center gap-3 p-4 text-left hover:bg-muted/40 transition-colors"
               >
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0 ${tool.bg}`}>
@@ -251,12 +256,24 @@ function Explore() {
                 <span className={`text-[11px] font-bold tracking-wide shrink-0 ${meta.className}`}>
                   {meta.label}
                 </span>
-              </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    updateDigitalTool(tool.id, NEXT_STATUS[status]);
+                  }}
+                  className="ml-2 text-[11px] text-muted-foreground hover:text-foreground shrink-0"
+                  aria-label="Cycle status"
+                >
+                  ✎
+                </button>
+              </a>
             );
           })}
         </div>
         <p className="text-[11px] text-muted-foreground mt-2 text-center">
-          Tap to cycle status: Not Started → In Progress → Done
+          Tap a tool to open its official site · ✎ to update status
         </p>
       </section>
 
