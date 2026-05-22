@@ -20,15 +20,6 @@ const FILTERS = [
   { id: "restaurant", label: "Restaurant" },
 ];
 
-const GUIDES = [
-  { id: "food", emoji: "🍜", label: "Food Guide", to: "/guides/food" },
-  { id: "etiquette", emoji: "🎎", label: "Cultural Etiquette", to: "/guides/etiquette" },
-  { id: "digital", emoji: "📱", label: "Digital Tools", to: "/guides/digital" },
-  { id: "transit", emoji: "🚇", label: "Transit Help", to: "/guides/transit" },
-  { id: "visa", emoji: "🛂", label: "Visa Info", to: "/guides/visa" },
-  { id: "air", emoji: "🌫️", label: "Air Quality", to: "/guides/air" },
-];
-
 const DIGITAL_TOOLS = [
   {
     id: "wechat",
@@ -157,6 +148,12 @@ const STATUS_META: Record<string, { label: string; className: string }> = {
   in_progress: { label: "IN PROGRESS", className: "text-amber-600" },
   done: { label: "DONE", className: "text-emerald-600" },
 };
+
+const STATUS_ORDER = ["not_started", "in_progress", "done"] as const;
+function nextStatus(s: string) {
+  const i = STATUS_ORDER.indexOf(s as any);
+  return STATUS_ORDER[(i + 1) % STATUS_ORDER.length];
+}
 
 const CATEGORY_LABEL: Record<string, string> = {
   attraction: "Attraction",
