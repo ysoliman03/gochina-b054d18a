@@ -25,11 +25,10 @@ function Home() {
 
   const city = (cities as any)[trip.currentCityId];
   const currentCity = trip.cities.find((c) => c.cityId === trip.currentCityId);
-  const activeConstraints = getActiveConstraints(
-    trip.currentCityId,
-    currentCity?.startDate ?? "",
-    currentCity?.endDate ?? "",
-  );
+  const activeConstraints = getActiveConstraints(trip.currentCityId, {
+    start: currentCity?.startDate ?? "",
+    end: currentCity?.endDate ?? "",
+  });
 
   const recommended = Object.values(pois)
     .filter((p: any) => p.cityId === trip.currentCityId)
