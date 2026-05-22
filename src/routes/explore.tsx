@@ -280,50 +280,88 @@ function Explore() {
             Setup Guide <ArrowRight className="w-4 h-4" />
           </a>
         </div>
-        <div className="rounded-2xl bg-card border border-border overflow-hidden divide-y divide-border">
+        <div className="flex flex-col gap-3">
           {DIGITAL_TOOLS.map((tool) => {
             const status = digitalTools[tool.id] || "not_started";
             const meta = STATUS_META[status];
+            const open = openTool === tool.id;
+            const isDone = status === "done";
             return (
-              <a
+              <div
                 key={tool.id}
-                href={tool.url}
-                target="_blank"
-                rel="noreferrer"
-                onClick={() => {
-                  if (status === "not_started") updateDigitalTool(tool.id, "in_progress");
-                }}
-                className="w-full flex items-center gap-3 p-4 text-left hover:bg-muted/40 transition-colors"
+                className="rounded-2xl bg-card border border-border overflow-hidden"
               >
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0 ${tool.bg}`}>
-                  {tool.emoji}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-bold text-foreground leading-tight">{tool.name}</div>
-                  <div className="text-xs text-muted-foreground mt-0.5">{tool.subtitle}</div>
-                </div>
-                <span className={`text-[11px] font-bold tracking-wide shrink-0 ${meta.className}`}>
-                  {meta.label}
-                </span>
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    updateDigitalTool(tool.id, NEXT_STATUS[status]);
-                  }}
-                  className="ml-2 text-[11px] text-muted-foreground hover:text-foreground shrink-0"
-                  aria-label="Cycle status"
+                  onClick={() => setOpenTool(open ? null : tool.id)}
+                  className="w-full flex items-center gap-3 p-4 text-left"
                 >
-                  ✎
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0 ${tool.bg}`}>
+                    {tool.emoji}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-bold text-foreground leading-tight">{tool.name}</span>
+                      <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${tool.tagClass}`}>
+                        {tool.tag}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                      {tool.description}
+                    </p>
+                    <span className={`text-[10px] font-bold tracking-wide ${meta.className}`}>
+                      {meta.label}
+                    </span>
+                  </div>
+                  <ChevronDown
+                    className={"w-5 h-5 text-muted-foreground shrink-0 transition-transform " + (open ? "rotate-180" : "")}
+                  />
                 </button>
-              </a>
+
+                {open && (
+                  <div className="px-4 pb-4 border-t border-border">
+                    <ol className="mt-4 space-y-3">
+                      {tool.steps.map((step, i) => (
+                        <li key={i} className="flex gap-3 text-sm text-foreground">
+                          <span className="font-bold text-primary shrink-0 w-5">{i + 1}.</span>
+                          <span className="leading-snug">{step}</span>
+                        </li>
+                      ))}
+                    </ol>
+
+                    <div className="mt-4 rounded-xl bg-amber-50 border border-amber-100 p-3 flex gap-2 text-xs text-amber-900">
+                      <Lightbulb className="w-4 h-4 shrink-0 mt-0.5" />
+                      <span className="leading-snug">{tool.tip}</span>
+                    </div>
+
+                    <div className="mt-4 flex gap-2">
+                      <a
+                        href={tool.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={() => {
+                          if (status === "not_started") updateDigitalTool(tool.id, "in_progress");
+                        }}
+                        className="flex-1 h-11 rounded-full bg-foreground text-background font-semibold text-sm inline-flex items-center justify-center gap-1.5"
+                      >
+                        {tool.ctaLabel} <ArrowUpRight className="w-4 h-4" />
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          updateDigitalTool(tool.id, isDone ? "not_started" : "done")
+                        }
+                        className="flex-1 h-11 rounded-full bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90"
+                      >
+                        {isDone ? "Mark Undone" : "Mark Done"}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>
-        <p className="text-[11px] text-muted-foreground mt-2 text-center">
-          Tap a tool to open its official site · ✎ to update status
-        </p>
       </section>
 
       {selected && (
