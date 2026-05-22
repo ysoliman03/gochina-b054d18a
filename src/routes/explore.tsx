@@ -304,6 +304,89 @@ function Explore() {
       <section className="px-5 pb-8">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-xl font-bold text-foreground">Essential Digital Tools</h2>
+          <span className="hidden" />
+        </div>
+      </section>
+
+      {/* placeholder swap below */}
+      <section className="hidden" />
+
+      <section className="px-5 pb-8 -mt-8">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-xl font-bold text-foreground">Compatible Flavors</h2>
+          <Link
+            to="/explore"
+            className="text-sm font-medium text-primary inline-flex items-center gap-1"
+          >
+            Full Guide <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+        {dietaryLabel && (
+          <div className="mb-3 text-sm text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-2.5">
+            Filtered for: {dietaryLabel}
+          </div>
+        )}
+        <div className="flex flex-col gap-4">
+          {filteredDishes.map((d) => (
+            <button
+              key={d.id}
+              onClick={() => setSelectedDishId(d.id)}
+              className="text-left rounded-2xl bg-card border border-border overflow-hidden hover:border-primary/40 transition-colors"
+            >
+              <div className={`relative h-40 bg-gradient-to-br ${d.bg} flex items-center justify-center`}>
+                <span className="text-6xl">{d.emoji}</span>
+                <div className="absolute top-3 left-3 flex gap-1.5">
+                  {d.halal && (
+                    <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white">Halal</span>
+                  )}
+                  {d.vegetarian && (
+                    <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-teal-600 text-white">Veg</span>
+                  )}
+                </div>
+              </div>
+              <div className="p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <h3 className="font-bold text-foreground leading-tight">{d.name}</h3>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {d.nameZh} · {d.region}
+                    </p>
+                  </div>
+                  {d.spice > 0 && (
+                    <span className="text-sm shrink-0" aria-label={`Spice level ${d.spice}`}>
+                      {"🌶️".repeat(d.spice)}
+                    </span>
+                  )}
+                </div>
+                {d.allergens.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {d.allergens.map((a) => (
+                      <span
+                        key={a}
+                        className="text-[11px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-100"
+                      >
+                        <AlertTriangle className="w-3 h-3" /> {a}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <p className="text-sm italic text-muted-foreground mt-2 leading-snug">
+                  Tip: {d.tip}
+                </p>
+              </div>
+            </button>
+          ))}
+          {filteredDishes.length === 0 && (
+            <p className="text-sm text-muted-foreground text-center py-6">
+              No dishes match your dietary preferences yet.
+            </p>
+          )}
+        </div>
+      </section>
+
+      <section className="px-5 pb-8">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-xl font-bold text-foreground">Essential Digital Tools</h2>
           <a
             href="https://docs.lovable.dev"
             target="_blank"
