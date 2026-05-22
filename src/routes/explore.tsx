@@ -109,6 +109,7 @@ function Explore() {
   const updateDigitalTool = useAppStore((s) => s.updateDigitalTool);
   const [filter, setFilter] = useState("all");
   const [openTool, setOpenTool] = useState<string | null>("alipay");
+  const [selectedDishId, setSelectedDishId] = useState<string | null>(null);
   const city = (cities as any)[trip.currentCityId];
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected: any = selectedId ? (pois as any)[selectedId] : null;
@@ -148,6 +149,35 @@ function Explore() {
     if (p === 0) return "Free";
     return "¥".repeat(Math.max(1, Math.min(4, p)));
   }
+
+  const profile = useAppStore((s) => s.profile);
+  const dietary = profile.dietaryRestrictions || [];
+  const isVeg = dietary.includes("Vegetarian") || dietary.includes("Vegan");
+  const isHalal = dietary.includes("Halal");
+  const noPork = isHalal || dietary.includes("No Pork");
+  const filteredDishes = useMemo(() => {
+    return allDishes.filter((d) => {
+      if (isVeg && !d.vegetarian) return false;
+      if (isHalal && !d.halal) return false;
+      if (noPork && d.containsPork) return false;
+      return true;
+    });
+  }, [isVeg, isHalal, noPork]);
+  const selectedDish = selectedDishId
+    ? allDishes.find((d) => d.id === selectedDishId) || null
+    : null;
+  const dishRestaurants = useMemo(() => {
+    if (!selectedDish) return [] as any[];
+    const ids = Object.values(selectedDish.restaurantsByCity).flat();
+    return ids.map((id) => (pois as any)[id]).filter(Boolean);
+  }, [selectedDish]);
+  const dietaryLabel = isVeg
+    ? "Vegetarian"
+    : isHalal
+      ? "Halal"
+      : noPork
+        ? "No Pork"
+        : null;
 
   return (
     <MobileShell>
