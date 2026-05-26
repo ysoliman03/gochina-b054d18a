@@ -4,7 +4,8 @@ import { MobileShell } from "@/components/MobileShell";
 import { useAppStore } from "@/store/useAppStore";
 import { cities } from "@/data/cities";
 import { buildDayPlan, minutesToTime } from "@/engine/itineraryEngine";
-import { Clock, MapPin, RefreshCw, Trash2, Sparkles } from "lucide-react";
+import { Clock, MapPin, RefreshCw, Trash2, Sparkles, Wand2 } from "lucide-react";
+import { ItineraryBuilderSheet } from "@/components/ItineraryBuilderSheet";
 
 export const Route = createFileRoute("/itinerary")({
   component: Itinerary,
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/itinerary")({
 function Itinerary() {
   const trip = useAppStore((s) => s.trip);
   const profile = useAppStore((s) => s.profile);
+  const [builderOpen, setBuilderOpen] = useState(false);
   const setItinerary = useAppStore((s) => s.setItinerary);
   const removePOIFromDay = useAppStore((s) => s.removePOIFromDay);
   const replanDay = useAppStore((s) => s.replanDay);
@@ -39,10 +41,21 @@ function Itinerary() {
 
   return (
     <MobileShell>
-      <header className="px-5 pt-8 pb-3">
-        <h1 className="text-2xl font-bold text-foreground">Your Itinerary</h1>
-        <p className="text-sm text-muted-foreground">Tap any day to view stops</p>
+      <header className="px-5 pt-8 pb-3 flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Your Itinerary</h1>
+          <p className="text-sm text-muted-foreground">Tap any day to view stops</p>
+        </div>
+        <button
+          onClick={() => setBuilderOpen(true)}
+          className="flex items-center gap-1.5 rounded-xl bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground flex-shrink-0 mt-1"
+        >
+          <Wand2 className="w-3.5 h-3.5" />
+          AI Plan
+        </button>
       </header>
+
+      <ItineraryBuilderSheet open={builderOpen} onOpenChange={setBuilderOpen} />
 
       <div className="px-5 flex gap-2 pb-3 overflow-x-auto">
         {trip.cities.map((c) => {
