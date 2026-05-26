@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MobileShell } from "@/components/MobileShell";
 import { useAppStore } from "@/store/useAppStore";
 import { cities } from "@/data/cities";
@@ -14,14 +14,20 @@ export const Route = createFileRoute("/")({
 function Home() {
   const navigate = useNavigate();
   const onboarded = useAppStore((s) => s.onboarded);
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    setHydrated(useAppStore.persist.hasHydrated());
+    const unsub = useAppStore.persist.onFinishHydration(() => setHydrated(true));
+    return () => unsub();
+  }, []);
   const profile = useAppStore((s) => s.profile);
   const trip = useAppStore((s) => s.trip);
   const savedPois = useAppStore((s) => s.savedPois);
   const weather = useAppStore((s) => s.mockWeather);
 
   useEffect(() => {
-    if (!onboarded) navigate({ to: "/onboarding" });
-  }, [onboarded, navigate]);
+    if (hydrated && !onboarded) navigate({ to: "/onboarding" });
+  }, [hydrated, onboarded, navigate]);
 
   const city = (cities as any)[trip.currentCityId];
   const currentCity = trip.cities.find((c) => c.cityId === trip.currentCityId);
