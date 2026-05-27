@@ -75,10 +75,8 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
         setSignedIn(true);
         setChecking(false);
       } else {
-        if (lastUserId.current) {
-          useAppStore.getState().resetLocalToDefaults();
-          lastUserId.current = null;
-        }
+        useAppStore.getState().resetLocalToDefaults();
+        lastUserId.current = null;
         useAppStore.getState().setUserId(null);
         setSignedIn(false);
         setChecking(false);
