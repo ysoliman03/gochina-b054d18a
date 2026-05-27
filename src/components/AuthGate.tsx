@@ -2,13 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useAppStore } from "@/store/useAppStore";
-import {
-  loadAllFromCloud,
-  upsertProfile,
-  upsertActiveTrip,
-  upsertSavedPois,
-  upsertDigitalTools,
-} from "@/lib/cloudSync";
+import { loadAllFromCloud, upsertProfile } from "@/lib/cloudSync";
 
 const PUBLIC_PATHS = new Set(["/login"]);
 
