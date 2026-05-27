@@ -50,21 +50,16 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
                 currentCityId: tripRow.current_city_id ?? "BJ",
                 itinerary: tripRow.itinerary ?? {},
               }
-            : undefined,
+            : { cities: [], currentCityId: "BJ", itinerary: {} },
           savedPois: snap.saved,
           digitalTools: snap.tools,
           recentActivity: snap.activity,
         });
 
-        // First-login: if no profile/trip rows exist yet, push local defaults up.
+        // First-login: create an empty profile row so onboarded flag persists.
+        // Do NOT push local defaults (trips, saved, tools) — those belong to
+        // whoever was using this browser before this account signed in.
         if (!profileRow) await upsertProfile(userId, useAppStore.getState());
-        if (!tripRow) await upsertActiveTrip(userId, useAppStore.getState());
-        if (Object.keys(snap.tools).length === 0) {
-          await upsertDigitalTools(userId, useAppStore.getState().digitalTools);
-        }
-        if (snap.saved.length === 0 && useAppStore.getState().savedPois.length > 0) {
-          await upsertSavedPois(userId, useAppStore.getState().savedPois);
-        }
       } catch (e) {
         console.error("[AuthGate] hydrate failed", e);
       }
@@ -74,13 +69,17 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
       if (!mounted) return;
       if (session?.user) {
         const uid = session.user.id;
-        useAppStore.getState().setUserId(uid);
+        if (lastUserId.current !== uid) {
+          // Wipe any previous user's persisted state before hydrating cloud data.
+          useAppStore.getState().resetLocalToDefaults();
+          lastUserId.current = uid;
+          useAppStore.getState().setUserId(uid);
+          void hydrate(uid);
+        } else {
+          useAppStore.getState().setUserId(uid);
+        }
         setSignedIn(true);
         setChecking(false);
-        if (lastUserId.current !== uid) {
-          lastUserId.current = uid;
-          void hydrate(uid);
-        }
       } else {
         if (lastUserId.current) {
           useAppStore.getState().resetLocalToDefaults();
