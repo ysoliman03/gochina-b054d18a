@@ -139,11 +139,11 @@ export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
       onboarded: false,
-      profile: defaultProfile,
-      trip: defaultTrip,
+      profile: createDefaultProfile(),
+      trip: createDefaultTrip(),
       savedPois: [],
       recentActivity: [],
-      digitalTools: { wechat: "not_started", alipay: "not_started", didi: "not_started" },
+      digitalTools: createDefaultTools(),
       mockWeather: { condition: "rain", temp: 18, aqi: 42, description: "Rain expected tomorrow" },
       userId: null,
       cloudHydrated: false,
@@ -153,7 +153,7 @@ export const useAppStore = create<AppState>()(
       applyCloudSnapshot: (snap) =>
         set((s) => ({
           profile: snap.profile ? { ...s.profile, ...snap.profile } : s.profile,
-          onboarded: snap.profile?.onboarded ?? s.onboarded,
+          onboarded: snap.profile?.onboarded === true,
           trip: snap.trip ? { ...s.trip, ...snap.trip } : s.trip,
           savedPois: snap.savedPois ?? s.savedPois,
           digitalTools: snap.digitalTools && Object.keys(snap.digitalTools).length
@@ -166,15 +166,19 @@ export const useAppStore = create<AppState>()(
       resetLocalToDefaults: () =>
         set({
           onboarded: false,
-          profile: defaultProfile,
-          trip: defaultTrip,
+          profile: createDefaultProfile(),
+          trip: createDefaultTrip(),
           savedPois: [],
           recentActivity: [],
-          digitalTools: { wechat: "not_started", alipay: "not_started", didi: "not_started" },
+          digitalTools: createDefaultTools(),
           userId: null,
           cloudHydrated: false,
         }),
 
+      completeOnboarding: (profile) => {
+        set({ onboarded: true, profile });
+        syncWith((uid) => upsertProfile(uid, useAppStore.getState()));
+      },
       setOnboarded: (val) => {
         set({ onboarded: val });
         syncWith((uid) => upsertProfile(uid, useAppStore.getState()));
