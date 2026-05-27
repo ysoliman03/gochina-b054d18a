@@ -91,7 +91,6 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
       setChecking(false);
     };
 
-    supabase.auth.getSession().then(({ data }) => apply(data.session as any));
     supabase.auth
       .getSession()
       .then(({ data }) => {
