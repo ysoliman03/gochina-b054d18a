@@ -70,16 +70,17 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
       }
     };
 
-    const apply = async (session: { user: { id: string } } | null) => {
+    const apply = (session: { user: { id: string } } | null) => {
       if (!mounted) return;
       if (session?.user) {
         const uid = session.user.id;
         useAppStore.getState().setUserId(uid);
+        setSignedIn(true);
+        setChecking(false);
         if (lastUserId.current !== uid) {
           lastUserId.current = uid;
-          await hydrate(uid);
+          void hydrate(uid);
         }
-        setSignedIn(true);
       } else {
         if (lastUserId.current) {
           useAppStore.getState().resetLocalToDefaults();
@@ -87,8 +88,8 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
         }
         useAppStore.getState().setUserId(null);
         setSignedIn(false);
+        setChecking(false);
       }
-      setChecking(false);
     };
 
     supabase.auth
