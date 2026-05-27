@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
@@ -24,6 +25,11 @@ import { Route as GuidesDigitalRouteImport } from './routes/guides.digital'
 import { Route as GuidesAirRouteImport } from './routes/guides.air'
 import { Route as ExploreCategoryRouteImport } from './routes/explore.$category'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/explore/$category': typeof ExploreCategoryRoute
   '/guides/air': typeof GuidesAirRoute
   '/guides/digital': typeof GuidesDigitalRoute
@@ -118,6 +125,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/explore/$category': typeof ExploreCategoryRoute
   '/guides/air': typeof GuidesAirRoute
   '/guides/digital': typeof GuidesDigitalRoute
@@ -135,6 +143,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/explore/$category': typeof ExploreCategoryRoute
   '/guides/air': typeof GuidesAirRoute
   '/guides/digital': typeof GuidesDigitalRoute
@@ -153,6 +162,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/onboarding'
     | '/profile'
+    | '/sitemap.xml'
     | '/explore/$category'
     | '/guides/air'
     | '/guides/digital'
@@ -169,6 +179,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/onboarding'
     | '/profile'
+    | '/sitemap.xml'
     | '/explore/$category'
     | '/guides/air'
     | '/guides/digital'
@@ -185,6 +196,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/onboarding'
     | '/profile'
+    | '/sitemap.xml'
     | '/explore/$category'
     | '/guides/air'
     | '/guides/digital'
@@ -202,6 +214,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
   ProfileRoute: typeof ProfileRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   GuidesAirRoute: typeof GuidesAirRoute
   GuidesDigitalRoute: typeof GuidesDigitalRoute
   GuidesEtiquetteRoute: typeof GuidesEtiquetteRoute
@@ -213,6 +226,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile': {
       id: '/profile'
       path: '/profile'
@@ -332,6 +352,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
   ProfileRoute: ProfileRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   GuidesAirRoute: GuidesAirRoute,
   GuidesDigitalRoute: GuidesDigitalRoute,
   GuidesEtiquetteRoute: GuidesEtiquetteRoute,
