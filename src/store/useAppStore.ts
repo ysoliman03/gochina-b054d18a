@@ -2,6 +2,19 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { buildDayPlan, recalculateTimes, getTransitTime } from "@/engine/itineraryEngine";
 import { pois } from "@/data/pois";
+import {
+  upsertProfile,
+  upsertActiveTrip,
+  upsertSavedPois,
+  upsertDigitalTools,
+  insertActivity,
+} from "@/lib/cloudSync";
+
+function syncWith(fn: (uid: string) => Promise<unknown>) {
+  const uid = useAppStore.getState().userId;
+  if (!uid) return;
+  fn(uid).catch((e) => console.error("[cloudSync]", e));
+}
 
 function learnFromTags(currentInterests: string[], poiId: string) {
   const poi: any = (pois as any)[poiId];
@@ -72,6 +85,17 @@ interface AppState {
   recentActivity: any[];
   digitalTools: Record<string, string>;
   mockWeather: { condition: string; temp: number; aqi: number; description: string };
+  userId: string | null;
+  cloudHydrated: boolean;
+  setUserId: (id: string | null) => void;
+  applyCloudSnapshot: (snap: {
+    profile?: Partial<typeof defaultProfile> & { onboarded?: boolean };
+    trip?: Partial<typeof defaultTrip>;
+    savedPois?: string[];
+    digitalTools?: Record<string, string>;
+    recentActivity?: any[];
+  }) => void;
+  resetLocalToDefaults: () => void;
   setOnboarded: (v: boolean) => void;
   updateProfile: (u: Partial<typeof defaultProfile>) => void;
   updateTrip: (u: Partial<typeof defaultTrip>) => void;
@@ -96,12 +120,52 @@ export const useAppStore = create<AppState>()(
       recentActivity: [],
       digitalTools: { wechat: "not_started", alipay: "not_started", didi: "not_started" },
       mockWeather: { condition: "rain", temp: 18, aqi: 42, description: "Rain expected tomorrow" },
+      userId: null,
+      cloudHydrated: false,
 
-      setOnboarded: (val) => set({ onboarded: val }),
-      updateProfile: (updates) => set((s) => ({ profile: { ...s.profile, ...updates } })),
-      updateTrip: (updates) => set((s) => ({ trip: { ...s.trip, ...updates } })),
-      setItinerary: (cityId, days) =>
-        set((s) => ({ trip: { ...s.trip, itinerary: { ...s.trip.itinerary, [cityId]: days } } })),
+      setUserId: (id) => set({ userId: id }),
+
+      applyCloudSnapshot: (snap) =>
+        set((s) => ({
+          profile: snap.profile ? { ...s.profile, ...snap.profile } : s.profile,
+          onboarded: snap.profile?.onboarded ?? s.onboarded,
+          trip: snap.trip ? { ...s.trip, ...snap.trip } : s.trip,
+          savedPois: snap.savedPois ?? s.savedPois,
+          digitalTools: snap.digitalTools && Object.keys(snap.digitalTools).length
+            ? { ...s.digitalTools, ...snap.digitalTools }
+            : s.digitalTools,
+          recentActivity: snap.recentActivity ?? s.recentActivity,
+          cloudHydrated: true,
+        })),
+
+      resetLocalToDefaults: () =>
+        set({
+          onboarded: false,
+          profile: defaultProfile,
+          trip: defaultTrip,
+          savedPois: [],
+          recentActivity: [],
+          digitalTools: { wechat: "not_started", alipay: "not_started", didi: "not_started" },
+          userId: null,
+          cloudHydrated: false,
+        }),
+
+      setOnboarded: (val) => {
+        set({ onboarded: val });
+        syncWith((uid) => upsertProfile(uid, useAppStore.getState()));
+      },
+      updateProfile: (updates) => {
+        set((s) => ({ profile: { ...s.profile, ...updates } }));
+        syncWith((uid) => upsertProfile(uid, useAppStore.getState()));
+      },
+      updateTrip: (updates) => {
+        set((s) => ({ trip: { ...s.trip, ...updates } }));
+        syncWith((uid) => upsertActiveTrip(uid, useAppStore.getState()));
+      },
+      setItinerary: (cityId, days) => {
+        set((s) => ({ trip: { ...s.trip, itinerary: { ...s.trip.itinerary, [cityId]: days } } }));
+        syncWith((uid) => upsertActiveTrip(uid, useAppStore.getState()));
+      },
 
       removePOIFromDay: (cityId, dayIndex, poiId) =>
         set((s) => {
@@ -172,7 +236,7 @@ export const useAppStore = create<AppState>()(
           return { trip: { ...s.trip, itinerary: { ...s.trip.itinerary, [cityId]: days } } };
         }),
 
-      toggleSavePoi: (poiId, name) =>
+      toggleSavePoi: (poiId, name) => {
         set((s) => {
           const saved = s.savedPois.includes(poiId);
           const activity = saved
@@ -184,14 +248,35 @@ export const useAppStore = create<AppState>()(
             recentActivity: activity,
             profile: { ...s.profile, interests: updatedInterests },
           };
-        }),
+        });
+        const st = useAppStore.getState();
+        syncWith((uid) => upsertSavedPois(uid, st.savedPois));
+        if (st.savedPois.includes(poiId)) {
+          syncWith((uid) => insertActivity(uid, { type: "save", text: `Saved: ${name}` }));
+        }
+      },
 
-      addActivity: (item) =>
-        set((s) => ({ recentActivity: [item, ...s.recentActivity.slice(0, 9)] })),
-      updateDigitalTool: (tool, status) =>
-        set((s) => ({ digitalTools: { ...s.digitalTools, [tool]: status } })),
+      addActivity: (item) => {
+        set((s) => ({ recentActivity: [item, ...s.recentActivity.slice(0, 9)] }));
+        syncWith((uid) => insertActivity(uid, item));
+      },
+      updateDigitalTool: (tool, status) => {
+        set((s) => ({ digitalTools: { ...s.digitalTools, [tool]: status } }));
+        syncWith((uid) => upsertDigitalTools(uid, useAppStore.getState().digitalTools));
+      },
       getInsights: () => deriveInsights(get().profile),
     }),
-    { name: "gochina-store" },
+    {
+      name: "gochina-store",
+      partialize: (state) => ({
+        // never persist auth across users
+        onboarded: state.onboarded,
+        profile: state.profile,
+        trip: state.trip,
+        savedPois: state.savedPois,
+        recentActivity: state.recentActivity,
+        digitalTools: state.digitalTools,
+      }),
+    },
   ),
 );
