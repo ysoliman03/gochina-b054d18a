@@ -6,9 +6,17 @@ import { cities } from "@/data/cities";
 import { buildDayPlan, minutesToTime } from "@/engine/itineraryEngine";
 import { Clock, MapPin, RefreshCw, Trash2, Sparkles, Wand2 } from "lucide-react";
 import { ItineraryBuilderSheet } from "@/components/ItineraryBuilderSheet";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/itinerary")({
   component: Itinerary,
+  head: () =>
+    pageHead({
+      path: "/itinerary",
+      title: "Your China Itinerary | GoChina",
+      description:
+        "View and edit your day-by-day China itinerary — re-plan days, remove stops, and let the AI builder optimize your trip.",
+    }),
 });
 
 function Itinerary() {
@@ -119,6 +127,7 @@ function Itinerary() {
                 </div>
                 <button
                   onClick={() => removePOIFromDay(activeCity, activeDay, stop.id)}
+                  aria-label={`Remove ${stop.name} from day ${activeDay + 1}`}
                   className="text-muted-foreground hover:text-destructive"
                 >
                   <Trash2 className="w-4 h-4" />

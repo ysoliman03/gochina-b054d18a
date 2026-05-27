@@ -51,11 +51,13 @@ function Onboarding() {
           <input
             className="w-full rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-primary"
             placeholder="Your name"
+            aria-label="Your name"
             value={draft.name}
             onChange={(e) => setDraft({ ...draft, name: e.target.value })}
           />
           <div className="relative">
             <select
+              aria-label="Nationality"
               className={`w-full appearance-none rounded-xl border border-border bg-card px-4 py-3 pr-10 outline-none focus:border-primary ${draft.nationality ? "text-foreground" : "text-muted-foreground"}`}
               value={draft.nationality}
               onChange={(e) => setDraft({ ...draft, nationality: e.target.value })}

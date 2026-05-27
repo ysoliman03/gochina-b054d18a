@@ -3,9 +3,16 @@ import { MobileShell } from "@/components/MobileShell";
 import { useAppStore } from "@/store/useAppStore";
 import { pois } from "@/data/pois";
 import { ArrowLeft, Bookmark, MapPin } from "lucide-react";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/explore/$category")({
   component: ExploreCategory,
+  head: ({ params }) =>
+    pageHead({
+      path: `/explore/${params.category}`,
+      title: `${params.category.charAt(0).toUpperCase() + params.category.slice(1)} in China | GoChina`,
+      description: `Browse curated ${params.category} picks across China's top cities, with addresses, tags, and one-tap saving to your trip.`,
+    }),
 });
 
 function ExploreCategory() {
@@ -23,12 +30,13 @@ function ExploreCategory() {
   return (
     <MobileShell>
       <header className="px-5 pt-8 pb-4 flex items-center gap-3">
-        <Link to="/explore" className="p-2 rounded-full bg-card border border-border">
+        <Link to="/explore" aria-label="Back to explore" className="p-2 rounded-full bg-card border border-border">
           <ArrowLeft className="w-4 h-4" />
         </Link>
         <h1 className="text-2xl font-bold text-foreground capitalize">{category}</h1>
       </header>
-      <section className="px-5 space-y-3">
+      <section className="px-5 space-y-3" aria-labelledby="results-heading">
+        <h2 id="results-heading" className="sr-only">Results</h2>
         {items.length === 0 && (
           <p className="text-sm text-muted-foreground">No places in this category yet.</p>
         )}
@@ -44,6 +52,7 @@ function ExploreCategory() {
                   <h3 className="font-semibold text-foreground">{p.name}</h3>
                   <button
                     onClick={() => toggleSavePoi(p.id, p.name)}
+                    aria-label={saved ? `Remove ${p.name} from saved` : `Save ${p.name}`}
                     className={saved ? "text-primary" : "text-muted-foreground"}
                   >
                     <Bookmark className="w-4 h-4" fill={saved ? "currentColor" : "none"} />

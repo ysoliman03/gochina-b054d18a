@@ -8,9 +8,17 @@ import { ArrowRight, Heart, Plus, X, ChevronDown, ArrowUpRight, Lightbulb } from
 import { useMemo, useState } from "react";
 import { dishes as allDishes, type Dish } from "@/data/dishes";
 import { AlertTriangle } from "lucide-react";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/explore")({
   component: Explore,
+  head: () =>
+    pageHead({
+      path: "/explore",
+      title: "Explore China — Attractions, Food & Experiences | GoChina",
+      description:
+        "Discover attractions, restaurants, and experiences across China's top cities, filtered to your dietary preferences and travel interests.",
+    }),
 });
 
 const FILTERS = [
@@ -285,7 +293,8 @@ function Explore() {
         />
       </div>
 
-      <section className="pl-5 pb-5">
+      <section className="pl-5 pb-5" aria-labelledby="top-picks-heading">
+        <h2 id="top-picks-heading" className="sr-only">Top picks</h2>
         <div className="flex gap-3 overflow-x-auto no-scrollbar pr-5 snap-x snap-mandatory">
           {filtered.map((p: any) => {
             const saved = savedPois.includes(p.id);
