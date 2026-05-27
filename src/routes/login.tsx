@@ -4,9 +4,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
+  head: () =>
+    pageHead({
+      path: "/login",
+      title: "Sign In | GoChina",
+      description: "Sign in or create a GoChina account to save your trip, preferences, and itinerary in sync across devices.",
+    }),
 });
 
 function LoginPage() {

@@ -1,9 +1,29 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MobileShell } from "@/components/MobileShell";
 import { GuideHeader } from "@/components/GuideHeader";
+import { pageHead, articleJsonLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/guides/food")({
   component: FoodGuide,
+  head: () => {
+    const base = pageHead({
+      path: "/guides/food",
+      title: "China Food Guide — Phrases, Dishes & Dietary Tips | GoChina",
+      description:
+        "Order with confidence: essential Mandarin food phrases, regional dishes, and dietary guidance for travelers in China.",
+      type: "article",
+    });
+    return {
+      ...base,
+      scripts: [
+        articleJsonLd(
+          "China Food Guide",
+          "Mandarin food phrases, regional dishes, and dietary guidance for travelers.",
+          "/guides/food",
+        ),
+      ],
+    };
+  },
 });
 
 const PHRASES = [

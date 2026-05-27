@@ -4,9 +4,29 @@ import { GuideHeader } from "@/components/GuideHeader";
 import { useAppStore } from "@/store/useAppStore";
 import { Check, Circle, Clock } from "lucide-react";
 import type { ReactNode } from "react";
+import { pageHead, articleJsonLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/guides/setup")({
   component: SetupGuide,
+  head: () => {
+    const base = pageHead({
+      path: "/guides/setup",
+      title: "China Trip Setup Checklist | GoChina",
+      description:
+        "Step-by-step pre-departure checklist for China: visa, apps, payments, eSIM, and VPN — track your progress.",
+      type: "article",
+    });
+    return {
+      ...base,
+      scripts: [
+        articleJsonLd(
+          "China Trip Setup Checklist",
+          "Pre-departure checklist for China travelers.",
+          "/guides/setup",
+        ),
+      ],
+    };
+  },
 });
 
 const PHASES = [

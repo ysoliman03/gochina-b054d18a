@@ -3,9 +3,16 @@ import { useState } from "react";
 import { useAppStore } from "@/store/useAppStore";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { COUNTRIES } from "@/data/countries";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/onboarding")({
   component: Onboarding,
+  head: () =>
+    pageHead({
+      path: "/onboarding",
+      title: "Get Started | GoChina",
+      description: "Tell us about your travel style so GoChina can tailor your China itinerary, food picks, and pace.",
+    }),
 });
 
 const CUISINES = ["Spicy", "Street Food", "Vegetarian-friendly", "Seafood", "Noodles", "Dim Sum"];

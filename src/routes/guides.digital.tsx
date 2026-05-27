@@ -2,9 +2,29 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { MobileShell } from "@/components/MobileShell";
 import { GuideHeader } from "@/components/GuideHeader";
+import { pageHead, articleJsonLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/guides/digital")({
   component: DigitalTools,
+  head: () => {
+    const base = pageHead({
+      path: "/guides/digital",
+      title: "Essential Digital Tools for China Travel | GoChina",
+      description:
+        "Set up WeChat, Alipay, DiDi, eSIMs, and VPNs before you fly to China — step-by-step guidance for travelers.",
+      type: "article",
+    });
+    return {
+      ...base,
+      scripts: [
+        articleJsonLd(
+          "Essential Digital Tools for China Travel",
+          "Set up WeChat, Alipay, DiDi, eSIMs, and VPNs before flying to China.",
+          "/guides/digital",
+        ),
+      ],
+    };
+  },
 });
 
 function DigitalTools() {
