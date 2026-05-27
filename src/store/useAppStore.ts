@@ -54,33 +54,54 @@ function deriveInsights(profile: any) {
     : [{ icon: "🧭", label: "Explorer", desc: "Your travel style is taking shape. Keep using the app to unlock personalized insights." }];
 }
 
-const defaultProfile = {
+type ProfileState = {
+  name: string;
+  nationality: string;
+  avatar: string | null;
+  groupType: string;
+  pace: string;
+  budget: string;
+  cuisine: string[];
+  interests: string[];
+  dietaryRestrictions: string[];
+  hasInternationalCard: boolean;
+  mobility: string;
+};
+
+type TripCity = { cityId: string; startDate: string; endDate: string; days: number };
+
+type TripState = {
+  cities: TripCity[];
+  currentCityId: string;
+  itinerary: Record<string, any[]>;
+};
+
+const createDefaultProfile = (): ProfileState => ({
   name: "",
   nationality: "",
-  avatar: null as string | null,
+  avatar: null,
   groupType: "couple",
   pace: "moderate",
   budget: "mid",
-  cuisine: ["Spicy", "Street Food"] as string[],
-  interests: ["historical", "food", "nightlife"] as string[],
-  dietaryRestrictions: [] as string[],
+  cuisine: [],
+  interests: [],
+  dietaryRestrictions: [],
   hasInternationalCard: true,
   mobility: "normal",
-};
+});
 
-const defaultTrip = {
-  cities: [
-    { cityId: "BJ", startDate: "2025-10-12", endDate: "2025-10-18", days: 6 },
-    { cityId: "CQ", startDate: "2025-10-18", endDate: "2025-10-22", days: 4 },
-  ],
+const createDefaultTrip = (): TripState => ({
+  cities: [],
   currentCityId: "BJ",
-  itinerary: {} as Record<string, any[]>,
-};
+  itinerary: {},
+});
+
+const createDefaultTools = () => ({ wechat: "not_started", alipay: "not_started", didi: "not_started" });
 
 interface AppState {
   onboarded: boolean;
-  profile: typeof defaultProfile;
-  trip: typeof defaultTrip;
+  profile: ProfileState;
+  trip: TripState;
   savedPois: string[];
   recentActivity: any[];
   digitalTools: Record<string, string>;
@@ -89,16 +110,17 @@ interface AppState {
   cloudHydrated: boolean;
   setUserId: (id: string | null) => void;
   applyCloudSnapshot: (snap: {
-    profile?: Partial<typeof defaultProfile> & { onboarded?: boolean };
-    trip?: Partial<typeof defaultTrip>;
+    profile?: Partial<ProfileState> & { onboarded?: boolean | null };
+    trip?: Partial<TripState>;
     savedPois?: string[];
     digitalTools?: Record<string, string>;
     recentActivity?: any[];
   }) => void;
   resetLocalToDefaults: () => void;
   setOnboarded: (v: boolean) => void;
-  updateProfile: (u: Partial<typeof defaultProfile>) => void;
-  updateTrip: (u: Partial<typeof defaultTrip>) => void;
+  completeOnboarding: (profile: ProfileState) => void;
+  updateProfile: (u: Partial<ProfileState>) => void;
+  updateTrip: (u: Partial<TripState>) => void;
   setItinerary: (cityId: string, days: any[]) => void;
   removePOIFromDay: (cityId: string, dayIndex: number, poiId: string) => void;
   addPOIToDay: (cityId: string, dayIndex: number, poi: any) => void;
@@ -114,11 +136,11 @@ export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
       onboarded: false,
-      profile: defaultProfile,
-      trip: defaultTrip,
+      profile: createDefaultProfile(),
+      trip: createDefaultTrip(),
       savedPois: [],
       recentActivity: [],
-      digitalTools: { wechat: "not_started", alipay: "not_started", didi: "not_started" },
+      digitalTools: createDefaultTools(),
       mockWeather: { condition: "rain", temp: 18, aqi: 42, description: "Rain expected tomorrow" },
       userId: null,
       cloudHydrated: false,
@@ -128,7 +150,7 @@ export const useAppStore = create<AppState>()(
       applyCloudSnapshot: (snap) =>
         set((s) => ({
           profile: snap.profile ? { ...s.profile, ...snap.profile } : s.profile,
-          onboarded: snap.profile?.onboarded ?? s.onboarded,
+          onboarded: snap.profile?.onboarded === true,
           trip: snap.trip ? { ...s.trip, ...snap.trip } : s.trip,
           savedPois: snap.savedPois ?? s.savedPois,
           digitalTools: snap.digitalTools && Object.keys(snap.digitalTools).length
@@ -141,15 +163,19 @@ export const useAppStore = create<AppState>()(
       resetLocalToDefaults: () =>
         set({
           onboarded: false,
-          profile: defaultProfile,
-          trip: defaultTrip,
+          profile: createDefaultProfile(),
+          trip: createDefaultTrip(),
           savedPois: [],
           recentActivity: [],
-          digitalTools: { wechat: "not_started", alipay: "not_started", didi: "not_started" },
+          digitalTools: createDefaultTools(),
           userId: null,
           cloudHydrated: false,
         }),
 
+      completeOnboarding: (profile) => {
+        set({ onboarded: true, profile });
+        syncWith((uid) => upsertProfile(uid, useAppStore.getState()));
+      },
       setOnboarded: (val) => {
         set({ onboarded: val });
         syncWith((uid) => upsertProfile(uid, useAppStore.getState()));

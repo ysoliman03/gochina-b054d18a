@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { MobileShell } from "@/components/MobileShell";
 import { useAppStore } from "@/store/useAppStore";
 import { cities } from "@/data/cities";
@@ -22,20 +22,17 @@ export const Route = createFileRoute("/")({
 function Home() {
   const navigate = useNavigate();
   const onboarded = useAppStore((s) => s.onboarded);
-  const [hydrated, setHydrated] = useState(false);
-  useEffect(() => {
-    setHydrated(useAppStore.persist.hasHydrated());
-    const unsub = useAppStore.persist.onFinishHydration(() => setHydrated(true));
-    return () => unsub();
-  }, []);
+  const cloudHydrated = useAppStore((s) => s.cloudHydrated);
   const profile = useAppStore((s) => s.profile);
   const trip = useAppStore((s) => s.trip);
   const savedPois = useAppStore((s) => s.savedPois);
   const weather = useAppStore((s) => s.mockWeather);
 
   useEffect(() => {
-    if (hydrated && !onboarded) navigate({ to: "/onboarding" });
-  }, [hydrated, onboarded, navigate]);
+    if (cloudHydrated && !onboarded) navigate({ to: "/onboarding" });
+  }, [cloudHydrated, onboarded, navigate]);
+
+  if (!cloudHydrated || !onboarded) return null;
 
   const city = (cities as any)[trip.currentCityId];
   const currentCity = trip.cities.find((c) => c.cityId === trip.currentCityId);
@@ -54,8 +51,10 @@ function Home() {
         <p className="text-sm text-muted-foreground">
           Welcome back{profile.name ? `, ${profile.name}` : ""}
         </p>
-        <h1 className="text-3xl font-bold text-foreground mt-1">{city?.name ?? "Your trip"}</h1>
-        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{city?.intro}</p>
+        <h1 className="text-3xl font-bold text-foreground mt-1">{city?.name ?? "Your trips"}</h1>
+        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+          {city?.intro ?? "Create your first itinerary when you're ready to start planning."}
+        </p>
       </header>
 
       <section className="mx-5 mb-4 rounded-2xl bg-card border border-border p-4 flex items-center gap-3">

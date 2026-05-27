@@ -64,21 +64,24 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
       if (session?.user) {
         const uid = session.user.id;
         if (lastUserId.current !== uid) {
+          setChecking(true);
           // Wipe any previous user's persisted state before hydrating cloud data.
           useAppStore.getState().resetLocalToDefaults();
           lastUserId.current = uid;
           useAppStore.getState().setUserId(uid);
-          void hydrate(uid);
+          setSignedIn(true);
+          void hydrate(uid).finally(() => {
+            if (mounted && lastUserId.current === uid) setChecking(false);
+          });
+          return;
         } else {
           useAppStore.getState().setUserId(uid);
         }
         setSignedIn(true);
         setChecking(false);
       } else {
-        if (lastUserId.current) {
-          useAppStore.getState().resetLocalToDefaults();
-          lastUserId.current = null;
-        }
+        useAppStore.getState().resetLocalToDefaults();
+        lastUserId.current = null;
         useAppStore.getState().setUserId(null);
         setSignedIn(false);
         setChecking(false);
