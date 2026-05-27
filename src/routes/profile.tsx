@@ -3,6 +3,8 @@ import { MobileShell } from "@/components/MobileShell";
 import { useAppStore } from "@/store/useAppStore";
 import { pois } from "@/data/pois";
 import { Bookmark, LogOut, Settings, Trash2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/profile")({
   component: Profile,
@@ -16,6 +18,12 @@ function Profile() {
   const toggleSavePoi = useAppStore((s) => s.toggleSavePoi);
   const setOnboarded = useAppStore((s) => s.setOnboarded);
   const insights = useAppStore((s) => s.getInsights)();
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    toast.success("Signed out");
+    navigate({ to: "/login" });
+  };
 
   return (
     <MobileShell>
@@ -89,13 +97,19 @@ function Profile() {
 
       <section className="px-5 pb-8">
         <button
+          onClick={signOut}
+          className="w-full rounded-xl bg-card border border-border py-3 text-sm font-medium text-foreground flex items-center justify-center gap-2 mb-3"
+        >
+          <LogOut className="w-4 h-4" /> Sign out
+        </button>
+        <button
           onClick={() => {
             setOnboarded(false);
             navigate({ to: "/onboarding" });
           }}
-          className="w-full rounded-xl border border-border bg-card py-3 text-sm font-medium text-foreground flex items-center justify-center gap-2"
+          className="w-full rounded-xl border border-border bg-card py-3 text-sm font-medium text-muted-foreground flex items-center justify-center gap-2"
         >
-          <LogOut className="w-4 h-4" /> Restart onboarding
+          Restart onboarding
         </button>
       </section>
     </MobileShell>
