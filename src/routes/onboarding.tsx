@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppStore } from "@/store/useAppStore";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { COUNTRIES } from "@/data/countries";
@@ -37,11 +37,16 @@ const DIET = [
 
 function Onboarding() {
   const navigate = useNavigate();
-  const setOnboarded = useAppStore((s) => s.setOnboarded);
-  const updateProfile = useAppStore((s) => s.updateProfile);
+  const onboarded = useAppStore((s) => s.onboarded);
+  const cloudHydrated = useAppStore((s) => s.cloudHydrated);
+  const completeOnboarding = useAppStore((s) => s.completeOnboarding);
   const profile = useAppStore((s) => s.profile);
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState(profile);
+
+  useEffect(() => {
+    if (cloudHydrated && onboarded) navigate({ to: "/" });
+  }, [cloudHydrated, onboarded, navigate]);
 
   const toggleArr = (key: "cuisine" | "interests" | "dietaryRestrictions", value: string) => {
     setDraft((d) => {
@@ -178,8 +183,7 @@ function Onboarding() {
   ];
 
   const finish = () => {
-    updateProfile(draft);
-    setOnboarded(true);
+    completeOnboarding(draft);
     navigate({ to: "/" });
   };
 
