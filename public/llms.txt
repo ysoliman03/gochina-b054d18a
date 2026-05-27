@@ -1,0 +1,18 @@
+# GoChina
+
+> Personal China travel planner with day-by-day itineraries and on-the-ground guides for travelers.
+
+GoChina helps visitors discover cities, build itineraries that match their pace and dietary preferences, and prepare for travel in China with practical guides for visas, transit, food, etiquette, air quality, and digital tools (WeChat, Alipay, DiDi, eSIM, VPN).
+
+## Pages
+- [Home](/): Overview, recommended places, and current trip summary.
+- [Explore](/explore): Browse attractions, restaurants, and experiences in the current city.
+
+## Guides
+- [Visa Guide](/guides/visa): 144h visa-free transit eligibility and E-Visa application.
+- [Transit Guide](/guides/transit): Metro, high-speed rail, taxis, and DiDi.
+- [Food Guide](/guides/food): Mandarin food phrases, regional dishes, dietary tips.
+- [Cultural Etiquette](/guides/etiquette): Dining, greetings, and public-space etiquette.
+- [Air Quality](/guides/air): AQI explained, with city forecasts and mask guidance.
+- [Digital Tools](/guides/digital): WeChat, Alipay, DiDi, eSIM, and VPN setup.
+- [Setup Checklist](/guides/setup): Pre-departure checklist for China travelers.

@@ -5,9 +5,17 @@ import { pois } from "@/data/pois";
 import { Bookmark, LogOut, Settings, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/profile")({
   component: Profile,
+  head: () =>
+    pageHead({
+      path: "/profile",
+      title: "Your Profile | GoChina",
+      description:
+        "Manage your travel preferences, saved places, and trip insights on GoChina.",
+    }),
 });
 
 function Profile() {
@@ -35,7 +43,7 @@ function Profile() {
           <h1 className="text-xl font-bold text-foreground">{profile.name || "Guest"}</h1>
           <p className="text-sm text-muted-foreground">{profile.nationality || "Traveller"} · {profile.groupType}</p>
         </div>
-        <button className="p-2 text-muted-foreground">
+        <button aria-label="Settings" className="p-2 text-muted-foreground">
           <Settings className="w-5 h-5" />
         </button>
       </header>
@@ -72,7 +80,7 @@ function Profile() {
                   <p className="text-sm font-semibold text-foreground">{p.name}</p>
                   <p className="text-xs text-muted-foreground">{p.district}</p>
                 </div>
-                <button onClick={() => toggleSavePoi(id, p.name)} className="text-muted-foreground hover:text-destructive">
+                <button onClick={() => toggleSavePoi(id, p.name)} aria-label={`Remove ${p.name} from saved`} className="text-muted-foreground hover:text-destructive">
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>

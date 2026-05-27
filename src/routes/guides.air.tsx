@@ -3,9 +3,29 @@ import { MobileShell } from "@/components/MobileShell";
 import { GuideHeader } from "@/components/GuideHeader";
 import { useAppStore } from "@/store/useAppStore";
 import { cities } from "@/data/cities";
+import { pageHead, articleJsonLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/guides/air")({
   component: AirQuality,
+  head: () => {
+    const base = pageHead({
+      path: "/guides/air",
+      title: "China Air Quality Guide — AQI by City | GoChina",
+      description:
+        "Understand AQI levels in Beijing, Shanghai, and other Chinese cities, plus mask and activity tips for travelers.",
+      type: "article",
+    });
+    return {
+      ...base,
+      scripts: [
+        articleJsonLd(
+          "China Air Quality Guide",
+          "AQI explained for travelers, with city forecasts and mask guidance.",
+          "/guides/air",
+        ),
+      ],
+    };
+  },
 });
 
 function aqiBand(aqi: number) {

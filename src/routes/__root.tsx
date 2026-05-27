@@ -74,23 +74,38 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "GoChina" },
-      { name: "description", content: "Pixel Perfect is a travel app that helps users discover and plan trips based on their dietary preferences and interests." },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "GoChina" },
-      { property: "og:description", content: "Pixel Perfect is a travel app that helps users discover and plan trips based on their dietary preferences and interests." },
+      { title: "GoChina — Personal China Travel Planner" },
+      { name: "description", content: "GoChina helps travelers discover cities, plan day-by-day itineraries, and navigate China with guides on visas, transit, food, and digital tools." },
+      { property: "og:site_name", content: "GoChina" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "GoChina" },
-      { name: "twitter:description", content: "Pixel Perfect is a travel app that helps users discover and plan trips based on their dietary preferences and interests." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/fe1820ef-f7ad-4a28-b28d-8f8b4a60b960/id-preview-aab106ec--9f6b9cb4-5445-4597-912c-dec32cb037e3.lovable.app-1779435771201.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/fe1820ef-f7ad-4a28-b28d-8f8b4a60b960/id-preview-aab106ec--9f6b9cb4-5445-4597-912c-dec32cb037e3.lovable.app-1779435771201.png" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "GoChina",
+          url: "https://gochina.lovable.app",
+          description:
+            "Personal China travel planner with itineraries, guides, and on-the-ground tools.",
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "GoChina",
+          url: "https://gochina.lovable.app",
+        }),
       },
     ],
   }),

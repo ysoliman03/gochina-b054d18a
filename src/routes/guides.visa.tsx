@@ -4,9 +4,30 @@ import { MobileShell } from "@/components/MobileShell";
 import { GuideHeader } from "@/components/GuideHeader";
 import { useAppStore } from "@/store/useAppStore";
 import { COUNTRIES } from "@/data/countries";
+import { pageHead } from "@/lib/seo";
+import { articleJsonLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/guides/visa")({
   component: Visa,
+  head: () => {
+    const base = pageHead({
+      path: "/guides/visa",
+      title: "China Visa Guide — 144h Visa-Free & E-Visa | GoChina",
+      description:
+        "Check whether your passport qualifies for 144-hour visa-free transit and learn how to apply for an E-Visa (L visa) to China.",
+      type: "article",
+    });
+    return {
+      ...base,
+      scripts: [
+        articleJsonLd(
+          "China Visa Guide — 144h Visa-Free & E-Visa",
+          "Check whether your passport qualifies for 144-hour visa-free transit and learn how to apply for an E-Visa to China.",
+          "/guides/visa",
+        ),
+      ],
+    };
+  },
 });
 
 const VISA_FREE_144 = new Set([
@@ -35,6 +56,7 @@ function Visa() {
           <h2 className="font-bold text-foreground mb-3">Check Your Eligibility</h2>
           <div className="relative">
             <select
+              aria-label="Your nationality"
               value={nationality}
               onChange={(e) => updateProfile({ nationality: e.target.value })}
               className={

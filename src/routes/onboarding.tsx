@@ -3,9 +3,16 @@ import { useState } from "react";
 import { useAppStore } from "@/store/useAppStore";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { COUNTRIES } from "@/data/countries";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/onboarding")({
   component: Onboarding,
+  head: () =>
+    pageHead({
+      path: "/onboarding",
+      title: "Get Started | GoChina",
+      description: "Tell us about your travel style so GoChina can tailor your China itinerary, food picks, and pace.",
+    }),
 });
 
 const CUISINES = ["Spicy", "Street Food", "Vegetarian-friendly", "Seafood", "Noodles", "Dim Sum"];
@@ -51,11 +58,13 @@ function Onboarding() {
           <input
             className="w-full rounded-xl border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-primary"
             placeholder="Your name"
+            aria-label="Your name"
             value={draft.name}
             onChange={(e) => setDraft({ ...draft, name: e.target.value })}
           />
           <div className="relative">
             <select
+              aria-label="Nationality"
               className={`w-full appearance-none rounded-xl border border-border bg-card px-4 py-3 pr-10 outline-none focus:border-primary ${draft.nationality ? "text-foreground" : "text-muted-foreground"}`}
               value={draft.nationality}
               onChange={(e) => setDraft({ ...draft, nationality: e.target.value })}

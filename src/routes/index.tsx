@@ -6,9 +6,17 @@ import { cities } from "@/data/cities";
 import { pois } from "@/data/pois";
 import { getActiveConstraints } from "@/engine/constraintEngine";
 import { CloudRain, AlertTriangle, MapPin, Sparkles, ArrowRight } from "lucide-react";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   component: Home,
+  head: () =>
+    pageHead({
+      path: "/",
+      title: "GoChina — Plan Your China Trip",
+      description:
+        "Your personal China travel planner. Build a day-by-day itinerary, save places, and get local guidance for visas, transit, and food.",
+    }),
 });
 
 function Home() {

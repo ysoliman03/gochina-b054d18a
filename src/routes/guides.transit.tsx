@@ -2,9 +2,29 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
 import { MobileShell } from "@/components/MobileShell";
 import { GuideHeader } from "@/components/GuideHeader";
+import { pageHead, articleJsonLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/guides/transit")({
   component: Transit,
+  head: () => {
+    const base = pageHead({
+      path: "/guides/transit",
+      title: "China Transit Guide — Metro, Rail & Taxis | GoChina",
+      description:
+        "Navigate China's metros, high-speed rail, taxis, and DiDi with step-by-step ticketing and payment instructions.",
+      type: "article",
+    });
+    return {
+      ...base,
+      scripts: [
+        articleJsonLd(
+          "China Transit Guide",
+          "Metro, high-speed rail, taxi, and DiDi guidance for China travelers.",
+          "/guides/transit",
+        ),
+      ],
+    };
+  },
 });
 
 const METRO_STEPS = [

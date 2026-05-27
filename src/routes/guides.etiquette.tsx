@@ -1,9 +1,29 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MobileShell } from "@/components/MobileShell";
 import { GuideHeader } from "@/components/GuideHeader";
+import { pageHead, articleJsonLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/guides/etiquette")({
   component: Etiquette,
+  head: () => {
+    const base = pageHead({
+      path: "/guides/etiquette",
+      title: "China Cultural Etiquette Guide | GoChina",
+      description:
+        "Avoid awkward moments in China — dining, greetings, gift-giving, and public-space etiquette explained for travelers.",
+      type: "article",
+    });
+    return {
+      ...base,
+      scripts: [
+        articleJsonLd(
+          "China Cultural Etiquette Guide",
+          "Dining, greetings, and public-space etiquette explained for travelers.",
+          "/guides/etiquette",
+        ),
+      ],
+    };
+  },
 });
 
 const SECTIONS = [
