@@ -21,9 +21,7 @@ export const Route = createFileRoute("/itinerary")({
 
 function Itinerary() {
   const trip = useAppStore((s) => s.trip);
-  const profile = useAppStore((s) => s.profile);
   const [builderOpen, setBuilderOpen] = useState(false);
-  const setItinerary = useAppStore((s) => s.setItinerary);
   const removePOIFromDay = useAppStore((s) => s.removePOIFromDay);
   const replanDay = useAppStore((s) => s.replanDay);
   const updateTrip = useAppStore((s) => s.updateTrip);
@@ -31,7 +29,6 @@ function Itinerary() {
   const [activeCity, setActiveCity] = useState(trip.currentCityId);
   const [activeDay, setActiveDay] = useState(0);
 
-  const cityTrip = trip.cities.find((c) => c.cityId === activeCity);
   const days = trip.itinerary[activeCity] || [];
   const hasTrips = trip.cities.length > 0;
 
