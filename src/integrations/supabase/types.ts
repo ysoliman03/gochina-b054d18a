@@ -14,7 +14,174 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      activity_log: {
+        Row: {
+          created_at: string
+          id: string
+          meta: Json | null
+          text: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          meta?: Json | null
+          text: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          meta?: Json | null
+          text?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      digital_tools: {
+        Row: {
+          status: string
+          tool: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          status?: string
+          tool: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          status?: string
+          tool?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          budget: string | null
+          created_at: string
+          cuisine: string[] | null
+          dietary_restrictions: string[] | null
+          email: string | null
+          extra: Json | null
+          group_type: string | null
+          has_international_card: boolean | null
+          id: string
+          interests: string[] | null
+          mobility: string | null
+          name: string | null
+          nationality: string | null
+          onboarded: boolean | null
+          pace: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          budget?: string | null
+          created_at?: string
+          cuisine?: string[] | null
+          dietary_restrictions?: string[] | null
+          email?: string | null
+          extra?: Json | null
+          group_type?: string | null
+          has_international_card?: boolean | null
+          id: string
+          interests?: string[] | null
+          mobility?: string | null
+          name?: string | null
+          nationality?: string | null
+          onboarded?: boolean | null
+          pace?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          budget?: string | null
+          created_at?: string
+          cuisine?: string[] | null
+          dietary_restrictions?: string[] | null
+          email?: string | null
+          extra?: Json | null
+          group_type?: string | null
+          has_international_card?: boolean | null
+          id?: string
+          interests?: string[] | null
+          mobility?: string | null
+          name?: string | null
+          nationality?: string | null
+          onboarded?: boolean | null
+          pace?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      saved_pois: {
+        Row: {
+          name: string | null
+          poi_id: string
+          saved_at: string
+          user_id: string
+        }
+        Insert: {
+          name?: string | null
+          poi_id: string
+          saved_at?: string
+          user_id: string
+        }
+        Update: {
+          name?: string | null
+          poi_id?: string
+          saved_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      trips: {
+        Row: {
+          archived_at: string | null
+          cities: Json
+          created_at: string
+          current_city_id: string | null
+          id: string
+          is_active: boolean
+          itinerary: Json
+          name: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          cities?: Json
+          created_at?: string
+          current_city_id?: string | null
+          id?: string
+          is_active?: boolean
+          itinerary?: Json
+          name?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          cities?: Json
+          created_at?: string
+          current_city_id?: string | null
+          id?: string
+          is_active?: boolean
+          itinerary?: Json
+          name?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
