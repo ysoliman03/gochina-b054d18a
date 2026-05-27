@@ -98,9 +98,6 @@ const createDefaultTrip = (): TripState => ({
 
 const createDefaultTools = () => ({ wechat: "not_started", alipay: "not_started", didi: "not_started" });
 
-const defaultProfile = createDefaultProfile();
-const defaultTrip = createDefaultTrip();
-
 interface AppState {
   onboarded: boolean;
   profile: ProfileState;
