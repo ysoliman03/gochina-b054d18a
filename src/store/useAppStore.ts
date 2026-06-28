@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { buildDayPlan, recalculateTimes, getTransitTime } from "@/engine/itineraryEngine";
-import { pois } from "@/data/pois";
+import { buildDayPlan, recalculateTimes, getTransitTime, getTransitInfo } from "@/engine/itineraryEngine";
+import { pois } from "@/data/generated/pois";
 import {
   upsertProfile,
   upsertActiveTrip,
@@ -54,7 +54,7 @@ function deriveInsights(profile: any) {
     : [{ icon: "🧭", label: "Explorer", desc: "Your travel style is taking shape. Keep using the app to unlock personalized insights." }];
 }
 
-type ProfileState = {
+export type ProfileState = {
   name: string;
   nationality: string;
   avatar: string | null;
@@ -68,9 +68,9 @@ type ProfileState = {
   mobility: string;
 };
 
-type TripCity = { cityId: string; startDate: string; endDate: string; days: number };
+export type TripCity = { cityId: string; startDate: string; endDate: string; days: number };
 
-type TripState = {
+export type TripState = {
   cities: TripCity[];
   currentCityId: string;
   itinerary: Record<string, any[]>;
@@ -124,6 +124,8 @@ interface AppState {
   setItinerary: (cityId: string, days: any[]) => void;
   removePOIFromDay: (cityId: string, dayIndex: number, poiId: string) => void;
   addPOIToDay: (cityId: string, dayIndex: number, poi: any) => void;
+  movePOIToDay: (cityId: string, fromDayIndex: number, toDayIndex: number, poiId: string) => void;
+  reorderStopInDay: (cityId: string, dayIndex: number, poiId: string, direction: "up" | "down") => void;
   replacePOIInDay: (cityId: string, dayIndex: number, oldPoiId: string, newPoi: any) => void;
   replanDay: (cityId: string, dayIndex: number) => void;
   toggleSavePoi: (poiId: string, name: string) => void;
@@ -193,7 +195,7 @@ export const useAppStore = create<AppState>()(
         syncWith((uid) => upsertActiveTrip(uid, useAppStore.getState()));
       },
 
-      removePOIFromDay: (cityId, dayIndex, poiId) =>
+      removePOIFromDay: (cityId, dayIndex, poiId) => {
         set((s) => {
           const days = (s.trip.itinerary[cityId] || []).map((day: any, i: number) => {
             if (i !== dayIndex) return day;
@@ -201,36 +203,91 @@ export const useAppStore = create<AppState>()(
             return { ...day, stops };
           });
           return { trip: { ...s.trip, itinerary: { ...s.trip.itinerary, [cityId]: days } } };
-        }),
+        });
+        syncWith((uid) => upsertActiveTrip(uid, useAppStore.getState()));
+      },
 
-      addPOIToDay: (cityId, dayIndex, poi) =>
+      addPOIToDay: (cityId, dayIndex, poi) => {
         set((s) => {
-          const days = (s.trip.itinerary[cityId] || []).map((day: any, i: number) => {
-            if (i !== dayIndex) return day;
-            const lastStop = day.stops[day.stops.length - 1];
-            const transit = lastStop ? getTransitTime(lastStop.id, poi.id) : 0;
-            const startTime = lastStop ? lastStop.scheduledEnd + transit : 9 * 60;
-            const newStop = {
-              ...poi,
-              scheduledStart: startTime,
-              scheduledEnd: startTime + poi.duration,
-              transitFromPrev: transit,
-            };
-            return { ...day, stops: [...day.stops, newStop] };
-          });
+          // Auto-create the city/day if this is the first thing added before
+          // the AI planner has ever run for it — adding a place shouldn't be a no-op.
+          const days = [...(s.trip.itinerary[cityId] || [])];
+          while (days.length <= dayIndex) days.push({ stops: [] });
+
+          const day = days[dayIndex];
+          const lastStop = day.stops[day.stops.length - 1];
+          const transitInfo = lastStop ? getTransitInfo(lastStop.id, poi.id) : null;
+          const transit = lastStop ? getTransitTime(lastStop.id, poi.id) : 0;
+          const startTime = lastStop ? lastStop.scheduledEnd + transit : 9 * 60;
+          const newStop = {
+            ...poi,
+            scheduledStart: startTime,
+            scheduledEnd: startTime + poi.duration,
+            transitFromPrev: transit,
+            transitInfo,
+          };
+          days[dayIndex] = { ...day, stops: [...day.stops, newStop] };
+
+          const today = new Date().toISOString().split("T")[0];
+          const cityInTrip = s.trip.cities.some((c) => c.cityId === cityId);
+          const cities = cityInTrip
+            ? s.trip.cities.map((c) =>
+                c.cityId === cityId ? { ...c, days: Math.max(c.days, days.length) } : c,
+              )
+            : [...s.trip.cities, { cityId, startDate: today, endDate: today, days: days.length }];
+
           const activity = [
             { type: "itinerary", text: `Added ${poi.name} to Day ${dayIndex + 1}`, time: "Just now" },
             ...s.recentActivity.slice(0, 9),
           ];
           const updatedInterests = learnFromTags(s.profile.interests, poi.id);
           return {
-            trip: { ...s.trip, itinerary: { ...s.trip.itinerary, [cityId]: days } },
+            trip: { ...s.trip, cities, itinerary: { ...s.trip.itinerary, [cityId]: days } },
             recentActivity: activity,
             profile: { ...s.profile, interests: updatedInterests },
           };
-        }),
+        });
+        syncWith((uid) => upsertActiveTrip(uid, useAppStore.getState()));
+      },
 
-      replacePOIInDay: (cityId, dayIndex, oldPoiId, newPoi) =>
+      movePOIToDay: (cityId, fromDayIndex, toDayIndex, poiId) => {
+        set((s) => {
+          if (fromDayIndex === toDayIndex) return {};
+          const days = (s.trip.itinerary[cityId] || []).map((d: any) => ({ ...d, stops: [...d.stops] }));
+          while (days.length <= Math.max(fromDayIndex, toDayIndex)) days.push({ stops: [] });
+
+          const fromDay = days[fromDayIndex];
+          const stopIdx = fromDay.stops.findIndex((st: any) => st.id === poiId);
+          if (stopIdx === -1) return {};
+          const [stop] = fromDay.stops.splice(stopIdx, 1);
+
+          days[fromDayIndex] = { ...fromDay, stops: recalculateTimes(fromDay.stops) };
+          const toDay = days[toDayIndex];
+          days[toDayIndex] = { ...toDay, stops: recalculateTimes([...toDay.stops, stop]) };
+
+          return { trip: { ...s.trip, itinerary: { ...s.trip.itinerary, [cityId]: days } } };
+        });
+        syncWith((uid) => upsertActiveTrip(uid, useAppStore.getState()));
+      },
+
+      reorderStopInDay: (cityId, dayIndex, poiId, direction) => {
+        set((s) => {
+          const days = (s.trip.itinerary[cityId] || []).map((day: any, i: number) => {
+            if (i !== dayIndex) return day;
+            const stops = [...day.stops];
+            const idx = stops.findIndex((st: any) => st.id === poiId);
+            if (idx === -1) return day;
+            const swapWith = direction === "up" ? idx - 1 : idx + 1;
+            if (swapWith < 0 || swapWith >= stops.length) return day;
+            [stops[idx], stops[swapWith]] = [stops[swapWith], stops[idx]];
+            return { ...day, stops: recalculateTimes(stops) };
+          });
+          return { trip: { ...s.trip, itinerary: { ...s.trip.itinerary, [cityId]: days } } };
+        });
+        syncWith((uid) => upsertActiveTrip(uid, useAppStore.getState()));
+      },
+
+      replacePOIInDay: (cityId, dayIndex, oldPoiId, newPoi) => {
         set((s) => {
           const days = (s.trip.itinerary[cityId] || []).map((day: any, i: number) => {
             if (i !== dayIndex) return day;
@@ -246,9 +303,11 @@ export const useAppStore = create<AppState>()(
             return { ...day, stops: recalculateTimes(stops) };
           });
           return { trip: { ...s.trip, itinerary: { ...s.trip.itinerary, [cityId]: days } } };
-        }),
+        });
+        syncWith((uid) => upsertActiveTrip(uid, useAppStore.getState()));
+      },
 
-      replanDay: (cityId, dayIndex) =>
+      replanDay: (cityId, dayIndex) => {
         set((s) => {
           const profile = s.profile;
           const allDays = s.trip.itinerary[cityId] || [];
@@ -260,7 +319,9 @@ export const useAppStore = create<AppState>()(
             i === dayIndex ? { ...day, stops: newStops } : day,
           );
           return { trip: { ...s.trip, itinerary: { ...s.trip.itinerary, [cityId]: days } } };
-        }),
+        });
+        syncWith((uid) => upsertActiveTrip(uid, useAppStore.getState()));
+      },
 
       toggleSavePoi: (poiId, name) => {
         set((s) => {

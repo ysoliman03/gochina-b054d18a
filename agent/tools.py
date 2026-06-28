@@ -27,7 +27,18 @@ In this project the tools give the agent access to:
   • Travel constraints (holidays, weather warnings)
 """
 from __future__ import annotations
-from data import POIS, CITIES, CONSTRAINTS, POI_CONNECTIONS
+from datetime import date, timedelta
+import re
+
+from data import (
+    CITIES,
+    CITY_CONNECTIONS,
+    CONSTRAINTS,
+    CUISINE,
+    POIS,
+    POI_CONNECTIONS,
+    TRANSPORT_HUBS,
+)
 
 
 # ── Helper: trim a POI to only the fields the agent needs ──────────────────
@@ -49,6 +60,225 @@ def _slim(poi: dict) -> dict:
         "suitableFor":    poi.get("suitableFor", []),
         "tips":           (poi.get("tips") or "")[:120], # first 120 chars only
     }
+
+
+def _normalize_dietary_restriction(label: str) -> str:
+    mapping = {
+        "Vegetarian": "vegetarian",
+        "Vegan": "vegan",
+        "Pescatarian": "pescatarian",
+        "Halal": "halal",
+        "Kosher": "kosher",
+        "No Pork": "no_pork",
+        "No Beef": "no_beef",
+        "Dairy Free": "dairy_free",
+        "Nut Free": "nut_free",
+        "Egg Free": "egg_free",
+        "Gluten Free": "gluten_free",
+        "Shellfish Free": "shellfish_free",
+        "Soy Free": "soy_free",
+        "No Alcohol": "no_alcohol",
+        "Low Spice": "low_spice",
+    }
+    return mapping.get(label, re.sub(r"[\s-]+", "_", label.strip().lower()))
+
+
+def _dish_matches_restrictions(dish: dict, dietary_restrictions: list[str] | None) -> bool:
+    restrictions = [
+        _normalize_dietary_restriction(label)
+        for label in (dietary_restrictions or [])
+    ]
+    if not restrictions:
+        return True
+
+    tags = set(dish.get("dietaryTags") or [])
+    return all(restriction in tags for restriction in restrictions)
+
+
+def _slim_dish(dish: dict) -> dict:
+    return {
+        "id": dish.get("id"),
+        "cityId": dish.get("cityId"),
+        "poiIds": dish.get("poiIds", []),
+        "name": dish.get("name", ""),
+        "nameZh": dish.get("nameZh", ""),
+        "category": dish.get("category", ""),
+        "dietaryTags": dish.get("dietaryTags", []),
+        "description": (dish.get("description") or "")[:240],
+    }
+
+
+def _slim_hub(hub: dict) -> dict:
+    return {
+        "id": hub.get("id"),
+        "cityId": hub.get("cityId"),
+        "name": hub.get("name", ""),
+        "nameZh": hub.get("nameZh", ""),
+        "type": hub.get("type", ""),
+        "district": hub.get("district", ""),
+        "openingHours": hub.get("openingHours", ""),
+        "foreignFriendly": hub.get("foreignFriendly"),
+        "description": (hub.get("description") or "")[:220],
+        "tips": hub.get("tips", [])[:2],
+        "cautions": hub.get("cautions", [])[:2],
+    }
+
+
+def _parse_iso_date(value: str) -> date | None:
+    try:
+        return date.fromisoformat(value)
+    except ValueError:
+        return None
+
+
+def _parse_month_day(value: str) -> tuple[int, int] | None:
+    if not re.fullmatch(r"\d{2}-\d{2}", value or ""):
+        return None
+
+    month, day = [int(part) for part in value.split("-")]
+    try:
+        date(2024, month, day)
+    except ValueError:
+        return None
+
+    return month, day
+
+
+def _recurring_window_overlaps(
+    trip_start: date,
+    trip_end: date,
+    start_value: str,
+    end_value: str,
+) -> bool:
+    start = _parse_month_day(start_value)
+    end = _parse_month_day(end_value)
+    if not start or not end:
+        return False
+
+    crosses_year = start > end
+    for year in range(trip_start.year - 1, trip_end.year + 2):
+        occurrence_start = date(year, start[0], start[1])
+        occurrence_end_year = year + 1 if crosses_year else year
+        occurrence_end = date(occurrence_end_year, end[0], end[1])
+
+        if trip_start <= occurrence_end and trip_end >= occurrence_start:
+            return True
+
+    return False
+
+
+def _parse_weekday_token(token: str) -> int | None:
+    token = token.lower()
+    if token.startswith("sun"):
+        return 0
+    if token.startswith("mon"):
+        return 1
+    if token.startswith("tue"):
+        return 2
+    if token.startswith("wed"):
+        return 3
+    if token.startswith("thu"):
+        return 4
+    if token.startswith("fri"):
+        return 5
+    if token.startswith("sat"):
+        return 6
+    return None
+
+
+def _weekday_range(start: int, end: int) -> list[int]:
+    days = []
+    current = start
+    while True:
+        days.append(current)
+        if current == end:
+            break
+        current = (current + 1) % 7
+    return days
+
+
+def _infer_weekly_days(constraint: dict) -> list[int]:
+    days: set[int] = set()
+    text = (
+        f"{constraint.get('title', '')} "
+        f"{constraint.get('impact', '')} "
+        f"{constraint.get('action', '')}"
+    ).lower()
+    text = re.sub(r"[\u2013\u2014]", "-", text)
+    day_token = (
+        r"(sun(?:day)?s?|mon(?:day)?s?|tue(?:s|sday)?s?|wed(?:nesday)?s?|"
+        r"thu(?:r|rs|rsday)?s?|fri(?:day)?s?|sat(?:urday)?s?)"
+    )
+
+    if re.search(r"\bweekends?\b", text):
+        days.update({0, 6})
+
+    if re.search(r"\bweekdays?\b", text):
+        days.update({1, 2, 3, 4, 5})
+
+    for start_token, end_token in re.findall(
+        rf"\b{day_token}\b\s*(?:-|to|through|thru)\s*\b{day_token}\b",
+        text,
+    ):
+        start = _parse_weekday_token(start_token)
+        end = _parse_weekday_token(end_token)
+        if start is not None and end is not None:
+            days.update(_weekday_range(start, end))
+
+    for token in re.findall(rf"\b{day_token}\b", text):
+        day = _parse_weekday_token(token)
+        if day is not None:
+            days.add(day)
+
+    return list(days)
+
+
+def _range_contains_weekday(trip_start: date, trip_end: date, weekdays: list[int]) -> bool:
+    if not weekdays:
+        return True
+
+    if (trip_end - trip_start).days >= 6:
+        return True
+
+    targets = set(weekdays)
+    current = trip_start
+    while current <= trip_end:
+        # Python: Monday=0. Agent convention here: Sunday=0, Monday=1.
+        weekday = (current.weekday() + 1) % 7
+        if weekday in targets:
+            return True
+        current += timedelta(days=1)
+
+    return False
+
+
+def _constraint_matches_dates(constraint: dict, trip_start: date, trip_end: date) -> bool:
+    recurrence = constraint.get("recurrencePattern")
+
+    if recurrence == "daily":
+        return True
+
+    if recurrence == "weekly":
+        return _range_contains_weekday(trip_start, trip_end, _infer_weekly_days(constraint))
+
+    if recurrence in {"seasonal", "yearly"}:
+        return _recurring_window_overlaps(
+            trip_start,
+            trip_end,
+            constraint.get("startDate", ""),
+            constraint.get("endDate", ""),
+        )
+
+    if recurrence == "monthly":
+        start_date = constraint.get("startDate", "")
+        end_date = constraint.get("endDate", "")
+        return (
+            _recurring_window_overlaps(trip_start, trip_end, start_date, end_date)
+            if start_date and end_date
+            else True
+        )
+
+    return False
 
 
 # ── Tool functions ──────────────────────────────────────────────────────────
@@ -147,25 +377,104 @@ def get_transit_time(from_poi_id: str, to_poi_id: str) -> int:
     return min((c["duration"] for c in matches), default=20)
 
 
+def get_transit_info(from_poi_id: str | None, to_poi_id: str | None) -> dict | None:
+    """
+    Return the full connection record (mode, duration, distanceKm, notes) between
+    two POIs, if the curated dataset has one. Used to enrich the response with
+    real transit detail instead of just a duration estimate.
+    """
+    if not from_poi_id or not to_poi_id:
+        return None
+    matches = [
+        c for c in POI_CONNECTIONS
+        if (c["from"] == from_poi_id and c["to"] == to_poi_id)
+        or (c["from"] == to_poi_id   and c["to"] == from_poi_id)
+    ]
+    if not matches:
+        return None
+    return min(matches, key=lambda c: c["duration"])
+
+
 def get_city_info(city_id: str) -> dict | None:
     """Return high-level information about a city: name, intro text, tags, coordinates."""
     return CITIES.get(city_id)
 
 
-def check_travel_constraints(city_id: str) -> list[dict]:
+def search_cuisine(
+    city_id: str,
+    dietary_restrictions: list[str] | None = None,
+    max_results: int = 12,
+) -> list[dict]:
     """
-    Return any active travel warnings for this city.
+    Search cuisine dishes in a city.
+    dietary_restrictions uses safe tags: a dish matches only when every requested
+    restriction appears in the dish dietaryTags list.
+    """
+    results = [
+        dish
+        for dish in CUISINE
+        if dish.get("cityId") == city_id
+        and _dish_matches_restrictions(dish, dietary_restrictions)
+    ]
+    results.sort(key=lambda dish: (dish.get("category", ""), dish.get("name", "")))
+    return [_slim_dish(dish) for dish in results[:max_results]]
+
+
+def get_transport_hubs(city_id: str) -> list[dict]:
+    """
+    Return airports and railway stations for a city.
+    Use this for arrival/departure planning, first-day logistics, and transfer advice.
+    """
+    hubs = [hub for hub in TRANSPORT_HUBS if hub.get("cityId") == city_id]
+    hubs.sort(key=lambda hub: (hub.get("type", ""), hub.get("name", "")))
+    return [_slim_hub(hub) for hub in hubs]
+
+
+def get_city_connections(from_city_id: str, to_city_id: str) -> list[dict]:
+    """
+    Return known transport connections between two cities.
+    Connections are treated as bidirectional for planning purposes.
+    """
+    return [
+        connection
+        for connection in CITY_CONNECTIONS
+        if (
+            connection.get("fromCityId") == from_city_id
+            and connection.get("toCityId") == to_city_id
+        )
+        or (
+            connection.get("fromCityId") == to_city_id
+            and connection.get("toCityId") == from_city_id
+        )
+    ]
+
+
+def check_travel_constraints(city_id: str, start_date: str, end_date: str) -> list[dict]:
+    """
+    Return active travel warnings for this city and trip date range.
     Includes nationwide warnings (public holidays, air quality) and city-specific ones.
     The agent should check this first and mention important warnings in its summary.
     """
+    trip_start = _parse_iso_date(start_date)
+    trip_end = _parse_iso_date(end_date)
+
+    if not trip_start or not trip_end or trip_start > trip_end:
+        return []
+
     relevant = [
         c for c in CONSTRAINTS
-        if c.get("cityId") is None or c.get("cityId") == city_id
+        if (c.get("cityId") is None or c.get("cityId") == city_id)
+        and _constraint_matches_dates(c, trip_start, trip_end)
     ]
     return [
         {
+            "id":       c.get("id", ""),
             "title":    c.get("title", ""),
             "type":     c.get("type", ""),
+            "poiId":    c.get("poiId"),
+            "startDate": c.get("startDate", ""),
+            "endDate":   c.get("endDate", ""),
+            "recurrencePattern": c.get("recurrencePattern", ""),
             "severity": c.get("severity", ""),
             "impact":   c.get("impact", ""),
             "action":   c.get("action", ""),
@@ -176,7 +485,13 @@ def check_travel_constraints(city_id: str) -> list[dict]:
 
 # ── Enrichment helper (called by server.py, not by the agent) ──────────────
 
-def enrich_stop(poi_id: str, scheduled_start: int, scheduled_end: int, transit: int) -> dict:
+def enrich_stop(
+    poi_id: str,
+    scheduled_start: int,
+    scheduled_end: int,
+    transit: int,
+    prev_poi_id: str | None = None,
+) -> dict:
     """
     After the agent decides *which* POIs to include and *when*,
     this function merges the timing with the full POI data from our database.
@@ -195,4 +510,5 @@ def enrich_stop(poi_id: str, scheduled_start: int, scheduled_end: int, transit: 
         "scheduledStart": scheduled_start,
         "scheduledEnd":   scheduled_end,
         "transitFromPrev": transit,
+        "transitInfo":    get_transit_info(prev_poi_id, poi_id),
     }

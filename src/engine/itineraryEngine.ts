@@ -1,5 +1,6 @@
-import { pois } from "@/data/pois";
-import { poiConnections } from "@/data/poiConnections";
+import { pois } from "@/data/generated/pois";
+import { poiConnections } from "@/data/generated/poiConnections";
+import { matchedInterests } from "@/lib/interestTags";
 
 function parseTime(timeStr: string) {
   if (timeStr === "24h") return { open: 0, close: 1440 };
@@ -10,11 +11,20 @@ function parseTime(timeStr: string) {
   return { open, close };
 }
 
+export function getTransitInfo(fromId?: string, toId?: string) {
+  return getTransitOptions(fromId, toId)[0] ?? null;
+}
+
+export function getTransitOptions(fromId?: string, toId?: string) {
+  if (!fromId || !toId) return [];
+  return poiConnections
+    .filter((c) => (c.from === fromId && c.to === toId) || (c.from === toId && c.to === fromId))
+    .sort((a, b) => a.duration - b.duration);
+}
+
 export function getTransitTime(fromId?: string, toId?: string) {
   if (!fromId || !toId) return 0;
-  const conn = poiConnections.find(
-    (c) => (c.from === fromId && c.to === toId) || (c.from === toId && c.to === fromId),
-  );
+  const conn = getTransitInfo(fromId, toId);
   return conn ? conn.duration : 20;
 }
 
@@ -27,12 +37,14 @@ function isDietCompatible(poi: any, profile: any) {
   return true;
 }
 
-function scorePoi(poi: any, profile: any, jitter = false) {
+/** Profile fit score for a POI — higher means a better match for this traveler's preferences. */
+export function scorePoi(poi: any, profile: any, jitter = false) {
   let score = 0;
-  const matchedInterests = (profile?.interests || []).filter((t: string) => poi.tags.includes(t));
-  score += matchedInterests.length * 2;
-  if (poi.suitableFor.includes(profile?.groupType || "solo")) score += 2;
-  if (poi.price <= (profile?.budget === "budget" ? 1 : profile?.budget === "mid" ? 2 : 3)) score += 1;
+  const matched = matchedInterests(profile?.interests || [], poi.tags || []);
+  score += matched.length * 2;
+  if ((poi.suitableFor || []).includes(profile?.groupType || "solo")) score += 2;
+  if (poi.price <= (profile?.budget === "budget" ? 1 : profile?.budget === "mid" ? 2 : 3))
+    score += 1;
   if (poi.foreignFriendly >= 4) score += 1;
   if (jitter) score += Math.random() * 1.5;
   return score;
@@ -52,13 +64,26 @@ export function recalculateTimes(stops: any[]) {
     if (i === 0) {
       const end = currentTime + stop.duration;
       currentTime = end;
-      return { ...stop, scheduledStart: currentTime - stop.duration, scheduledEnd: end, transitFromPrev: 0 };
+      return {
+        ...stop,
+        scheduledStart: currentTime - stop.duration,
+        scheduledEnd: end,
+        transitFromPrev: 0,
+        transitInfo: null,
+      };
     }
-    const transit = getTransitTime(stops[i - 1].id, stop.id);
+    const transitInfo = getTransitInfo(stops[i - 1].id, stop.id);
+    const transit = transitInfo ? transitInfo.duration : 20;
     const start = currentTime + transit;
     const end = start + stop.duration;
     currentTime = end;
-    return { ...stop, scheduledStart: start, scheduledEnd: end, transitFromPrev: transit };
+    return {
+      ...stop,
+      scheduledStart: start,
+      scheduledEnd: end,
+      transitFromPrev: transit,
+      transitInfo,
+    };
   });
 }
 
@@ -69,7 +94,12 @@ export function getAvailablePOIs(cityId: string, usedIds: string[] = [], profile
     .sort((a: any, b: any) => b.score - a.score);
 }
 
-export function getAlternativePOIs(poi: any, cityId: string, usedIds: string[] = [], profile: any = {}) {
+export function getAlternativePOIs(
+  poi: any,
+  cityId: string,
+  usedIds: string[] = [],
+  profile: any = {},
+) {
   return Object.values(pois)
     .filter(
       (p: any) =>
@@ -100,8 +130,7 @@ export function buildDayPlan(
     .map((p: any) => ({ ...p, score: scorePoi(p, profile, useJitter) }))
     .sort(
       (a: any, b: any) =>
-        b.score - a.score ||
-        (TIME_ORDER[a.bestTime] ?? 1) - (TIME_ORDER[b.bestTime] ?? 1),
+        b.score - a.score || (TIME_ORDER[a.bestTime] ?? 1) - (TIME_ORDER[b.bestTime] ?? 1),
     );
 
   const plan: any[] = [];
@@ -148,7 +177,9 @@ export function buildDayPlan(
 }
 
 export function minutesToTime(minutes: number) {
-  const h = Math.floor(minutes / 60).toString().padStart(2, "0");
+  const h = Math.floor(minutes / 60)
+    .toString()
+    .padStart(2, "0");
   const m = (minutes % 60).toString().padStart(2, "0");
   return `${h}:${m}`;
 }

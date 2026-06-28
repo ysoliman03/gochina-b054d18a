@@ -1,12 +1,101 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { MobileShell } from "@/components/MobileShell";
 import { useAppStore } from "@/store/useAppStore";
-import { cities } from "@/data/cities";
-import { minutesToTime } from "@/engine/itineraryEngine";
-import { Clock, MapPin, RefreshCw, Trash2, Sparkles, Wand2 } from "lucide-react";
+import { cities } from "@/data/generated/cities";
+import { pois } from "@/data/generated/pois";
+import { getTransitOptions, minutesToTime } from "@/engine/itineraryEngine";
+import {
+  Clock,
+  MapPin,
+  RefreshCw,
+  Trash2,
+  Sparkles,
+  Wand2,
+  ChevronUp,
+  ChevronDown,
+  Footprints,
+  TrainFront,
+  Car,
+  Plane,
+  Navigation,
+} from "lucide-react";
+
+const TRANSIT_MODE_ICON: Record<string, typeof Car> = {
+  walk: Footprints,
+  metro: TrainFront,
+  taxi: Car,
+};
 import { ItineraryBuilderSheet } from "@/components/ItineraryBuilderSheet";
 import { pageHead } from "@/lib/seo";
+import { getConnectionsBetween } from "@/lib/cityConnections";
+import { HotelBaseOptimizerCard } from "@/components/HotelBaseOptimizerCard";
+import { ItineraryIssuePanel } from "@/components/ItineraryIssuePanel";
+import { detectItineraryIssues } from "@/engine/itineraryIssueDetector";
+import { formatDistanceKm, getGaodeDistanceKm } from "@/lib/gochina/distance";
+import { getGaodeDirectionsUrl } from "@/lib/gochina/gaodeLinks";
+import type { CityId } from "@/data/types";
+
+const CITY_TRAVEL_MODE_ICON: Record<string, typeof Car> = {
+  flight: Plane,
+  high_speed_rail: TrainFront,
+};
+
+function resolvePoi(stop: any) {
+  return ((pois as any)[stop?.id] ?? stop) as any;
+}
+
+function transitModeLabel(mode: string) {
+  return mode.replace(/_/g, " ");
+}
+
+function ItineraryLeg({ from, to }: { from: any; to: any }) {
+  const fromPoi = resolvePoi(from);
+  const toPoi = resolvePoi(to);
+  const distance = formatDistanceKm(getGaodeDistanceKm(fromPoi, toPoi));
+  const gaodeUrl = getGaodeDirectionsUrl(fromPoi, toPoi);
+  const transitOptions = getTransitOptions(from?.id, to?.id);
+
+  if (!distance && transitOptions.length === 0) return null;
+
+  return (
+    <li className="-my-1 list-none px-1">
+      <div className="flex items-center gap-2 text-[11px] font-semibold">
+        {distance && <span className="text-muted-foreground">{distance}</span>}
+        {gaodeUrl && (
+          <a
+            href={gaodeUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 text-primary hover:underline"
+          >
+            <Navigation className="w-3 h-3" />
+            Gaode Maps
+          </a>
+        )}
+      </div>
+      {transitOptions.length > 0 && (
+        <div className="mt-1 space-y-1.5">
+          {transitOptions.map((option) => {
+            const Icon = TRANSIT_MODE_ICON[option.mode] || Sparkles;
+            return (
+              <div key={`${option.from}-${option.to}-${option.mode}`} className="text-xs">
+                <p className="font-medium text-foreground flex items-center gap-1.5">
+                  <Icon className="w-3.5 h-3.5 text-primary shrink-0" />
+                  {option.duration} min by {transitModeLabel(option.mode)}
+                  {option.distanceKm != null ? ` · ${option.distanceKm} km` : ""}
+                </p>
+                {option.notes && (
+                  <p className="mt-0.5 text-muted-foreground leading-snug">{option.notes}</p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </li>
+  );
+}
 
 export const Route = createFileRoute("/itinerary")({
   component: Itinerary,
@@ -21,16 +110,51 @@ export const Route = createFileRoute("/itinerary")({
 
 function Itinerary() {
   const trip = useAppStore((s) => s.trip);
+  const profile = useAppStore((s) => s.profile);
   const [builderOpen, setBuilderOpen] = useState(false);
   const removePOIFromDay = useAppStore((s) => s.removePOIFromDay);
   const replanDay = useAppStore((s) => s.replanDay);
   const updateTrip = useAppStore((s) => s.updateTrip);
+  const movePOIToDay = useAppStore((s) => s.movePOIToDay);
+  const reorderStopInDay = useAppStore((s) => s.reorderStopInDay);
 
   const [activeCity, setActiveCity] = useState(trip.currentCityId);
   const [activeDay, setActiveDay] = useState(0);
 
   const days = trip.itinerary[activeCity] || [];
   const hasTrips = trip.cities.length > 0;
+
+  const activeCityIndex = trip.cities.findIndex((c) => c.cityId === activeCity);
+  const prevCity = activeCityIndex > 0 ? trip.cities[activeCityIndex - 1] : null;
+  const intercityConnections = prevCity ? getConnectionsBetween(prevCity.cityId, activeCity) : [];
+
+  // One base-area card per city in the trip; falls back to the currently browsed city
+  // if no cities have been added yet, so the feature is still discoverable.
+  const baseCityIds = hasTrips ? trip.cities.map((c) => c.cityId) : [trip.currentCityId];
+
+  // Best-effort date for the active day — used to check date-bound constraints
+  // (holidays/weather). Falls back to the day's own `date` field if AI-planned,
+  // else derives from the trip city's start date, else skips date-bound checks.
+  const activeTripCity = trip.cities.find((c) => c.cityId === activeCity);
+  const activeDayDate = (() => {
+    const explicit = days[activeDay]?.date;
+    if (explicit) return explicit;
+    if (!activeTripCity?.startDate) return null;
+    const start = new Date(`${activeTripCity.startDate}T00:00:00Z`);
+    if (Number.isNaN(start.getTime())) return null;
+    return new Date(start.getTime() + activeDay * 86400000).toISOString().split("T")[0];
+  })();
+
+  const issues = useMemo(() => {
+    if (!days[activeDay]) return [];
+    return detectItineraryIssues({
+      cityId: activeCity,
+      day: days[activeDay],
+      dayIndex: activeDay,
+      profile,
+      date: activeDayDate,
+    });
+  }, [days, activeDay, activeCity, profile, activeDayDate]);
 
   return (
     <MobileShell>
@@ -48,43 +172,85 @@ function Itinerary() {
         </button>
       </header>
 
+      <div className="px-5 pb-4 flex flex-col gap-2">
+        {baseCityIds.map((cid) => (
+          <HotelBaseOptimizerCard key={cid} cityId={cid as CityId} />
+        ))}
+      </div>
+
       <ItineraryBuilderSheet open={builderOpen} onOpenChange={setBuilderOpen} />
 
-      {hasTrips ? <div className="px-5 flex gap-2 pb-3 overflow-x-auto">
-        {trip.cities.map((c) => {
-          const city: any = (cities as any)[c.cityId];
-          const active = c.cityId === activeCity;
-          return (
+      {hasTrips ? (
+        <div className="px-5 flex gap-2 pb-3 overflow-x-auto">
+          {trip.cities.map((c) => {
+            const city: any = (cities as any)[c.cityId];
+            const active = c.cityId === activeCity;
+            return (
+              <button
+                key={c.cityId}
+                onClick={() => {
+                  setActiveCity(c.cityId);
+                  setActiveDay(0);
+                  updateTrip({ currentCityId: c.cityId });
+                }}
+                className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap ${
+                  active
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-card border border-border text-foreground"
+                }`}
+              >
+                {city?.name} · {c.days}d
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
+
+      {prevCity && intercityConnections.length > 0 && (
+        <div className="px-5 pb-4">
+          <div className="rounded-2xl border border-border bg-card p-4">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+              Getting from {(cities as any)[prevCity.cityId]?.name || prevCity.cityId} to{" "}
+              {(cities as any)[activeCity]?.name || activeCity}
+            </p>
+            <div className="flex flex-col gap-2">
+              {intercityConnections.map((conn, i) => {
+                const Icon = CITY_TRAVEL_MODE_ICON[conn.travelMode] || Car;
+                return (
+                  <div key={i} className="flex items-start gap-2.5">
+                    <Icon className="w-4 h-4 mt-0.5 text-primary shrink-0" />
+                    <div className="text-sm">
+                      <p className="font-medium text-foreground">
+                        {conn.travelMode.replace(/_/g, " ")} · {Math.floor(conn.durationMin / 60)}h{" "}
+                        {conn.durationMin % 60}m{conn.frequency ? ` · ${conn.frequency}` : ""}
+                      </p>
+                      {conn.notes && (
+                        <p className="text-xs text-muted-foreground mt-0.5">{conn.notes}</p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {hasTrips ? (
+        <div className="px-5 flex gap-2 pb-4 overflow-x-auto">
+          {days.map((_, i) => (
             <button
-              key={c.cityId}
-              onClick={() => {
-                setActiveCity(c.cityId);
-                setActiveDay(0);
-                updateTrip({ currentCityId: c.cityId });
-              }}
-              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap ${
-                active ? "bg-primary text-primary-foreground" : "bg-card border border-border text-foreground"
+              key={i}
+              onClick={() => setActiveDay(i)}
+              className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap ${
+                i === activeDay ? "bg-foreground text-background" : "bg-muted text-foreground"
               }`}
             >
-              {city?.name} · {c.days}d
+              Day {i + 1}
             </button>
-          );
-        })}
-      </div> : null}
-
-      {hasTrips ? <div className="px-5 flex gap-2 pb-4 overflow-x-auto">
-        {days.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setActiveDay(i)}
-            className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap ${
-              i === activeDay ? "bg-foreground text-background" : "bg-muted text-foreground"
-            }`}
-          >
-            Day {i + 1}
-          </button>
-        ))}
-      </div> : null}
+          ))}
+        </div>
+      ) : null}
 
       <section className="px-5">
         {hasTrips ? (
@@ -99,11 +265,18 @@ function Itinerary() {
               </button>
             ) : null}
           </div>
-        ) : (
+        ) : null}
+        {hasTrips && days[activeDay] && (
+          <div className="mb-3">
+            <ItineraryIssuePanel issues={issues} />
+          </div>
+        )}
+        {!hasTrips && (
           <div className="rounded-2xl border border-border bg-card p-5 text-center">
             <h2 className="text-lg font-semibold text-foreground">No itineraries yet</h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Use AI Plan to create your first trip. Nothing is saved until you import a generated itinerary.
+              Use AI Plan to create your first trip. Nothing is saved until you import a generated
+              itinerary.
             </p>
             <button
               onClick={() => setBuilderOpen(true)}
@@ -114,36 +287,103 @@ function Itinerary() {
           </div>
         )}
         <ol className="space-y-3">
-          {(days[activeDay]?.stops || []).map((stop: any, idx: number) => (
-            <li key={stop.id + idx} className="rounded-2xl bg-card border border-border p-4">
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <p className="text-xs text-muted-foreground flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {minutesToTime(stop.scheduledStart)} – {minutesToTime(stop.scheduledEnd)}
-                  </p>
-                  <h3 className="font-semibold text-foreground mt-0.5">{stop.name}</h3>
-                  <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                    <MapPin className="w-3 h-3" /> {stop.district}
-                  </p>
-                </div>
-                <button
-                  onClick={() => removePOIFromDay(activeCity, activeDay, stop.id)}
-                  aria-label={`Remove ${stop.name} from day ${activeDay + 1}`}
-                  className="text-muted-foreground hover:text-destructive"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-              {stop.transitFromPrev > 0 && (
-                <p className="text-xs text-muted-foreground mt-2">
-                  <Sparkles className="inline w-3 h-3" /> {stop.transitFromPrev} min transit from previous
-                </p>
-              )}
-            </li>
-          ))}
+          {(days[activeDay]?.stops || []).map((stop: any, idx: number) => {
+            const stopCount = days[activeDay]?.stops.length ?? 0;
+            return (
+              <Fragment key={`${stop.id}-${idx}`}>
+                {idx > 0 && <ItineraryLeg from={days[activeDay].stops[idx - 1]} to={stop} />}
+                <li className="rounded-2xl bg-card border border-border p-4">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="text-xs text-muted-foreground flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {minutesToTime(stop.scheduledStart)} – {minutesToTime(stop.scheduledEnd)}
+                      </p>
+                      <h3 className="font-semibold text-foreground mt-0.5">{stop.name}</h3>
+                      <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                        <MapPin className="w-3 h-3" /> {stop.district}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => removePOIFromDay(activeCity, activeDay, stop.id)}
+                      aria-label={`Remove ${stop.name} from day ${activeDay + 1}`}
+                      className="text-muted-foreground hover:text-destructive"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                  {false && stop.transitFromPrev > 0 && (
+                    <div className="text-xs text-muted-foreground mt-2">
+                      {stop.transitInfo ? (
+                        <p className="flex items-center gap-1">
+                          {(() => {
+                            const Icon = TRANSIT_MODE_ICON[stop.transitInfo.mode] || Sparkles;
+                            return <Icon className="w-3 h-3" />;
+                          })()}
+                          {stop.transitInfo.duration} min by {stop.transitInfo.mode}
+                          {stop.transitInfo.distanceKm != null
+                            ? ` · ${stop.transitInfo.distanceKm} km`
+                            : ""}
+                        </p>
+                      ) : (
+                        <p className="flex items-center gap-1">
+                          <Sparkles className="w-3 h-3" /> {stop.transitFromPrev} min transit from
+                          previous
+                        </p>
+                      )}
+                      {stop.transitInfo?.notes && (
+                        <p className="mt-0.5 text-[11px] text-muted-foreground/80">
+                          {stop.transitInfo.notes}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
+                    <button
+                      onClick={() => reorderStopInDay(activeCity, activeDay, stop.id, "up")}
+                      disabled={idx === 0}
+                      aria-label="Move earlier in the day"
+                      className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                      <ChevronUp className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => reorderStopInDay(activeCity, activeDay, stop.id, "down")}
+                      disabled={idx === stopCount - 1}
+                      aria-label="Move later in the day"
+                      className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                      <ChevronDown className="w-4 h-4" />
+                    </button>
+                    {days.length > 1 && (
+                      <select
+                        value=""
+                        onChange={(e) => {
+                          if (e.target.value === "") return;
+                          movePOIToDay(activeCity, activeDay, Number(e.target.value), stop.id);
+                        }}
+                        aria-label={`Move ${stop.name} to a different day`}
+                        className="ml-auto text-xs font-medium rounded-lg bg-secondary text-secondary-foreground px-2.5 py-1.5 border-0"
+                      >
+                        <option value="">Move to day…</option>
+                        {days.map((_, dIdx) =>
+                          dIdx === activeDay ? null : (
+                            <option key={dIdx} value={dIdx}>
+                              Day {dIdx + 1}
+                            </option>
+                          ),
+                        )}
+                      </select>
+                    )}
+                  </div>
+                </li>
+              </Fragment>
+            );
+          })}
           {(days[activeDay]?.stops || []).length === 0 && (
-            <p className="text-sm text-muted-foreground">No stops planned. Tap re-plan to auto-fill.</p>
+            <p className="text-sm text-muted-foreground">
+              No stops planned. Tap re-plan to auto-fill.
+            </p>
           )}
         </ol>
       </section>

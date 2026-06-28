@@ -34,6 +34,14 @@ Start the server:
 ────────────────────────────────────────────────────────────────────────────
 """
 from __future__ import annotations
+import sys
+
+# Windows' console defaults to cp1252, which can't encode the emoji in the
+# print()s below and crashes the server at import time. Force UTF-8 stdout.
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+
 from dotenv import load_dotenv
 
 # Load .env FIRST — the agent module needs the API key at import time
@@ -193,8 +201,14 @@ Do not stop early. Do not skip any dayIndex.
 
     for day in result.output.days:
         stops = [
-            StopOut(**enrich_stop(s.id, s.scheduledStart, s.scheduledEnd, s.transitFromPrev))
-            for s in day.stops
+            StopOut(**enrich_stop(
+                s.id,
+                s.scheduledStart,
+                s.scheduledEnd,
+                s.transitFromPrev,
+                day.stops[idx - 1].id if idx > 0 else None,
+            ))
+            for idx, s in enumerate(day.stops)
         ]
         # Attach the actual calendar date to each day (e.g. "2025-06-15")
         day_date = ""

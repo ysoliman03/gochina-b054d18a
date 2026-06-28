@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "export:data": "bun run scripts/export-data.ts"
+    "import:content-db": "node --experimental-strip-types scripts/import-content-db.ts",
+    "export:data": "npm run import:content-db"
   },
   "dependencies": {
     "@amap/amap-jsapi-loader": "^1.0.1",

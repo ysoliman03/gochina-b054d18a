@@ -1,0 +1,11 @@
+﻿Must match Cities sheet;Must match Cities sheet;high_speed_rail / flight / bus / drive;Total travel time;1=budget, 2=mid, 3=premium;hourly / several_daily / daily;Practical tips: station name, booking advice
+from_city_id;to_city_id;travel_mode;duration_min;price_level;frequency;notes
+BJ;SH;high_speed_rail;270;2;hourly;G-trains from Beijing South. Book on 12306 app. ~553 CNY 2nd class.
+BJ;SH;flight;150;3;hourly;PEK/PKX to PVG/SHA. 2h flight + transit time. 500-1500 CNY.
+BJ;XA;high_speed_rail;270;2;several_daily;G-trains from Beijing West. ~515 CNY 2nd class.
+SH;XA;high_speed_rail;360;2;several_daily;From Shanghai Hongqiao. 6 hours. ~670 CNY 2nd class.
+SH;XA;flight;150;2;several_daily;PVG to XIY. 2.5h flight. Often cheaper than train.
+XA;CQ;high_speed_rail;300;2;several_daily;Xi'an North to Chongqing West/North. About 5h. ~260 CNY 2nd class.
+CQ;SH;flight;160;2;several_daily;CKG to PVG/SHA. 2.5h flight. Often 400-900 CNY.
+CQ;SH;high_speed_rail;480;2;several_daily;About 8 hours. Flight recommended for this route.
+BJ;CQ;flight;170;2;several_daily;PEK/PKX to CKG. 2.5h flight. 500-1200 CNY.

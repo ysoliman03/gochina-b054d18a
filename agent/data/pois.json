@@ -3,9 +3,9 @@
     "id": "BJ001",
     "cityId": "BJ",
     "name": "Forbidden City",
-    "nameZh": "?????",
+    "nameZh": "故宫博物院",
     "category": "attraction",
-    "description": "As the world's largest palatial complex, it served as the imperial heart for 24 emperors of the Ming and Qing dynasties. Today, it preserves 980 historic buildings across a sprawling 72-hectare site.",
+    "description": "As the world’s largest palatial complex, it served as the imperial heart for 24 emperors of the Ming and Qing dynasties. Today, it preserves 980 historic buildings across a sprawling 72-hectare site.",
     "highlights": "Hall of Supreme Harmony, Imperial Garden, treasure galleries",
     "tips": "Enter from south (Tiananmen), exit north. Rent audio guide at entrance. Bring passport for ticket pickup.",
     "cautions": "Closed every Monday. Peak crowds Oct 1-7. No re-entry after exit.",
@@ -29,16 +29,13 @@
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "BJ002": {
     "id": "BJ002",
     "cityId": "BJ",
     "name": "Great Wall - Mutianyu",
-    "nameZh": "?????",
+    "nameZh": "慕田峪长城",
     "category": "attraction",
     "description": "Located 70km north of the city, this section offers a more tranquil alternative to the bustling Badaling. It features breathtaking mountain ridges and a convenient cable car for easy access to its majestic watchtowers.",
     "highlights": "Watchtowers 14-23 offer best views. Toboggan ride down.",
@@ -65,16 +62,13 @@
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "BJ003": {
     "id": "BJ003",
     "cityId": "BJ",
     "name": "Temple of Heaven",
-    "nameZh": "??",
+    "nameZh": "天坛",
     "category": "attraction",
     "description": "A masterpiece of Ming dynasty craftsmanship where emperors once held grand rituals to pray for bountiful harvests. It is now set within a sprawling park where you can witness the charming daily life of local Beijingers.",
     "highlights": "Hall of Prayer for Good Harvests, Echo Wall, park morning exercises",
@@ -102,20 +96,17 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "BJ004": {
     "id": "BJ004",
     "cityId": "BJ",
     "name": "Nanluoguxiang Hutong",
-    "nameZh": "????",
+    "nameZh": "南锣鼓巷",
     "category": "experience",
     "description": "One of Beijing's most iconic ancient hutongs. This lively pedestrian street is packed with boutique crafts, trendy cafes, and local snacks, while the quiet side alleys nearby offer a glimpse into the city's traditional soul.",
     "highlights": "Side alleys (away from main street) show authentic hutong life. Local craft beer bars.",
-    "tips": "Skip the main street crowds - duck into side alleys for the real experience. Great for photography. Easy to combine with Drum Tower.",
+    "tips": "Skip the main street crowds — duck into side alleys for the real experience. Great for photography. Easy to combine with Drum Tower.",
     "cautions": "Very crowded on weekends and holidays. Main street is touristy; side alleys are authentic.",
     "tags": [
       "Local Life",
@@ -138,16 +129,13 @@
       "friends"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "BJ005": {
     "id": "BJ005",
     "cityId": "BJ",
     "name": "Peking Duck at Da Dong",
-    "nameZh": "?????",
+    "nameZh": "大董烤鸭店",
     "category": "restaurant",
     "description": "An award-winning pioneer of modern Peking duck. Renowned for its signature \"super-lean\" crispy skin and artistic culinary presentation, it remains a must-visit for a sophisticated dining experience.",
     "highlights": "Signature lean-style Peking duck. Contemporary Chinese cuisine presentation.",
@@ -175,18 +163,15 @@
       "business"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "BJ006": {
     "id": "BJ006",
     "cityId": "BJ",
     "name": "Badaling Great Wall",
-    "nameZh": "?????",
+    "nameZh": "八达岭长城",
     "category": "attraction",
-    "description": "The most famous and best-preserved section of the wall. It's easy to hike and offers that classic \"Great Wall\" view you see in photos. \"if you don't see the Great Wall, you are not a hero\", it has become the first choice for global tourists to appreciate the majesty of the Great Wall. It's easy to hike and offers that classic \"Great Wall\" view you see in photos. \"if you don't see the Great Wall, you are not a hero\", it has become the first choice for global tourists to appreciate the majesty of the Great Wall.",
+    "description": "The most famous and best-preserved section of the wall. It’s easy to hike and offers that classic \"Great Wall\" view you see in photos. \"if you don't see the Great Wall, you are not a hero\", it has become the first choice for global tourists to appreciate the majesty of the Great Wall. It’s easy to hike and offers that classic \"Great Wall\" view you see in photos. \"if you don't see the Great Wall, you are not a hero\", it has become the first choice for global tourists to appreciate the majesty of the Great Wall.",
     "highlights": "North 8th Watchtower (Hao Han Po), \"Hero's Stele,\" best-preserved ramparts.",
     "tips": "Book tickets 1-7 days in advance online (passport required). If you purchase tickets online with a foreign passport, you must pick up a physical ticket at the entrance to gain entry.",
     "cautions": "Extremely crowded on weekends and holidays. The cable car is recommended for those with limited mobility. Wear non-slip athletic shoes; many of the steps have a slope of more than 45 degrees. A sun hat is required.",
@@ -212,16 +197,13 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "BJ007": {
     "id": "BJ007",
     "cityId": "BJ",
     "name": "Summer Palace",
-    "nameZh": "???",
+    "nameZh": "颐和园",
     "category": "attraction",
     "description": "The Summer Palace, a royal garden during the Qing Dynasty in China, is most notable for its perfect combination of natural landscapes surrounded by mountains and water and magnificent palace architecture, skillfully blending natural beauty with human craftsmanship.",
     "highlights": "Tower of Buddhist Incense, Kunming Lake boat rides, the Long Corridor.",
@@ -249,18 +231,15 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "BJ008": {
     "id": "BJ008",
     "cityId": "BJ",
     "name": "Lama Temple (Yonghe Temple)",
-    "nameZh": "???",
+    "nameZh": "雍和宫",
     "category": "attraction",
-    "description": "Beijing's most popular Buddhist temple. It's famous for its active worship and a breathtaking 18-meter-tall Buddha statue carved from a single piece of sandalwood.",
+    "description": "Beijing’s most popular Buddhist temple. It’s famous for its active worship and a breathtaking 18-meter-tall Buddha statue carved from a single piece of sandalwood.",
     "highlights": "The 18-meter Sandalwood Buddha, Tibetan art, blessing rituals.",
     "tips": "Free incense is provided at the entrance. Visit early in the morning to witness monk chanting.",
     "cautions": "Dress modestly (no short skirts/sleeveless tops). Photography is strictly prohibited inside the Buddha halls. Keep quite inside the Buddhahalls.",
@@ -286,16 +265,13 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "BJ009": {
     "id": "BJ009",
     "cityId": "BJ",
     "name": "Universal Studios Beijing",
-    "nameZh": "????",
+    "nameZh": "环球影城",
     "category": "experience",
     "description": "The city's top theme park. The Harry Potter world is the biggest draw.You can check out the Transformers live show.",
     "highlights": "Harry Potter and the Forbidden Journey, Decepticoaster, Butterbeer.",
@@ -322,18 +298,15 @@
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "BJ010": {
     "id": "BJ010",
     "cityId": "BJ",
     "name": "Wangfujing Street",
-    "nameZh": "???",
+    "nameZh": "王府井",
     "category": "attraction",
-    "description": "A legendary shopping street blending old-school Beijing heritage with modern malls. It's a great spot for a night stroll and some souvenir hunting. A legendary shopping street blending old-school Beijing heritage with modern malls. It's a great spot for a night stroll and some souvenir hunting.",
+    "description": "A legendary shopping street blending old-school Beijing heritage with modern malls. It’s a great spot for a night stroll and some souvenir hunting. A legendary shopping street blending old-school Beijing heritage with modern malls. It’s a great spot for a night stroll and some souvenir hunting.",
     "highlights": "Time-honored brand shops, Wangfujing Bookstore, Heping Guoju (retro underground Beijing).",
     "tips": "Visit the Hepingguo (Peace Fruit) underground for a nostalgic \"Old Beijing\" market experience. Large shopping malls like APM are here.",
     "cautions": "The famous snack street has been renovated/relocated. Local specialties are more expensive than in other areas. It's crowded on weekends and holidays.",
@@ -358,16 +331,13 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "BJ011": {
     "id": "BJ011",
     "cityId": "BJ",
     "name": "Ming Tombs",
-    "nameZh": "????",
+    "nameZh": "明十三陵",
     "category": "attraction",
     "description": "This is the tomb of 13 Ming Dynasty emperors. At the Dingling Underground Palace, you can descend deep underground and enter the ancient stone-built mausoleum.",
     "highlights": "Dingling Underground Palace, Ling'en Hall of Changling, Sacred Way stone statues.",
@@ -394,18 +364,15 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "BJ012": {
     "id": "BJ012",
     "cityId": "BJ",
     "name": "Temple of Earth Park",
-    "nameZh": "????",
+    "nameZh": "地坛公园",
     "category": "attraction",
-    "description": "A peaceful park used by emperors to worship the Earth God. It's a local favorite in autumn when the gingko trees turn bright yellow.",
+    "description": "A peaceful park used by emperors to worship the Earth God. It’s a local favorite in autumn when the gingko trees turn bright yellow.",
     "highlights": "Gingko Avenue, the Altar of Earth, authentic local morning exercises.",
     "tips": "On a sunny afternoon, the sunlight shining on the ancient altar wall creates a shimmering effect, just like the surface of the sea. The falling leaves of ginkgo trees in autumn are very beautiful.",
     "cautions": "Very crowded on weekends and holidays. This place carries a profound sense of Chinese literature. It is recommended to visit after understanding the relevant background for a better experience.",
@@ -431,16 +398,13 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "BJ013": {
     "id": "BJ013",
     "cityId": "BJ",
     "name": "National Museum of China",
-    "nameZh": "?????",
+    "nameZh": "国家博物馆",
     "category": "experience",
     "description": "It located in Tiananmen Square, it is a grand complex. It houses everything from ancient bronze treasures to modern historical artifacts, making it a must-visit for history enthusiasts.",
     "highlights": "Ancient bronze treasures (Houmuwu Ding), the \"Ancient China\" exhibit, view of Tiananmen Square.",
@@ -459,7 +423,7 @@
     "hours": "09:00-17:00",
     "duration": 240,
     "price": 0,
-    "indoor": false,
+    "indoor": true,
     "bestTime": "daytime",
     "suitableFor": [
       "solo",
@@ -468,16 +432,13 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "BJ014": {
     "id": "BJ014",
     "cityId": "BJ",
     "name": "Bird's Nest (National Stadium)",
-    "nameZh": "??",
+    "nameZh": "鸟巢",
     "category": "attraction",
     "description": "The massive steel stadium from the 2008 Olympics. Most people come here just to snap a photo of its unique exterior, especially at night when it glows red.",
     "highlights": "Intricate steel structure, the Sky Walk, night-time red lighting.",
@@ -504,18 +465,15 @@
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "BJ015": {
     "id": "BJ015",
     "cityId": "BJ",
     "name": "Water Cube (National Aquatics Center)",
-    "nameZh": "???",
+    "nameZh": "水立方",
     "category": "attraction",
-    "description": "Right across from the Bird's Nest, famous for its blue \"bubble\" walls. It's now a water park and looks amazing when it lights up in different colors at night.",
+    "description": "Right across from the Bird's Nest, famous for its blue \"bubble\" walls. It’s now a water park and looks amazing when it lights up in different colors at night.",
     "highlights": "The \"bubble\" exterior, indoor water park, colorful night lighting.",
     "tips": "Best viewed at night when the light shows are active. The Water Cube is now an \"Ice Cube\" with a skating rink.",
     "cautions": "Olympic Park is vast; prepare for lots of walking.",
@@ -539,18 +497,15 @@
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "BJ016": {
     "id": "BJ016",
     "cityId": "BJ",
     "name": "Qianmen Street",
-    "nameZh": "????",
+    "nameZh": "前门大街",
     "category": "shopping",
-    "description": "A historic shopping street south of Tiananmen. It has old-fashioned trams and classic shops. Its a bit touristy, but great for soaking up old Beijing vibes.",
+    "description": "A historic shopping street south of Tiananmen. It has old-fashioned trams and classic shops. It‘s a bit touristy, but great for soaking up old Beijing vibes.",
     "highlights": "The \"Dang Dang\" tram, century-old brand shops (Dashilar), historic architecture.",
     "tips": "Ride the vintage \"Dangdang\" tram car. Walk into the side street \"Dashilan\" . Eat traditional snacks.",
     "cautions": "Avoid the \"tours\" offered by strangers on the street.",
@@ -576,17 +531,14 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "BJ017": {
     "id": "BJ017",
     "cityId": "BJ",
     "name": "Shichahai",
-    "nameZh": "???",
-    "category": "attraction",
+    "nameZh": "什刹海",
+    "category": "nightlife",
     "description": "A lake district surrounded by hutongs. You can boat in summer, skate in winter, or hit the lakeside bars at night.It's where history meets nightlife.",
     "highlights": "Yinding Bridge mountain view, Houhai bar street, rickshaw tours.",
     "tips": "Visitors can experience the Grain Rain Cultural Festival and watch dragon boat races in the summer. In winter, they can enjoy traditional ice and snow activities, including ice curling, ice ball games, and ice sleds.",
@@ -612,16 +564,13 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "BJ018": {
     "id": "BJ018",
     "cityId": "BJ",
     "name": "Beihai Park",
-    "nameZh": "????",
+    "nameZh": "北海公园",
     "category": "attraction",
     "description": "It is one of the oldest royal gardens and a great place to rent a boat to explore the beautiful scenery around the Forbidden City, making it a truly relaxing destination.",
     "highlights": "The White Dagoba, Nine-Dragon Screen, boating on the lake.",
@@ -649,18 +598,15 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "BJ019": {
     "id": "BJ019",
     "cityId": "BJ",
     "name": "Prince Kung's Mansion",
-    "nameZh": "???",
+    "nameZh": "恭王府",
     "category": "attraction",
-    "description": "The former home of Heshen, a famous Qing dynasty official. It's known for the \"Fu\" (Good Fortune) stele in the garden and is even more ornate than some palaces.",
+    "description": "The former home of Heshen, a famous Qing dynasty official. It’s known for the \"Fu\" (Good Fortune) stele in the garden and is even more ornate than some palaces.",
     "highlights": "The \"Fu\" (Good Fortune) Stele, the elaborate back garden, the \"Treasury Wall.\"",
     "tips": "Look for the \"Fu\" (Fortune) stele hidden in the secret garden cave. Audio guides explain the complex feng shui layout.",
     "cautions": "Closed on Mondays. Daily visitor capacity is strictly limited. Reservations are required during peak season.  Online reservations require visitors to exchange them for paper tickets on-site.",
@@ -685,18 +631,15 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "BJ020": {
     "id": "BJ020",
     "cityId": "BJ",
     "name": "Tian'anmen Square",
-    "nameZh": "???",
+    "nameZh": "天安门",
     "category": "attraction",
-    "description": "The heart of Beijing. Most people come for the flag-raising ceremony or to see the massive Gate of Heavenly Peace. it's a must-see landmark.",
+    "description": "The heart of Beijing. Most people come for the flag-raising ceremony or to see the massive Gate of Heavenly Peace. it’s a must-see landmark.",
     "highlights": "Flag-raising ceremony, the Gate of Heavenly Peace, Monument to the People's Heroes.",
     "tips": "Reservation is mandatory via the official WeChat mini-program. Arrive very early for the sunrise flag-raising ceremony.",
     "cautions": "Expect multiple layers of security checks; carry your original passport. Lighters and knives are strictly prohibited.",
@@ -720,16 +663,13 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "BJ021": {
     "id": "BJ021",
     "cityId": "BJ",
     "name": "Old Summer Palace",
-    "nameZh": "???",
+    "nameZh": "圆明园",
     "category": "attraction",
     "description": "The ruins of a grand royal park destroyed in the 1800s. The stone pillars at Dashuifa are a haunting but beautiful reminder of the past.",
     "highlights": "Dashuifa ruins, black swans on the lake, the Western Mansion site.",
@@ -753,16 +693,13 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "BJ022": {
     "id": "BJ022",
     "cityId": "BJ",
     "name": "Quanjude Roast Duck",
-    "nameZh": "???????????",
+    "nameZh": "全聚德（前门大街门店）",
     "category": "restaurant",
     "description": "The ancestor of Peking duck. This grand flagship store has hosted world leaders and is the ideal place to enjoy a formal, traditional Peking duck feast.",
     "highlights": "Traditional \"hung-oven\" roasting, historic flagship scale, duck slicing ritual.",
@@ -788,18 +725,15 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "BJ023": {
     "id": "BJ023",
     "cityId": "BJ",
     "name": "Siji Minfu Roast Duck",
-    "nameZh": "?????????",
+    "nameZh": "四季民福（故宫店）",
     "category": "restaurant",
-    "description": "Currently the trendiest duck spot. The big draw here is the view. Some tables look directly out at the Forbidden City's corner towers.",
+    "description": "Currently the trendiest duck spot. The big draw here is the view. Some tables look directly out at the Forbidden City’s corner towers.",
     "highlights": "Golden views of the Palace moat, crispy Peking duck, classic Beijing snack platters.",
     "tips": "Ask for a window seat to view the Forbidden City moat while dining. Get a queue number early online via apps like Meituan.",
     "cautions": "Waiting times for a window seat can exceed 3 hours.  Better to make a reservation for peak hours.",
@@ -822,18 +756,15 @@
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "BJ024": {
     "id": "BJ024",
     "cityId": "BJ",
     "name": "Donglaishun Hotpot",
-    "nameZh": "?????????",
+    "nameZh": "东来顺（王府井店）",
     "category": "restaurant",
-    "description": "If you're craving traditional copper pot mutton hot pot, this is the place to go. Thinly sliced ??mutton and rich sesame sauce are their signature dishes.",
+    "description": "If you're craving traditional copper pot mutton hot pot, this is the place to go. Thinly sliced ​​mutton and rich sesame sauce are their signature dishes.",
     "highlights": "Copper-pot charcoal fire, paper-thin mutton, traditional sesame dip.",
     "tips": "Try the traditional copper pot instant-boiled mutton. The sesame dipping sauce is a must-try.",
     "cautions": "Copper pots are hot; be careful if dining with children.",
@@ -857,16 +788,13 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "BJ025": {
     "id": "BJ025",
     "cityId": "BJ",
     "name": "Jubaoyuan Hotpot",
-    "nameZh": "???",
+    "nameZh": "聚宝源",
     "category": "restaurant",
     "description": "This restaurant is a favorite among locals in the Muslim Quarter (Niujie). The meat is top-notch, and their signature dishes include Qianlong cabbage and freshly baked sesame buns.",
     "highlights": "Fresh hand-cut lamb, legendary sesame buns (Shaobing), local Niujie vibes.",
@@ -890,16 +818,13 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 2,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 2
   },
   "BJ026": {
     "id": "BJ026",
     "cityId": "BJ",
     "name": "Yaoji Chaogan (Fried Liver)",
-    "nameZh": "????",
+    "nameZh": "姚记炒肝",
     "category": "restaurant",
     "description": "A famous local eatery near the Drum Tower. Try the \"Chaogan\" (stewed liver) and pork buns if you want to eat like a real Beijing local for breakfast.",
     "highlights": "Liver and intestine stew, fried pork buns, Drum Tower backdrop.",
@@ -921,18 +846,15 @@
       "couple"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 1,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 1
   },
   "BJ027": {
     "id": "BJ027",
     "cityId": "BJ",
     "name": "King's Joy",
-    "nameZh": "???",
+    "nameZh": "京兆尹",
     "category": "restaurant",
-    "description": "A Michelin 3-star vegetarian restaurant near Lama Temple. It's very high-end with a misty, zen atmosphere-perfect for a special, fancy meal.",
+    "description": "A Michelin 3-star vegetarian restaurant near Lama Temple. It’s very high-end with a misty, zen atmosphere—perfect for a special, fancy meal.",
     "highlights": "Michelin 3-star vegetarian dining, courtyard Zen atmosphere, artistic presentation.",
     "tips": "This vegetarian restaurant uses mushrooms and nuts to mimic the texture of meat.",
     "cautions": "Very expensive; smart casual dress code recommended. Very expensive; smart casual dress code recommended. A 15% service charge applies.",
@@ -955,16 +877,13 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "BJ028": {
     "id": "BJ028",
     "cityId": "BJ",
     "name": "Jade Garden",
-    "nameZh": "??",
+    "nameZh": "翠园",
     "category": "restaurant",
     "description": "A high-end Cantonese restaurant known for its incredible Napoleon cake. A great choice if you want a break from local Beijing flavors.",
     "highlights": "Crispy roast pork, signature Napoleon cake, premium Cantonese dim sum.",
@@ -990,16 +909,13 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "BJ029": {
     "id": "BJ029",
     "cityId": "BJ",
     "name": "Daoxiangcun Zero Store",
-    "nameZh": "??????",
+    "nameZh": "稻香村零号店",
     "category": "shopping",
     "description": "This is a classic Beijing bakery that blends modern elements. Selling beautifully designed and creatively crafted pastries, it makes a perfect souvenir.",
     "highlights": "Creative Beijing pastries, cute snack designs, traditional-meets-modern gifts.",
@@ -1025,16 +941,13 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "BJ030": {
     "id": "BJ030",
     "cityId": "BJ",
     "name": "Heyan Meat Pie",
-    "nameZh": "????",
+    "nameZh": "河沿肉饼",
     "category": "restaurant",
     "description": "A highly popular local eatery located just east of the Forbidden City. Their signature dish is the Meat Pie. The crust is rolled incredibly thin, while the meat filling inside is thick, juicy, and packed with flavor.",
     "highlights": "Golden crispy crust, juicy meat filling, home-style comfort food.",
@@ -1058,16 +971,13 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "BJ031": {
     "id": "BJ031",
     "cityId": "BJ",
     "name": "Niujie (Ox Street)",
-    "nameZh": "??",
+    "nameZh": "牛街",
     "category": "experience",
     "description": "This is the heart of Beijing's Muslim Quarter. If you're looking for the most delicious mutton hot pot, glutinous rice cakes, and tender, juicy beef pies, this is a food paradise.",
     "highlights": "Authentic Halal food, historic mosque, street snacks.",
@@ -1090,18 +1000,15 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 2,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 2
   },
   "BJ032": {
     "id": "BJ032",
     "cityId": "BJ",
     "name": "Yandai Xiejie (Skewed Tobacco Pouch Street)",
-    "nameZh": "????",
+    "nameZh": "烟袋斜街",
     "category": "attraction",
-    "description": "A century-old alley near Shichahai. It's famous for its unique slanted layout and is packed with quirky souvenir shops and boutiques.",
+    "description": "A century-old alley near Shichahai. It’s famous for its unique slanted layout and is packed with quirky souvenir shops and boutiques.",
     "highlights": "Centuries-old \"Pipe\" alley, post office with custom stamps, lake connection.",
     "tips": "Explore the surrounding hutongs by rickshaw. You can get a special postmark at the Qing Dynasty post office counter and send a handwritten postcard. Yandai Street is an ideal place to buy traditional souvenirs.",
     "cautions": "Bars around the lake can be very loud and overpriced at night. The alleyways are mostly paved with stone slabs, so it is recommended to wear comfortable shoes.",
@@ -1125,16 +1032,13 @@
       "couple"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "BJ033": {
     "id": "BJ033",
     "cityId": "BJ",
     "name": "Yangmeizhu Xiejie",
-    "nameZh": "?????",
+    "nameZh": "杨梅竹斜街",
     "category": "attraction",
     "description": "A trendy yet quiet Hutong. It's filled with designer etudios, independent bookstores and stylish cafes. Much more peaceful than other Hutong.",
     "highlights": "Designer studios, vintage bookstores, quiet artistic vibes.",
@@ -1160,10 +1064,7 @@
       "couple"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "BJ034": {
     "id": "BJ034",
@@ -1195,16 +1096,13 @@
       "couple"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "BJ035": {
     "id": "BJ035",
     "cityId": "BJ",
     "name": "Beijing Exhibition Center",
-    "nameZh": "?????",
+    "nameZh": "北京展览馆",
     "category": "experience",
     "description": "A massive Soviet-style building with a grand spire. It hosts various expos and is home to the famous Moscow Restaurant.",
     "highlights": "Soviet architecture, soaring spire, the famous \"Moscow Restaurant.\"",
@@ -1230,18 +1128,15 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "BJ036": {
     "id": "BJ036",
     "cityId": "BJ",
     "name": "Tsinghua University",
-    "nameZh": "????",
+    "nameZh": "清华大学",
     "category": "attraction",
-    "description": "China's top university. Known for its beautiful \"Lotus Pond by Moonlight\" and classic brick campus buildings.",
+    "description": "China’s top university. Known for its beautiful \"Lotus Pond by Moonlight\" and classic brick campus buildings.",
     "highlights": "The Second Gate (Old Gate), Lotus Pond, red-brick western-style campus.",
     "tips": "Public tours are only available during weekends and holidays; reservation via WeChat is required. Visit the West Gate (iconic) and the Old Campus.",
     "cautions": "Very difficult to get a reservation during peak seasons. Academic buildings are restricted.",
@@ -1265,16 +1160,13 @@
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 2,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 2
   },
   "BJ037": {
     "id": "BJ037",
     "cityId": "BJ",
     "name": "Beijing Wildlife Zoo",
-    "nameZh": "???????",
+    "nameZh": "北京野生动物园",
     "category": "experience",
     "description": "This is a massive park where you can drive through lion/tiger habitats or take a caged bus for close-up animal encounters.",
     "highlights": "Self-drive safari, caged bus predator encounters, interactive lemur feeding.",
@@ -1299,18 +1191,15 @@
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "BJ038": {
     "id": "BJ038",
     "cityId": "BJ",
     "name": "Beijing Museum of Arts and Crafts",
-    "nameZh": "???????",
+    "nameZh": "北京工艺美术馆",
     "category": "experience",
-    "description": "Located near the Olympic park, it houses national treasures like jade carvings and cloisonné-a must for fans of traditional arts.",
+    "description": "Located near the Olympic park, it houses national treasures like jade carvings and cloisonné—a must for fans of traditional arts.",
     "highlights": "Imperial \"Four Treasures\" (Jade, Ivory, Cloisonné, Lacquer).",
     "tips": "Located within the Gongmei Mansion on Wangfujing; features \"Four Treasures\" of Beijing crafts.",
     "cautions": "Many items are for sale; distinguish between museum pieces and retail goods. Admission is free, but online reservations are required.",
@@ -1334,18 +1223,15 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "BJ039": {
     "id": "BJ039",
     "cityId": "BJ",
     "name": "Jingshan Park",
-    "nameZh": "??",
+    "nameZh": "景山",
     "category": "attraction",
-    "description": "Right across from the Forbidden City. A short hike to the top pavilion gives you the absolute best panoramic view of the palace's golden roofs.",
+    "description": "Right across from the Forbidden City. A short hike to the top pavilion gives you the absolute best panoramic view of the palace’s golden roofs.",
     "highlights": "A panoramic view of the Forbidden City from the top of Jingshan Hill.",
     "tips": "Climb to Wanchun Pavilion for the best 360-degree panoramic view of the Forbidden City. Great for sunset photos.",
     "cautions": "It is a short but steep climb.",
@@ -1371,18 +1257,15 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "BJ040": {
     "id": "BJ040",
     "cityId": "BJ",
     "name": "Sanlitun",
-    "nameZh": "???",
+    "nameZh": "三里屯",
     "category": "nightlife",
-    "description": "Beijing's fashion and nightlife hub. It's home to flagship stores and the city's most trendy bars and restaurants.",
+    "description": "Beijing’s fashion and nightlife hub. It’s home to flagship stores and the city’s most trendy bars and restaurants.",
     "highlights": "Taikoo Li street fashion, Bar street nightlife",
     "tips": "Visit the rooftop bars in the North Village for a quieter view of the skyline.",
     "cautions": "Be wary of \"bar scams\" in the smaller, unofficial side alleys; stick to established venues.",
@@ -1407,48 +1290,10 @@
       "friends"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "BJ041": {
     "id": "BJ041",
-    "cityId": "BJ",
-    "name": "Shichahai",
-    "nameZh": "???",
-    "category": "nightlife",
-    "description": "A historic lake district consisting of Houhai, Qianhai, and Xihai. It blends ancient Hutong culture with a vibrant, albeit touristy, lakeside bar scene.",
-    "highlights": "Yinding Bridge, rickshaw tours through Hutongs, and winter ice skating on the lake.",
-    "tips": "Walk deeper into the west-side Hutongs to find quieter, more authentic craft beer bars.",
-    "cautions": "Bar menus by the lake can be overpriced",
-    "tags": [
-      "Bar",
-      "Entertainment",
-      "River View",
-      "Modern",
-      "Instagram"
-    ],
-    "lat": 39.9388,
-    "lng": 116.3888,
-    "district": "Xicheng",
-    "hours": "24h",
-    "duration": 120,
-    "price": 1,
-    "indoor": true,
-    "bestTime": "evening",
-    "suitableFor": [
-      "solo",
-      "couple"
-    ],
-    "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
-  },
-  "BJ042": {
-    "id": "BJ042",
     "cityId": "BJ",
     "name": "Bacardi",
     "nameZh": "Bacardi",
@@ -1477,18 +1322,15 @@
       "couple"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": null
   },
-  "BJ043": {
-    "id": "BJ043",
+  "BJ042": {
+    "id": "BJ042",
     "cityId": "BJ",
     "name": "touch",
     "nameZh": "touch",
     "category": "nightlife",
-    "description": "A niche, contemporary lounge and bar often associated with the electronic music and sleek \"cyber\" aesthetic found in Beijing's newer nightlife spots.",
+    "description": "A niche, contemporary lounge and bar often associated with the electronic music and sleek \"cyber\" aesthetic found in Beijing’s newer nightlife spots.",
     "highlights": "Cutting-edge lighting design and underground DJ sets.",
     "tips": "Keep an eye on their guest DJ lineup for local techno and house talent.",
     "cautions": "The music can be quite niche; check the genre before heading in.",
@@ -1511,16 +1353,13 @@
       "couple"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
-  "BJ044": {
-    "id": "BJ044",
+  "BJ043": {
+    "id": "BJ043",
     "cityId": "BJ",
     "name": "White Dagoba Temple (Miaoying Temple)",
-    "nameZh": "???",
+    "nameZh": "白塔寺",
     "category": "attraction",
     "description": "Famous for its massive white stupa. The best way to enjoy it is from a nearby rooftop cafe with a coffee in hand.",
     "highlights": "Rooftop cafe views, historic white stupa, peaceful courtyard neighborhoods.",
@@ -1544,16 +1383,13 @@
       "couple"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
-  "BJ045": {
-    "id": "BJ045",
+  "BJ044": {
+    "id": "BJ044",
     "cityId": "BJ",
     "name": "Hopson One",
-    "nameZh": "???",
+    "nameZh": "合生汇",
     "category": "shopping",
     "description": "A popular mall known for its massive basement \"Night Food Street,\" which stays open late and offers endless dining options.",
     "highlights": "\"21st Block\" underground food street, luxury brands, massive atrium events.",
@@ -1577,18 +1413,15 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
-  "BJ046": {
-    "id": "BJ046",
+  "BJ045": {
+    "id": "BJ045",
     "cityId": "BJ",
     "name": "Silk Street Market",
-    "nameZh": "???",
+    "nameZh": "秀水街",
     "category": "shopping",
-    "description": "A legendary market for silk, custom suits, and souvenirs. It's a favorite for international tourists looking for high-quality bargains.",
+    "description": "A legendary market for silk, custom suits, and souvenirs. It’s a favorite for international tourists looking for high-quality bargains.",
     "highlights": "Custom-made suits, silk products, jewelry bargains.",
     "tips": "The online store, catering to foreign visitors, offers souvenirs such as export-oriented clothing and silk products.",
     "cautions": "Product quality varies.",
@@ -1610,16 +1443,13 @@
       "couple"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
-  "BJ047": {
-    "id": "BJ047",
+  "BJ046": {
+    "id": "BJ046",
     "cityId": "BJ",
     "name": "Beijing University",
-    "nameZh": "????",
+    "nameZh": "北京大学",
     "category": "attraction",
     "description": "The site of Peking University was originally the royal garden (Yan Garden) of the Ming and Qing dynasties. The campus has towering ancient trees, Chinese-style pavilions and Western-style red brick buildings.",
     "highlights": "Boya Tower (water tower), Weiming Lake, Peking University Library. West Gate plaque, Jingyuan lawn.",
@@ -1645,18 +1475,15 @@
       "couple"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 2,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 2
   },
-  "BJ048": {
-    "id": "BJ048",
+  "BJ047": {
+    "id": "BJ047",
     "cityId": "BJ",
     "name": "destination",
     "nameZh": "destination",
     "category": "nightlife",
-    "description": "Beijing's most famous and longest-running LGBTQ+ club and cultural center. It features multiple floors ranging from a high-energy dance floor to art gallery spaces.",
+    "description": "Beijing’s most famous and longest-running LGBTQ+ club and cultural center. It features multiple floors ranging from a high-energy dance floor to art gallery spaces.",
     "highlights": "The \"Art Center\" exhibitions and the legendary weekend circuit parties",
     "tips": "Check their official WeChat for specific \"Theme Nights\" which can vary from drag shows to art talks.",
     "cautions": "It gets extremely crowded after midnight on Saturdays. Open from Wednsday to Sunday.",
@@ -1681,18 +1508,15 @@
       "friends"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
-  "BJ049": {
-    "id": "BJ049",
+  "BJ048": {
+    "id": "BJ048",
     "cityId": "BJ",
     "name": "Aoga Art Museum",
-    "nameZh": "?????",
+    "nameZh": "奥加美术馆",
     "category": "experience",
-    "description": "A sleek, contemporary art museum near Sanlitun. It's a quiet escape for those looking to see unique exhibitions away from the crowds.",
+    "description": "A sleek, contemporary art museum near Sanlitun. It’s a quiet escape for those looking to see unique exhibitions away from the crowds.",
     "highlights": "Contemporary art exhibitions, sleek interior design, quiet creative escape.",
     "tips": "A boutique private gallery often showcasing contemporary art and design exhibitions.",
     "cautions": "Check current exhibition schedules online before visiting.",
@@ -1714,18 +1538,15 @@
       "couple"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
-  "BJ050": {
-    "id": "BJ050",
+  "BJ049": {
+    "id": "BJ049",
     "cityId": "BJ",
     "name": "Jolly Jolly",
     "nameZh": "Jolly Jolly",
     "category": "shopping",
-    "description": "A trendy lifestyle and toy boutique popular with Beijing's youth for its creative designs and \"Instagrammable\" vibe.",
+    "description": "A trendy lifestyle and toy boutique popular with Beijing’s youth for its creative designs and \"Instagrammable\" vibe.",
     "highlights": "Designer toy collections, quirky lifestyle products, trendy pop-culture vibes.",
     "tips": "Gift shops hidden in Beijing's hutongs offer a wide selection of original design items.",
     "cautions": "The opening hours of branches at different addresses are different.",
@@ -1747,18 +1568,15 @@
       "couple"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH001": {
     "id": "SH001",
     "cityId": "SH",
     "name": "The Bund",
-    "nameZh": "??",
+    "nameZh": "外滩",
     "category": "attraction",
-    "description": "Stretching along the Huangpu River, the Bund is a waterfront lined with historic buildings reflecting Shanghai's past. It offers one of the most iconic skyline views in the city.",
+    "description": "Stretching along the Huangpu River, the Bund is a waterfront lined with historic buildings reflecting Shanghai’s past. It offers one of the most iconic skyline views in the city.",
     "highlights": "one of the most iconic places, river view, past and present",
     "tips": "Visit at sunset or evening for the best views. Easy to combine with a river cruise or Lujiazui.",
     "cautions": "Very crowded at night and weekends.",
@@ -1780,22 +1598,19 @@
     "suitableFor": [
       "solo",
       "couple",
-      "family",
-      "elderly"
+      "friends",
+      "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "SH002": {
     "id": "SH002",
     "cityId": "SH",
     "name": "Oriental Pearl Tower",
-    "nameZh": "?????????",
+    "nameZh": "东方明珠广播电视塔",
     "category": "attraction",
-    "description": "Rising in the Lujiazui district, the Oriental Pearl Tower is one of Shanghai's most recognizable landmarks. Its observation decks offer sweeping views of the city skyline.",
+    "description": "Rising in the Lujiazui district, the Oriental Pearl Tower is one of Shanghai’s most recognizable landmarks. Its observation decks offer sweeping views of the city skyline.",
     "highlights": "Glass observation deck, skyline views",
     "tips": "Buy tickets online to skip queues. Visit on a clear day for better visibility.",
     "cautions": "Can be crowded during peak hours.",
@@ -1820,16 +1635,13 @@
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "SH003": {
     "id": "SH003",
     "cityId": "SH",
     "name": "Museum of Art Pudong",
-    "nameZh": "?????",
+    "nameZh": "浦东美术馆",
     "category": "attraction",
     "description": "Museum of Art Pudong is a modern museum located along the riverfront, showcasing international exhibitions and contemporary art. Its architecture and location make it a highlight itself.",
     "highlights": "contemporary art, architecture, exhibitions",
@@ -1851,19 +1663,17 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "SH004": {
     "id": "SH004",
     "cityId": "SH",
     "name": "Nanjing Road Pedestrian Street",
-    "nameZh": "??????",
+    "nameZh": "南京路步行街",
     "category": "shopping",
     "description": "Nanjing Road Pedestrian Street is one of the busiest shopping streets in China, filled with global brands and local stores. It offers a lively atmosphere both day and night.",
     "highlights": "Shopping street, neon lights, pedestrian zone",
@@ -1886,23 +1696,21 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH005": {
     "id": "SH005",
     "cityId": "SH",
     "name": "Shanghai Ocean Aquarium",
-    "nameZh": "???????",
+    "nameZh": "上海海洋水族馆",
     "category": "attraction",
     "description": "Shanghai Ocean Aquarium features marine life from around the world, including a popular underwater tunnel. It is one of the largest aquariums in Asia.",
     "highlights": "marine life, tunnel aquarium, family-friendly",
-    "tips": "Allow 1-2 hours. Good indoor option on rainy days.",
+    "tips": "Allow 1–2 hours. Good indoor option on rainy days.",
     "cautions": "Can be crowded with families and school groups.",
     "tags": [
       "Nature",
@@ -1919,21 +1727,19 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH006": {
     "id": "SH006",
     "cityId": "SH",
     "name": "Huangpu River Cruise",
-    "nameZh": "?????",
+    "nameZh": "黄浦江轮渡",
     "category": "experience",
-    "description": "A Huangpu River cruise offers a unique way to see Shanghai's skyline from the water. It connects views of the Bund and modern Pudong.",
+    "description": "A Huangpu River cruise offers a unique way to see Shanghai’s skyline from the water. It connects views of the Bund and modern Pudong.",
     "highlights": "river cruise, night view",
     "tips": "Book evening tickets for the best experience. Bring a jacket in cooler seasons.",
     "cautions": "Tickets may sell out during peak times. Weather can affect schedules.",
@@ -1953,19 +1759,17 @@
     "bestTime": "evening",
     "suitableFor": [
       "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH008": {
     "id": "SH008",
     "cityId": "SH",
     "name": "Paulaner Restaurant",
-    "nameZh": "?????(????)",
+    "nameZh": "宝莱纳餐厅(陆家嘴店)",
     "category": "restaurant",
     "description": "Paulaner Restaurant offers German-style food with beer and a lively atmosphere. It is popular among both locals and international visitors.",
     "highlights": "beer, western food, lively vibe",
@@ -1987,20 +1791,18 @@
     "bestTime": "evening",
     "suitableFor": [
       "solo",
-      "couple"
+      "couple",
+      "friends"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "SH010": {
     "id": "SH010",
     "cityId": "SH",
     "name": "Yuyuan Food Street",
-    "nameZh": "?????",
-    "category": "restaurant",
+    "nameZh": "豫园小吃街",
+    "category": "experience",
     "description": "Yuyuan Food Street is a lively area offering a variety of traditional Shanghai snacks. It is a popular spot for tasting local flavors.",
     "highlights": "Local snacks, street food, cultural vibe",
     "tips": "Try small dishes from different stalls. Keep mobile payment ready.",
@@ -2021,19 +1823,18 @@
     "bestTime": "any",
     "suitableFor": [
       "solo",
+      "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "SH011": {
     "id": "SH011",
     "cityId": "SH",
     "name": "Yuyuan Garden",
-    "nameZh": "????",
+    "nameZh": "上海豫园",
     "category": "attraction",
     "description": "Yuyuan Garden is a classical Chinese garden with traditional architecture and peaceful scenery. It provides a contrast to the busy city outside. This classical garden dates back to the Ming dynasty and features traditional design.",
     "highlights": "Traditional garden, architecture, classical",
@@ -2056,20 +1857,18 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family",
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH012": {
     "id": "SH012",
     "cityId": "SH",
     "name": "Chenghuang Temple (City God Temple)",
-    "nameZh": "?????",
+    "nameZh": "上海城隍庙",
     "category": "attraction",
     "description": "Chenghuang Temple is a historic temple area surrounded by local shops and markets. It reflects traditional Shanghai culture and daily life.",
     "highlights": "Temple complex, local culture, shopping",
@@ -2093,16 +1892,13 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH013": {
     "id": "SH013",
     "cityId": "SH",
     "name": "Shanghai Disney Resort",
-    "nameZh": "????????",
+    "nameZh": "上海迪士尼度假区",
     "category": "experience",
     "description": "Shanghai Disney Resort is a large theme park offering rides, shows, and entertainment. It is a popular destination for families and visitors.",
     "highlights": "Rides, shows, theme park",
@@ -2124,19 +1920,17 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "SH014": {
     "id": "SH014",
     "cityId": "SH",
     "name": "Shanghai Zoo",
-    "nameZh": "?????",
+    "nameZh": "上海动物园",
     "category": "attraction",
     "description": "Shanghai Zoo houses animals from around the world in a large green setting. It is a relaxing place for families and nature lovers.",
     "highlights": "Animals, outdoor space",
@@ -2156,19 +1950,17 @@
     "bestTime": "morning",
     "suitableFor": [
       "solo",
+      "friends",
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH015": {
     "id": "SH015",
     "cityId": "SH",
     "name": "Shanghai Natural History Museum",
-    "nameZh": "???????",
+    "nameZh": "上海自然博物馆",
     "category": "attraction",
     "description": "Shanghai Natural History Museum features interactive exhibits on science and nature. It is one of the most modern museums in the city. With interactive exhibits, this museum focuses on science and natural history.",
     "highlights": "Interactive exhibits, science",
@@ -2181,7 +1973,7 @@
     ],
     "lat": 31.234,
     "lng": 121.468,
-    "district": "Jing'an",
+    "district": "Jing’an",
     "hours": "09:00-17:00",
     "duration": 90,
     "price": 1,
@@ -2189,19 +1981,17 @@
     "bestTime": "afternoon",
     "suitableFor": [
       "solo",
+      "friends",
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH016": {
     "id": "SH016",
     "cityId": "SH",
     "name": "Shanghai Museum",
-    "nameZh": "?????",
+    "nameZh": "上海博物馆",
     "category": "attraction",
     "description": "Shanghai Museum displays ancient Chinese art and historical artifacts. It is one of the most important museums in China. The museum holds over 1.02 million cultural relics, including more than 145,000 precious items. The collection spans 33 categories, covering representative artefacts of outstanding traditional Chinese culture.",
     "highlights": "Bronze ware, ceramics, calligraphy",
@@ -2224,20 +2014,18 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family",
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "SH017": {
     "id": "SH017",
     "cityId": "SH",
     "name": "Shanghai Film Museum",
-    "nameZh": "???????",
+    "nameZh": "上海电影博物馆",
     "category": "attraction",
     "description": "Shanghai Film Museum showcases the history of Chinese cinema. It offers interactive displays and exhibitions.",
     "highlights": "film, media, interactive exhibits",
@@ -2259,19 +2047,17 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "SH018": {
     "id": "SH018",
     "cityId": "SH",
     "name": "World Expo Museum",
-    "nameZh": "????????",
+    "nameZh": "上海世博会博物馆",
     "category": "attraction",
     "description": "World Expo Museum presents the history of global exhibitions and Shanghai Expo. It offers educational and interactive displays.",
     "highlights": "Expo history, global culture",
@@ -2293,19 +2079,17 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "SH019": {
     "id": "SH019",
     "cityId": "SH",
     "name": "Yuxingji Crab Noodles",
-    "nameZh": "???.????(????)",
+    "nameZh": "裕兴记.蟹黄面馆(八佰伴店)",
     "category": "restaurant",
     "description": "Yuxingji Crab Noodles is known for rich crab-based dishes. It is popular for local-style noodles.",
     "highlights": "Crab noodles, local cuisine",
@@ -2328,19 +2112,17 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "SH020": {
     "id": "SH020",
     "cityId": "SH",
     "name": "SPACELAB Restaurant",
-    "nameZh": "SPACELAB????(?????)",
+    "nameZh": "SPACELAB失重餐厅(正大广场店)",
     "category": "experience",
     "description": "This themed restaurant delivers food via automated systems for a fun experience. It is popular among younger visitors.",
     "highlights": "Robot service, interactive dining, novelty",
@@ -2362,19 +2144,17 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "SH021": {
     "id": "SH021",
     "cityId": "SH",
     "name": "Shanghai Tower",
-    "nameZh": "??????",
+    "nameZh": "上海中心大厦",
     "category": "attraction",
     "description": "Standing in Lujiazui, this skyscraper is one of the tallest buildings in China. It is a key landmark in Pudong.",
     "highlights": "Observation deck, skyline views",
@@ -2397,19 +2177,17 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH022": {
     "id": "SH022",
     "cityId": "SH",
     "name": "Shanghai World Financial Center",
-    "nameZh": "??????",
+    "nameZh": "环球金融中心",
     "category": "attraction",
     "description": "Shanghai World Financial Center features a famous skywalk observation deck. It offers unique views of the city.",
     "highlights": "Glass skywalk, skyline views",
@@ -2430,19 +2208,17 @@
     "bestTime": "afternoon",
     "suitableFor": [
       "solo",
-      "couple"
+      "couple",
+      "friends"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH023": {
     "id": "SH023",
     "cityId": "SH",
     "name": "Jin Mao Tower",
-    "nameZh": "????",
+    "nameZh": "金茂大厦",
     "category": "attraction",
     "description": "This iconic tower combines office space with a popular viewing platform. Its observation deck offers views over Shanghai.",
     "highlights": "Observation deck, architecture",
@@ -2463,19 +2239,17 @@
     "bestTime": "afternoon",
     "suitableFor": [
       "solo",
-      "couple"
+      "couple",
+      "friends"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH024": {
     "id": "SH024",
     "cityId": "SH",
     "name": "Nanxiang Xiaolongbao",
-    "nameZh": "?????(????)",
+    "nameZh": "南翔馒头店(城隍庙店)",
     "category": "restaurant",
     "description": "A famous restaurant near Yuyuan Garden and Chenghuang Temple known for traditional xiaolongbao. It is a must-try local food experience.",
     "highlights": "Xiaolongbao, local food, famous Chinese snacks",
@@ -2497,19 +2271,17 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH025": {
     "id": "SH025",
     "cityId": "SH",
     "name": "Lvbolang Restaurant",
-    "nameZh": "???",
+    "nameZh": "绿波廊",
     "category": "restaurant",
     "description": "This restaurant offers classic Shanghai cuisine with views of Yuyuan Garden. It is known for traditional dishes.",
     "highlights": "Garden view, local cuisine",
@@ -2523,26 +2295,24 @@
     "lat": 31.2278,
     "lng": 121.4932,
     "district": "Huangpu",
-    "hours": "08:00-22:00",
+    "hours": "11:00-14:00",
     "duration": 120,
     "price": 2,
     "indoor": true,
     "bestTime": "afternoon",
     "suitableFor": [
       "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH026": {
     "id": "SH026",
     "cityId": "SH",
-    "name": "Yang's Dumplings",
-    "nameZh": "????(??????)",
+    "name": "Yang’s Dumplings",
+    "nameZh": "小杨生煎(上海宁波路店)",
     "category": "restaurant",
     "description": "Located near Nanjing Road, this restaurant is a popular spot for Shanghai-style fried dumplings. It is known for quick and affordable meals.",
     "highlights": "Fried dumplings, street food",
@@ -2564,19 +2334,17 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "SH027": {
     "id": "SH027",
     "cityId": "SH",
     "name": "Duolun Road Cultural Celebrity Street",
-    "nameZh": "????????",
+    "nameZh": "多伦路文化名人街",
     "category": "attraction",
     "description": "This historic street features old buildings and cultural heritage spots. It offers a quieter atmosphere.",
     "highlights": "Historic street, culture",
@@ -2598,23 +2366,21 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH028": {
     "id": "SH028",
     "cityId": "SH",
     "name": "The Stage at Magnolia Plaza (Observation Deck)",
-    "nameZh": "??????",
+    "nameZh": "白玉兰观景台",
     "category": "experience",
     "description": "An observation deck offering views over the Huangpu River and skyline. It is a modern viewing platform.",
     "highlights": "observation, skyline",
-    "tips": "This observation deck offers a close view of the Bund and surrounding skyline. It's less crowded than major towers and is a good alternative for photography. Visit around sunset for the best lighting.",
+    "tips": "This observation deck offers a close view of the Bund and surrounding skyline. It’s less crowded than major towers and is a good alternative for photography. Visit around sunset for the best lighting.",
     "cautions": "Entry usually requires a ticket, and access may depend on opening hours. Visibility can be affected by weather conditions. It may not be as high as other observation decks.",
     "tags": [
       "Skyline",
@@ -2631,19 +2397,17 @@
     "bestTime": "evening",
     "suitableFor": [
       "solo",
-      "couple"
+      "couple",
+      "friends"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH029": {
     "id": "SH029",
     "cityId": "SH",
     "name": "Century Park",
-    "nameZh": "????",
+    "nameZh": "世纪公园",
     "category": "attraction",
     "description": "Century Park is the largest park in Shanghai, offering green space and lakes. It is ideal for relaxation and outdoor activities.",
     "highlights": "Park, cycling, nature",
@@ -2665,20 +2429,18 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family",
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "SH030": {
     "id": "SH030",
     "cityId": "SH",
     "name": "Rodin Art Center",
-    "nameZh": "??????",
+    "nameZh": "罗丹艺术中心",
     "category": "attraction",
     "description": "A small art center featuring sculptures and temporary exhibitions.",
     "highlights": "Sculptures, art",
@@ -2702,16 +2464,13 @@
       "friends"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH031": {
     "id": "SH031",
     "cityId": "SH",
     "name": "China Art Museum (Shanghai)",
-    "nameZh": "????????????",
+    "nameZh": "上海美术馆（中华艺术宫）",
     "category": "attraction",
     "description": "This major art museum displays modern Chinese art in a spacious setting. The total construction area reaches 166,800 square metres, with nearly 70,000 square metres of exhibition space, divided into six exhibition levels and 35 exhibition halls.",
     "highlights": "Chinese painting, oil painting, calligraphy, printmaking, sculpture, shadow puppetry",
@@ -2736,16 +2495,13 @@
       "friends"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH032": {
     "id": "SH032",
     "cityId": "SH",
     "name": "Aurora Museum",
-    "nameZh": "???????",
+    "nameZh": "上海震旦博物馆",
     "category": "attraction",
     "description": "Located near Lujiazui, this museum showcases private collections and art. It reveals the rich cultural connotations of historical relics to the audience.",
     "highlights": "Buddhist sculptures, jade, pottery, blue and white porcelain",
@@ -2766,19 +2522,17 @@
     "bestTime": "afternoon",
     "suitableFor": [
       "solo",
-      "couple"
+      "couple",
+      "friends"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH033": {
     "id": "SH033",
     "cityId": "SH",
-    "name": "Jing'an Temple",
-    "nameZh": "???",
+    "name": "Jing’an Temple",
+    "nameZh": "静安寺",
     "category": "attraction",
     "description": "It is a well-known Buddhist temple in central Shanghai. It blends tradition with a modern setting. It is the oldest Buddhist temple in Shanghai, and its architectural style is modeled after structures from before the Ming Dynasty, with the bracket system serving as a prime example.",
     "highlights": "Bell Tower, Drum Tower, Dharma Hall, white marble railing",
@@ -2791,7 +2545,7 @@
     ],
     "lat": 31.224,
     "lng": 121.445,
-    "district": "Jing'an",
+    "district": "Jing’an",
     "hours": "07:30-17:00",
     "duration": 60,
     "price": 1,
@@ -2800,20 +2554,18 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family",
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "SH034": {
     "id": "SH034",
     "cityId": "SH",
     "name": "Longhua Pagoda",
-    "nameZh": "???",
+    "nameZh": "龙华塔",
     "category": "attraction",
     "description": "Longhua Pagoda is part of an ancient temple complex. It is one of the oldest structures in Shanghai.",
     "highlights": "A blend of Chinese and foreign architectural cultures",
@@ -2835,20 +2587,18 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family",
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "SH035": {
     "id": "SH035",
     "cityId": "SH",
     "name": "Xujiahui Cathedral",
-    "nameZh": "???????",
+    "nameZh": "徐家汇天主教堂",
     "category": "attraction",
     "description": "Xujiahui Catholic Church is the largest Catholic church in Shanghai, a typical Gothic-style building, and the first Catholic church in China built according to Western architectural methods.",
     "highlights": "Church, Gothic-style building",
@@ -2874,16 +2624,13 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "SH036": {
     "id": "SH036",
     "cityId": "SH",
     "name": "Wukang Road Historic Street",
-    "nameZh": "?????????",
+    "nameZh": "武康路历史文化名街",
     "category": "attraction",
     "description": "This street is known for its historic villas and tree-lined sidewalks. It is popular for walking and photography.",
     "highlights": "Historic street, cafes, walking",
@@ -2907,19 +2654,17 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "SH037": {
     "id": "SH037",
     "cityId": "SH",
     "name": "Rong Cuisine",
-    "nameZh": "???(????????)",
+    "nameZh": "荣小馆(上海新天地北里店)",
     "category": "restaurant",
     "description": "Located in the Xintiandi area, this restaurant serves refined Jiangnan-style dishes in an elegant setting. It offers a more upscale dining experience.",
     "highlights": "Local cuisine, fine dining, Jiangnan dishes",
@@ -2940,19 +2685,17 @@
     "bestTime": "evening",
     "suitableFor": [
       "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH038": {
     "id": "SH038",
     "cityId": "SH",
     "name": "Binjiang Riverside Promenade",
-    "nameZh": "????",
+    "nameZh": "滨江大道",
     "category": "experience",
     "description": "Binjiang Riverside Promenade is a scenic riverside walkway with skyline views. It is popular for walking and cycling.",
     "highlights": "Fountain Square, Huangpu River, three-dimensional design",
@@ -2974,20 +2717,18 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family",
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH039": {
     "id": "SH039",
     "cityId": "SH",
     "name": "Shanghai Circus World",
-    "nameZh": "?????",
+    "nameZh": "上海马戏城",
     "category": "experience",
     "description": "Shanghai Circus World hosts acrobatic shows and performances. It is a popular entertainment venue.",
     "highlights": "Acrobatics and circus performances",
@@ -2999,7 +2740,7 @@
     ],
     "lat": 31.28,
     "lng": 121.47,
-    "district": "Jing'an",
+    "district": "Jing’an",
     "hours": "19:30-21:00",
     "duration": 90,
     "price": 2,
@@ -3008,19 +2749,17 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "SH040": {
     "id": "SH040",
     "cityId": "SH",
     "name": "Gongqing Forest Park",
-    "nameZh": "????????",
+    "nameZh": "上海共青森林公园",
     "category": "attraction",
     "description": "This Park offers large green spaces and outdoor activities. It is a peaceful escape from the city.",
     "highlights": "The park is characterised by its forest landscape.",
@@ -3044,20 +2783,17 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "SH041": {
     "id": "SH041",
     "cityId": "SH",
     "name": "Shanghai Oriental Art Center",
-    "nameZh": "????????",
+    "nameZh": "上海东方艺术中心",
     "category": "experience",
     "description": "This modern concert hall hosts performances and cultural events. It is known for its modern design.",
     "highlights": "Performances by large symphony orchestras and choirs, as well as various solo and recital concerts",
-    "tips": "It's easily accessible by metro and best visited in the evening. Allow time to appreciate the building's architecture.",
+    "tips": "It’s easily accessible by metro and best visited in the evening. Allow time to appreciate the building’s architecture.",
     "cautions": "Tickets are required for performances and may sell out quickly. There is limited activity outside show times. Arrive early to avoid last-minute entry queues.",
     "tags": [
       "Art",
@@ -3075,19 +2811,17 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH042": {
     "id": "SH042",
     "cityId": "SH",
     "name": "Xintiandi",
-    "nameZh": "???",
+    "nameZh": "新天地",
     "category": "nightlife",
     "description": "It is a stylish area with shops, restaurants, and nightlife. It blends historic buildings with modern lifestyle.",
     "highlights": "Dining, nightlife, shopping",
@@ -3109,19 +2843,17 @@
     "bestTime": "evening",
     "suitableFor": [
       "solo",
-      "couple"
+      "couple",
+      "friends"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "SH043": {
     "id": "SH043",
     "cityId": "SH",
     "name": "Tianzifang",
-    "nameZh": "???",
+    "nameZh": "田子坊",
     "category": "shopping",
     "description": "It is a creative area with narrow alleys and small shops. It is popular for souvenirs and cafes.",
     "highlights": "Art shops, alleyways",
@@ -3143,19 +2875,17 @@
     "bestTime": "afternoon",
     "suitableFor": [
       "solo",
-      "couple"
+      "couple",
+      "friends"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "SH044": {
     "id": "SH044",
     "cityId": "SH",
     "name": "M50 Creative Park",
-    "nameZh": "M50???",
+    "nameZh": "M50创意园",
     "category": "attraction",
     "description": "This creative park is home to galleries, studios, and exhibitions. It is popular among art lovers.",
     "highlights": "Galleries, modern art",
@@ -3175,23 +2905,21 @@
     "indoor": true,
     "bestTime": "afternoon",
     "suitableFor": [
-      "solo"
+      "solo",
+      "friends"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH045": {
     "id": "SH045",
     "cityId": "SH",
-    "name": "People's Square",
-    "nameZh": "????",
+    "name": "People’s Square",
+    "nameZh": "人民广场",
     "category": "attraction",
-    "description": "People's Square is a central public space surrounded by major landmarks. It is a hub of city life.",
+    "description": "People’s Square is a central public space surrounded by major landmarks. It is a hub of city life.",
     "highlights": "Camphor trees, cedars, white magnolias and other evergreen shrubs",
-    "tips": "Located in the city center, People's Square is well connected by multiple metro lines, making it a convenient starting point for exploring Shanghai. Visit in the morning or late afternoon for a more relaxed atmosphere, and consider combining it with nearby attractions like Shanghai Museum or Nanjing Road.",
+    "tips": "Located in the city center, People’s Square is well connected by multiple metro lines, making it a convenient starting point for exploring Shanghai. Visit in the morning or late afternoon for a more relaxed atmosphere, and consider combining it with nearby attractions like Shanghai Museum or Nanjing Road.",
     "cautions": "The area can get very crowded, especially on weekends and public holidays. The underground shopping area can be confusing to navigate, so follow clear exit signs.",
     "tags": [
       "Landmark",
@@ -3212,16 +2940,13 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH046": {
     "id": "SH046",
     "cityId": "SH",
     "name": "Suzhou Creek Riverside",
-    "nameZh": "???????",
+    "nameZh": "苏州河滨水空间",
     "category": "experience",
     "description": "Suzhou Creek Riverside is a redeveloped waterfront area for walking and leisure. It offers a quieter alternative to the Bund.",
     "highlights": "Riverside, walking",
@@ -3242,19 +2967,17 @@
     "bestTime": "evening",
     "suitableFor": [
       "solo",
-      "couple"
+      "couple",
+      "friends"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "SH047": {
     "id": "SH047",
     "cityId": "SH",
     "name": "Din Tai Fung",
-    "nameZh": "???(????????)",
+    "nameZh": "鼎泰丰(新天地时尚一期店)",
     "category": "restaurant",
     "description": "A well-known restaurant serving Taiwanese-style dumplings. Located in Xintiandi, this restaurant is known for its famous soup dumplings and consistent quality.",
     "highlights": "It is popular among international visitors.",
@@ -3276,19 +2999,17 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "SH048": {
     "id": "SH048",
     "cityId": "SH",
     "name": "North Bund Green Land",
-    "nameZh": "???????",
+    "nameZh": "北外滩滨江绿地",
     "category": "attraction",
     "description": "North Bund Green Land offers open green space with skyline views. It is less crowded than the Bund.",
     "highlights": "Offers great views of the Lujiazui architectural complex across the Huangpu River from multiple angles",
@@ -3310,23 +3031,21 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH049": {
     "id": "SH049",
     "cityId": "SH",
     "name": "Lu Xun Park",
-    "nameZh": "????",
+    "nameZh": "鲁迅公园",
     "category": "attraction",
     "description": "Lu Xun Park is a public park dedicated to the famous writer. It reflects local daily life.",
     "highlights": "Popular for walking and relaxation.",
-    "tips": "A popular local park where you can experience daily life in Shanghai, especially in the morning. You may see people practicing tai chi, singing, or dancing. It's a good place for a short, relaxing visit.",
+    "tips": "A popular local park where you can experience daily life in Shanghai, especially in the morning. You may see people practicing tai chi, singing, or dancing. It’s a good place for a short, relaxing visit.",
     "cautions": "Facilities are simple and not designed as a major tourist attraction.",
     "tags": [
       "Park",
@@ -3343,24 +3062,22 @@
     "bestTime": "morning",
     "suitableFor": [
       "solo",
+      "friends",
       "family",
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "SH050": {
     "id": "SH050",
     "cityId": "SH",
     "name": "Sinan Mansions",
-    "nameZh": "????",
+    "nameZh": "思南公馆",
     "category": "attraction",
     "description": "This area features restored historic buildings and cafés. It is known for its relaxed atmosphere.",
     "highlights": "Cafes, historic buildings",
-    "tips": "This area features restored historic villas with cafés, restaurants, and small cultural spaces. It's best explored on foot and works well as a stop in a French Concession itinerary. Late afternoon is a good time to enjoy the atmosphere.",
+    "tips": "This area features restored historic villas with cafés, restaurants, and small cultural spaces. It’s best explored on foot and works well as a stop in a French Concession itinerary. Late afternoon is a good time to enjoy the atmosphere.",
     "cautions": "Some venues may have limited opening hours. It can feel quiet during weekdays.",
     "tags": [
       "Citywalk",
@@ -3379,22 +3096,20 @@
     "suitableFor": [
       "solo",
       "couple",
+      "friends",
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA001": {
     "id": "XA001",
     "cityId": "XA",
     "name": "The Grand Tang Mall",
-    "nameZh": "?????",
+    "nameZh": "大唐不夜城",
     "category": "attraction",
-    "description": "Great Tang All Day Mall is a large Tang-style pedestrian street inspired by the prosperous Tang Dynasty. At night, its bright lights, performances, and cultural activities recreate the romance and vitality of ancient Chang'an.",
-    "highlights": "Asia's largest matrix fountain, live shows, historical NPCs, live tumbler performance, Hanfu rental",
+    "description": "Great Tang All Day Mall is a large Tang-style pedestrian street inspired by the prosperous Tang Dynasty. At night, its bright lights, performances, and cultural activities recreate the romance and vitality of ancient Chang’an.",
+    "highlights": "Asia’s largest matrix fountain, live shows, historical NPCs, live tumbler performance, Hanfu rental",
     "tips": "Performances are usually held between 19:00 and 23:00. The area is large, so wear comfortable shoes. It is useful to bring some cash.",
     "cautions": "Performance times may change, so check the official schedule in advance. It gets very crowded on public holidays, and driving is not recommended.",
     "tags": [
@@ -3418,16 +3133,13 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA002": {
     "id": "XA002",
     "cityId": "XA",
     "name": "Terracotta Warriors",
-    "nameZh": "?????????",
+    "nameZh": "秦始皇兵马俑博物馆",
     "category": "attraction",
     "description": "The Terracotta Army is part of the Mausoleum of Emperor Qin Shi Huang and is known as one of the \"Eight Wonders of the World.\" Its lifelike clay soldiers, horses, and chariots show the power of the Qin Dynasty and its superb craftsmanship.",
     "highlights": "Terracotta Warriors, bronze chariots, Eight Wonders of the World, ancient military history, sculpture art",
@@ -3443,7 +3155,7 @@
     "lat": 34.3841,
     "lng": 109.2785,
     "district": "Lintong",
-    "hours": "08:00-22:00",
+    "hours": "08:30-17:00",
     "duration": 180,
     "price": 1,
     "indoor": true,
@@ -3455,18 +3167,15 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA003": {
     "id": "XA003",
     "cityId": "XA",
     "name": "Mount Huashan",
-    "nameZh": "??",
+    "nameZh": "华山",
     "category": "attraction",
-    "description": "Mount Hua is one of China's Five Great Mountains and is famous for its steep and dramatic cliffs. It has five main peaks, beautiful natural scenery, and important Taoist cultural sites.",
+    "description": "Mount Hua is one of China’s Five Great Mountains and is famous for its steep and dramatic cliffs. It has five main peaks, beautiful natural scenery, and important Taoist cultural sites.",
     "highlights": "Plank Walk, mountaintop sunrise, Taoist temples, steep peaks",
     "tips": "Book tickets up to 10 days in advance through the WeChat mini program \"Huashan Tourism Service Platform,\" or buy them on site. Mountain lodging ranges is available and should be booked early in peak season if you plan to stay overnight for sunrise.",
     "cautions": "Hiking requires good physical strength. Prepare sports shoes, trekking poles, enough food and water, sun-protective clothing, a power bank, and other essentials.",
@@ -3480,7 +3189,7 @@
     "lat": 34.4886,
     "lng": 110.0893,
     "district": "Huayin",
-    "hours": "08:00-22:00",
+    "hours": "07:00-16:00",
     "duration": 360,
     "price": 3,
     "indoor": false,
@@ -3491,18 +3200,15 @@
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA004": {
     "id": "XA004",
     "cityId": "XA",
     "name": "Shaanxi History Museum",
-    "nameZh": "???????",
+    "nameZh": "陕西历史博物馆",
     "category": "attraction",
-    "description": "Shaanxi History Museum is an important cultural landmark in Xi'an. Its collections, including bronze objects, Tang tri-colored pottery, agate cups, and silver sachets, tell the story of ancient Shaanxi.",
+    "description": "Shaanxi History Museum is an important cultural landmark in Xi’an. Its collections, including bronze objects, Tang tri-colored pottery, agate cups, and silver sachets, tell the story of ancient Shaanxi.",
     "highlights": "Ancient Shaanxi relics, national treasures, rich collections",
     "tips": "Reserve free tickets 5 days in advance through the \"Shaanxi History Museum\" WeChat account. Volunteer guided tours are available at 9:00 and 13:30, and audio guides can also be rented. Special paid exhibitions is also available.",
     "cautions": "Closed every Monday. Tickets are hard to get, and the museum can be very crowded during peak hours.",
@@ -3516,7 +3222,7 @@
     "lat": 34.2257,
     "lng": 108.9553,
     "district": "Yanta",
-    "hours": "08:00-22:00",
+    "hours": "08:30-18:00",
     "duration": 180,
     "price": 1,
     "indoor": true,
@@ -3528,20 +3234,17 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA005": {
     "id": "XA005",
     "cityId": "XA",
     "name": "The Xi`an Circumvallation",
-    "nameZh": "????",
+    "nameZh": "西安城墙",
     "category": "attraction",
-    "description": "Xi'an City Wall is one of the largest and best-preserved ancient city walls in China, with a history of over 600 years. It is about 14 kilometers long and includes four main gates: Changle Gate, Yongning Gate, Anding Gate, and Anyuan Gate.",
-    "highlights": "Ancient Xi'an architecture, city wall sunset, ancient military wisdom",
-    "tips": "Book tickets up to 6 days in advance via the \"Xi'an City Wall Scenic Area\" WeChat mini program. Tickets allow multiple entries on the same day. Bicycles can be rented on the wall. In winter, the Spring Festival Lantern Fair requires a separate ticket.",
+    "description": "Xi’an City Wall is one of the largest and best-preserved ancient city walls in China, with a history of over 600 years. It is about 14 kilometers long and includes four main gates: Changle Gate, Yongning Gate, Anding Gate, and Anyuan Gate.",
+    "highlights": "Ancient Xi’an architecture, city wall sunset, ancient military wisdom",
+    "tips": "Book tickets up to 6 days in advance via the \"Xi’an City Wall Scenic Area\" WeChat mini program. Tickets allow multiple entries on the same day. Bicycles can be rented on the wall. In winter, the Spring Festival Lantern Fair requires a separate ticket.",
     "cautions": "There is little shade on the city wall, so avoid visiting at noon.",
     "tags": [
       "Historical",
@@ -3564,20 +3267,17 @@
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA006": {
     "id": "XA006",
     "cityId": "XA",
     "name": "Huaqing Palace Heritage Site",
-    "nameZh": "???",
+    "nameZh": "华清池",
     "category": "attraction",
     "description": "Huaqing Pool is an ancient royal garden with a long history. It is famous for its imperial hot springs and is also linked to the romantic story of Emperor Xuanzong and Yang Guifei in the Tang Dynasty.",
     "highlights": "Royal garden, imperial bathing pools, park performances, architectural art",
-    "tips": "Tickets can be bought on site or booked in advance through the \"Huaqing Palace Scenic Area\" WeChat account. The site also hosts two large live-action shows, The Song of Everlasting Sorrow and Xi'an Incident. Guided tours are available in the park.",
+    "tips": "Tickets can be bought on site or booked in advance through the \"Huaqing Palace Scenic Area\" WeChat account. The site also hosts two large live-action shows, The Song of Everlasting Sorrow and Xi’an Incident. Guided tours are available in the park.",
     "cautions": "The scenic area has a complex layout, so allow enough time if you want to explore it fully. The live performances are held at night, so arriving in the afternoon is recommended.",
     "tags": [
       "Imperial",
@@ -3589,7 +3289,7 @@
     "lat": 34.3639,
     "lng": 109.2143,
     "district": "Lintong",
-    "hours": "08:00-22:00",
+    "hours": "07:30-17:10",
     "duration": 180,
     "price": 1,
     "indoor": false,
@@ -3601,18 +3301,15 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA007": {
     "id": "XA007",
     "cityId": "XA",
     "name": "The bell tower The drum tower",
-    "nameZh": "???",
+    "nameZh": "钟鼓楼",
     "category": "attraction",
-    "description": "The Bell Tower and Drum Tower were important timekeeping landmarks in ancient Xi'an. In the past, the bell was struck in the morning and the drum was beaten in the evening to mark the time.",
+    "description": "The Bell Tower and Drum Tower were important timekeeping landmarks in ancient Xi’an. In the past, the bell was struck in the morning and the drum was beaten in the evening to mark the time.",
     "highlights": "Chime-bell performance, ancient timekeeping, painted rooftops, ancient architecture",
     "tips": "A combined ticket for the Bell Tower and Drum Tower is available. The towers display historical bells and related artifacts. You can also skip entering and take photos from outside, especially at night when the lights make the view more impressive.",
     "cautions": "The stairs inside the Bell Tower are quite steep. Wear comfortable shoes and lightweight clothing.",
@@ -3626,7 +3323,7 @@
     "lat": 34.261,
     "lng": 108.9423,
     "district": "Lianhu",
-    "hours": "08:00-22:00",
+    "hours": "08:30-21:30",
     "duration": 180,
     "price": 1,
     "indoor": false,
@@ -3638,19 +3335,16 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA008": {
     "id": "XA008",
     "cityId": "XA",
     "name": "Tang Paradise",
-    "nameZh": "?????",
+    "nameZh": "大唐芙蓉园",
     "category": "attraction",
     "description": "Tang Paradise is a large cultural theme park that presents the style and splendor of the Tang Dynasty. Its scenic areas and themed performances showcase the culture and art of this golden age.",
-    "highlights": "Live cultural shows, boat viewing, Tang-style royal garden, Ladies' Hall, Rosy Cloud Corridor, Giant Wild Goose Pagoda viewpoint",
+    "highlights": "Live cultural shows, boat viewing, Tang-style royal garden, Ladies’ Hall, Rosy Cloud Corridor, Giant Wild Goose Pagoda viewpoint",
     "tips": "Book tickets up to 7 days in advance through the \"Tang Paradise\" WeChat account. Tickets allow one-time entry only. Some performances require separate tickets, and the night light show is worth seeing.",
     "cautions": "The park is large, so wear light and comfortable clothing. In summer, it can be hot and sunny, so protect yourself from heat and sun exposure.",
     "tags": [
@@ -3663,7 +3357,7 @@
     "lat": 34.2123,
     "lng": 108.9741,
     "district": "Yanta",
-    "hours": "08:00-22:00",
+    "hours": "09:00-22:00",
     "duration": 120,
     "price": 2,
     "indoor": false,
@@ -3675,21 +3369,18 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA009": {
     "id": "XA009",
     "cityId": "XA",
     "name": "Xi'an Museum",
-    "nameZh": "?????",
+    "nameZh": "西安博物院",
     "category": "attraction",
-    "description": "Xi'an Museum consists of the museum, the Tang Jianfu Temple site, and the Small Wild Goose Pagoda. Centered on the theme of ancient Xi'an, it displays representative cultural relics unearthed from different historical periods.",
-    "highlights": "Ancient Xi'an architecture, Tang tri-colored glazed pottery, Sui gilded Buddha statue, AR experience",
-    "tips": "Reserve free tickets in advance through the Xi'an Museum website or WeChat account; the ticket also includes the Small Wild Goose Pagoda. Audio guides are available inside, and bringing wired earphones can be useful. After visiting the museum, you can also take photos around the outdoor area.",
-    "cautions": "Closed every Tuesday and on Chinese New Year's Eve. During peak travel seasons, it can be crowded with long queues.",
+    "description": "Xi’an Museum consists of the museum, the Tang Jianfu Temple site, and the Small Wild Goose Pagoda. Centered on the theme of ancient Xi’an, it displays representative cultural relics unearthed from different historical periods.",
+    "highlights": "Ancient Xi’an architecture, Tang tri-colored glazed pottery, Sui gilded Buddha statue, AR experience",
+    "tips": "Reserve free tickets in advance through the Xi’an Museum website or WeChat account; the ticket also includes the Small Wild Goose Pagoda. Audio guides are available inside, and bringing wired earphones can be useful. After visiting the museum, you can also take photos around the outdoor area.",
+    "cautions": "Closed every Tuesday and on Chinese New Year’s Eve. During peak travel seasons, it can be crowded with long queues.",
     "tags": [
       "Museum",
       "Historical",
@@ -3699,7 +3390,7 @@
     "lat": 34.2433,
     "lng": 108.9426,
     "district": "Beilin",
-    "hours": "08:00-22:00",
+    "hours": "09:00-18:00",
     "duration": 180,
     "price": 0,
     "indoor": true,
@@ -3711,20 +3402,17 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA010": {
     "id": "XA010",
     "cityId": "XA",
     "name": "Giant Wild Goose Pagoda",
-    "nameZh": "???",
+    "nameZh": "大雁塔",
     "category": "attraction",
-    "description": "The Giant Wild Goose Pagoda is a Buddhist pagoda inside Da Ci'en Temple. Built by Xuanzang to preserve scriptures and Buddhist images from India, it is one of Xi'an's major cultural landmarks.",
+    "description": "The Giant Wild Goose Pagoda is a Buddhist pagoda inside Da Ci’en Temple. Built by Xuanzang to preserve scriptures and Buddhist images from India, it is one of Xi’an’s major cultural landmarks.",
     "highlights": "Buddhist site, poetry street, red temple walls, musical fountain",
-    "tips": "The pagoda is inside Da Ci'en Temple. Climbing the Giant Wild Goose Pagoda requires a separate ticket. You can reserve in advance via the \"Da Ci'en Temple\" WeChat mini program, and light-colored clothes are recommended for photos.",
+    "tips": "The pagoda is inside Da Ci’en Temple. Climbing the Giant Wild Goose Pagoda requires a separate ticket. You can reserve in advance via the \"Da Ci’en Temple\" WeChat mini program, and light-colored clothes are recommended for photos.",
     "cautions": "The musical fountain runs four times a day: 12:00, 16:00, 19:00, and 21:00. Plan your visit accordingly if you want to see the show.",
     "tags": [
       "Religious",
@@ -3736,7 +3424,7 @@
     "lat": 34.2183,
     "lng": 108.964,
     "district": "Yanta",
-    "hours": "08:00-22:00",
+    "hours": "08:30-18:00",
     "duration": 120,
     "price": 1,
     "indoor": false,
@@ -3748,21 +3436,18 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA011": {
     "id": "XA011",
     "cityId": "XA",
     "name": "Small Wild Goose Pagoda",
-    "nameZh": "???",
+    "nameZh": "小雁塔",
     "category": "attraction",
     "description": "The Small Wild Goose Pagoda is a Buddhist pagoda inside Jianfu Temple. Built to house scriptures translated by the monk Yijing, it is known for its graceful and peaceful appearance.",
-    "highlights": "Ancient Xi'an architecture, Buddhist pagoda, Jin Dynasty iron bell, earthquake-resistant tower",
-    "tips": "Reserve free tickets in advance through the Xi'an Museum website or WeChat account. The Small Wild Goose Pagoda is inside Xi'an Museum, so one reservation covers both sites.",
-    "cautions": "Closed every Tuesday and on Chinese New Year's Eve. During peak travel seasons, it can be crowded with long queues.",
+    "highlights": "Ancient Xi’an architecture, Buddhist pagoda, Jin Dynasty iron bell, earthquake-resistant tower",
+    "tips": "Reserve free tickets in advance through the Xi’an Museum website or WeChat account. The Small Wild Goose Pagoda is inside Xi’an Museum, so one reservation covers both sites.",
+    "cautions": "Closed every Tuesday and on Chinese New Year’s Eve. During peak travel seasons, it can be crowded with long queues.",
     "tags": [
       "Religious",
       "Historical",
@@ -3772,7 +3457,7 @@
     "lat": 34.243,
     "lng": 108.9423,
     "district": "Beilin",
-    "hours": "08:00-22:00",
+    "hours": "09:00-18:00",
     "duration": 60,
     "price": 0,
     "indoor": false,
@@ -3784,18 +3469,15 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA012": {
     "id": "XA012",
     "cityId": "XA",
     "name": "Daming Palace National Heritage Park",
-    "nameZh": "?????????",
+    "nameZh": "大明宫国家遗址公园",
     "category": "attraction",
-    "description": "Daming Palace was the most magnificent of the three main palace complexes of Tang Chang'an. It served as the political center of the Tang Empire, where emperors of the Li-Tang dynasty handled state affairs.",
+    "description": "Daming Palace was the most magnificent of the three main palace complexes of Tang Chang’an. It served as the political center of the Tang Empire, where emperors of the Li-Tang dynasty handled state affairs.",
     "highlights": "Royal garden, miniature landscapes, archaeology exploration center, VR experience",
     "tips": "Tickets to the architectural ruins can be booked through the \"Daming Palace National Heritage Park\" WeChat account. A combo ticket includes admission, guided explanation, and an electric cart inside the park.",
     "cautions": "Closed every Tuesday. The park is very large, so wear comfortable clothing; in summer, protect yourself from heat and sun exposure.",
@@ -3809,7 +3491,7 @@
     "lat": 34.2922,
     "lng": 108.9622,
     "district": "Xincheng",
-    "hours": "08:00-22:00",
+    "hours": "06:00-22:00",
     "duration": 180,
     "price": 1,
     "indoor": false,
@@ -3821,18 +3503,15 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA013": {
     "id": "XA013",
     "cityId": "XA",
     "name": "Gao's Grand Courtyard",
-    "nameZh": "????",
+    "nameZh": "高家大院",
     "category": "attraction",
-    "description": "Gao Family Courtyard is one of the largest and best-preserved official residence compounds in Xi'an's old city. It offers a glimpse into traditional architecture and local family life.",
+    "description": "Gao Family Courtyard is one of the largest and best-preserved official residence compounds in Xi’an’s old city. It offers a glimpse into traditional architecture and local family life.",
     "highlights": "Traditional courtyard residence, shadow puppetry, Huayin folk opera",
     "tips": "Tickets can be bought on site. On rainy days, you may see the traditional \"four waters return to the hall\" courtyard drainage scene. Shadow puppet shows and northern Shaanxi folk performances are usually available on regular days.",
     "cautions": "Closed on Wednesdays for restoration. Performance seats are limited.",
@@ -3846,7 +3525,7 @@
     "lat": 34.266,
     "lng": 108.9365,
     "district": "Lianhu",
-    "hours": "08:00-22:00",
+    "hours": "10:00-18:00",
     "duration": 60,
     "price": 1,
     "indoor": false,
@@ -3858,20 +3537,17 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA014": {
     "id": "XA014",
     "cityId": "XA",
     "name": "Forest of Stone Steles Museum",
-    "nameZh": "???????",
+    "nameZh": "西安碑林博物馆",
     "category": "attraction",
-    "description": "Xi'an Beilin Museum is an art museum focused on ancient stone tablets, epitaphs, and stone carvings. It is known as \"China's largest stone library.\"",
+    "description": "Xi’an Beilin Museum is an art museum focused on ancient stone tablets, epitaphs, and stone carvings. It is known as \"China’s largest stone library.\"",
     "highlights": "Ancient calligraphy, stone carving art",
-    "tips": "Reserve tickets 5 days in advance through the \"Xi'an Beilin Museum\" WeChat account. To avoid crowds, enter from the north gate.",
+    "tips": "Reserve tickets 5 days in advance through the \"Xi’an Beilin Museum\" WeChat account. To avoid crowds, enter from the north gate.",
     "cautions": "Wear comfortable non-slip flat shoes. Food is not allowed inside the museum.",
     "tags": [
       "Museum",
@@ -3882,7 +3558,7 @@
     "lat": 34.2529,
     "lng": 108.9537,
     "district": "Beilin",
-    "hours": "08:00-22:00",
+    "hours": "09:00-17:00",
     "duration": 180,
     "price": 1,
     "indoor": false,
@@ -3894,16 +3570,13 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA015": {
     "id": "XA015",
     "cityId": "XA",
     "name": "Gu Guanyin Buddhist Temple",
-    "nameZh": "?????",
+    "nameZh": "古观音禅寺",
     "category": "attraction",
     "description": "Ancient Guanyin Temple is a thousand-year-old Buddhist temple in the Zhongnan Mountains. It is famous for a 1,400-year-old ginkgo tree said to have been planted by Emperor Taizong of the Tang Dynasty.",
     "highlights": "Ancient famous tree, Guanyin sacred spring, legendary stories",
@@ -3919,7 +3592,7 @@
     "lat": 34.0695,
     "lng": 108.7798,
     "district": "Chang'an",
-    "hours": "08:00-22:00",
+    "hours": "09:00-17:00",
     "duration": 30,
     "price": 0,
     "indoor": false,
@@ -3931,18 +3604,15 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA016": {
     "id": "XA016",
     "cityId": "XA",
     "name": "Zhang Family Ziwu Road Roujiamo",
-    "nameZh": "??????????????",
+    "nameZh": "子午路张记肉夹馍（翠华路店）",
     "category": "restaurant",
-    "description": "Ziwu Road Zhangji Roujiamo is a small local eatery well loved by Xi'an residents. Its main dishes include roujiamo, cold noodles, and meatball soup.",
+    "description": "Ziwu Road Zhangji Roujiamo is a small local eatery well loved by Xi’an residents. Its main dishes include roujiamo, cold noodles, and meatball soup.",
     "highlights": "Chinese-style meat sandwich, cold skin noodles, minced-pork noodles, local life",
     "tips": "The premium Chinese-style meat sandwich is a must-order.",
     "cautions": "The shop is small and crowded, and sharing tables with other customers is common. The roujiamo here is filled with pork.",
@@ -3967,21 +3637,18 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "XA017": {
     "id": "XA017",
     "cityId": "XA",
     "name": "Ai Hua Trouser Belt Noodles",
-    "nameZh": "????????????",
+    "nameZh": "爱骅裤带面馆（碑林区店）",
     "category": "restaurant",
-    "description": "Aihua Biangbiang Noodle Restaurant is a well-known noodle shop in Xi'an. It serves popular local noodle dishes commonly found in the city.",
+    "description": "Aihua Biangbiang Noodle Restaurant is a well-known noodle shop in Xi’an. It serves popular local noodle dishes commonly found in the city.",
     "highlights": "Traditional noodles, oil-splashed noodles, wide dipping noodles, donkey-hoof-shaped noodles",
     "tips": "Try the three-in-one or four-in-one noodles. The sodas are also popular.",
-    "cautions": "Xi'an food tends to be salty, so you can ask for a lighter taste when ordering.",
+    "cautions": "Xi’an food tends to be salty, so you can ask for a lighter taste when ordering.",
     "tags": [
       "Local Snacks",
       "Must-try",
@@ -3991,7 +3658,7 @@
     "lat": 34.2389,
     "lng": 108.9422,
     "district": "Beilin",
-    "hours": "08:00-22:00",
+    "hours": "10:00-22:00",
     "duration": 60,
     "price": 1,
     "indoor": true,
@@ -4003,18 +3670,15 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "XA018": {
     "id": "XA018",
     "cityId": "XA",
     "name": "Wei Jia Shaanxi Cold Noodles",
-    "nameZh": "??????????",
+    "nameZh": "魏家凉皮（兵马俑店）",
     "category": "restaurant",
-    "description": "Weijia Liangpi is a famous Xi'an restaurant chain specializing in cold skin noodles. It also serves local and fast-food items such as roujiamo, rice noodles, and burgers.",
+    "description": "Weijia Liangpi is a famous Xi’an restaurant chain specializing in cold skin noodles. It also serves local and fast-food items such as roujiamo, rice noodles, and burgers.",
     "highlights": "Cold skin noodles, local snacks",
     "tips": "Recommended items include secret-recipe cold skin noodles, wheat-starch noodles, spicy pepper soup, and a variety of burgers.",
     "cautions": "The cold skin noodles are fresh and spicy. You can ask for no chili when ordering.",
@@ -4039,18 +3703,15 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "XA019": {
     "id": "XA019",
     "cityId": "XA",
     "name": "Tong Sheng Xiang",
-    "nameZh": "????????",
+    "nameZh": "同盛祥（钟楼店）",
     "category": "restaurant",
-    "description": "Tongshengxiang is a time-honored halal restaurant brand in China. It is best known for Xi'an's traditional beef and lamb paomo.",
+    "description": "Tongshengxiang is a time-honored halal restaurant brand in China. It is best known for Xi’an’s traditional beef and lamb paomo.",
     "highlights": "Beef and lamb soup with flatbread, local snacks",
     "tips": "Recommended dishes include beef and lamb paomo, stir-fried beef paomo, sweet pickled garlic, chili sauce, and sour plum drink. You can break the flatbread by hand or use a machine; the smaller the pieces, the better they absorb the soup. The Great Tang All Day Mall branch also offers views of the Giant Wild Goose Pagoda.",
     "cautions": "Some dishes may be quite spicy, so check carefully before ordering.",
@@ -4063,7 +3724,7 @@
     "lat": 34.2614,
     "lng": 108.9396,
     "district": "Lianhu",
-    "hours": "08:00-22:00",
+    "hours": "11:00-22:00",
     "duration": 120,
     "price": 1,
     "indoor": true,
@@ -4075,18 +3736,15 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "XA020": {
     "id": "XA020",
     "cityId": "XA",
     "name": "Shaanxi Thirteen",
-    "nameZh": "?????????",
+    "nameZh": "陕拾叁（北院门店）",
     "category": "restaurant",
-    "description": "Shaan Shisan is a well-known local dessert shop in Xi'an. It is famous for combining Shaanxi culture with traditional pastries and iced dairy desserts.",
+    "description": "Shaan Shisan is a well-known local dessert shop in Xi’an. It is famous for combining Shaanxi culture with traditional pastries and iced dairy desserts.",
     "highlights": "Iced dairy dessert, local snacks",
     "tips": "Recommended items include chili-oil iced dairy dessert, osmanthus fermented-rice iced dairy dessert, lava egg-yolk pastry, and tiger tally cookies. These are also good choices for souvenirs.",
     "cautions": "Reviews on the taste are mixed, so it is best to try it for yourself.",
@@ -4099,7 +3757,7 @@
     "lat": 34.2619,
     "lng": 108.9428,
     "district": "Lianhu",
-    "hours": "08:00-22:00",
+    "hours": "09:00-23:00",
     "duration": 60,
     "price": 1,
     "indoor": true,
@@ -4111,16 +3769,13 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "XA021": {
     "id": "XA021",
     "cityId": "XA",
     "name": "Chonghui Chengcheng Mutton Soup",
-    "nameZh": "?????????????",
+    "nameZh": "崇辉澄城水盆羊肉（钟楼店）",
     "category": "restaurant",
     "description": "Shuipen Yangrou is a traditional Han Chinese dish from Weinan, Shaanxi. It features tender lamb and a clear, flavorful broth without a strong gamey taste.",
     "highlights": "Lamb soup with flatbread, local snacks",
@@ -4135,7 +3790,7 @@
     "lat": 34.2618,
     "lng": 108.9452,
     "district": "Lianhu",
-    "hours": "08:00-22:00",
+    "hours": "07:30-20:30",
     "duration": 60,
     "price": 1,
     "indoor": true,
@@ -4147,21 +3802,18 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "XA022": {
     "id": "XA022",
     "cityId": "XA",
     "name": "THE Longest Day In Chang'an",
-    "nameZh": "??????",
+    "nameZh": "长安十二时辰",
     "category": "experience",
-    "description": "The Longest Day in Chang'an is a Tang Dynasty-themed street block inspired by the TV drama of the same name. Recreated scenes, live performances, and NPC interactions offer visitors an immersive journey into ancient Chang'an.",
+    "description": "The Longest Day in Chang’an is a Tang Dynasty-themed street block inspired by the TV drama of the same name. Recreated scenes, live performances, and NPC interactions offer visitors an immersive journey into ancient Chang’an.",
     "highlights": "Tang-style architecture, immersive performances, street snacks, traditional Han clothing",
-    "tips": "Book tickets through the \"The Longest Day in Chang'an\" WeChat mini program. Tickets allow multiple entries within two days. Visiting right after opening in the morning is best.",
-    "cautions": "Popular performances require early queuing. Avoid the 17:00-18:00 peak crowd, and note that some activities inside require extra payment.",
+    "tips": "Book tickets through the \"The Longest Day in Chang’an\" WeChat mini program. Tickets allow multiple entries within two days. Visiting right after opening in the morning is best.",
+    "cautions": "Popular performances require early queuing. Avoid the 17:00–18:00 peak crowd, and note that some activities inside require extra payment.",
     "tags": [
       "Immersive",
       "Entertainment",
@@ -4172,7 +3824,7 @@
     "lat": 34.2145,
     "lng": 108.9655,
     "district": "Yanta",
-    "hours": "08:00-22:00",
+    "hours": "10:00-22:00",
     "duration": 120,
     "price": 2,
     "indoor": true,
@@ -4183,18 +3835,15 @@
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA023": {
     "id": "XA023",
     "cityId": "XA",
     "name": "The Song of Endless Sorrow",
-    "nameZh": "???",
+    "nameZh": "长恨歌",
     "category": "experience",
-    "description": "The Song of Everlasting Sorrow is a large outdoor live performance inside Huaqing Palace. Based on Bai Juyi's famous poem, it tells the tragic love story of Emperor Xuanzong and Yang Guifei.",
+    "description": "The Song of Everlasting Sorrow is a large outdoor live performance inside Huaqing Palace. Based on Bai Juyi’s famous poem, it tells the tragic love story of Emperor Xuanzong and Yang Guifei.",
     "highlights": "Immersive performance, holographic projection, live-action show, cultural stories",
     "tips": "Book tickets 10 days in advance through the \"Huaqing Palace Scenic Area\" WeChat account. Area A offers the most immersive experience, Area B has AR glasses rental, Area C has good views and better value, while Areas D/E may have partial view obstruction.",
     "cautions": "The open-air viewing area is by the lake, and it can be windy at night. Bring warm clothing.",
@@ -4208,7 +3857,7 @@
     "lat": 34.3639,
     "lng": 109.2143,
     "district": "Lintong",
-    "hours": "08:00-22:00",
+    "hours": "19:00-22:30",
     "duration": 90,
     "price": 2,
     "indoor": false,
@@ -4220,18 +3869,15 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA024": {
     "id": "XA024",
     "cityId": "XA",
     "name": "Xiaonanmen Morning Market",
-    "nameZh": "?????",
+    "nameZh": "小南门早市",
     "category": "experience",
-    "description": "Xiaonanmen Morning Market is one of the busiest morning markets in Xi'an. Every morning, over 120 stalls sell breakfast foods, fresh fruits and vegetables, and daily necessities.",
+    "description": "Xiaonanmen Morning Market is one of the busiest morning markets in Xi’an. Every morning, over 120 stalls sell breakfast foods, fresh fruits and vegetables, and daily necessities.",
     "highlights": "Local specialties, vibrant morning market atmosphere, fresh fruits and vegetables",
     "tips": "Arrive around 7:00 to avoid crowds and enjoy freshly made food. The market gets busy early, and bringing some cash is useful.",
     "cautions": "It gets crowded after 8:00. Food options can be complex, so check ingredients carefully if you have allergies.",
@@ -4244,7 +3890,7 @@
     "lat": 34.2464,
     "lng": 108.9318,
     "district": "Beilin",
-    "hours": "08:00-22:00",
+    "hours": "06:00-09:00",
     "duration": 30,
     "price": 1,
     "indoor": false,
@@ -4255,18 +3901,15 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "XA025": {
     "id": "XA025",
     "cityId": "XA",
     "name": "The Muslim Quarter",
-    "nameZh": "???",
+    "nameZh": "回民街",
     "category": "experience",
-    "description": "Muslim Quarter was once the center of Xi'an's Hui Muslim community. Today, it is a lively food and cultural street filled with a wide variety of classic Xi'an snacks.",
+    "description": "Muslim Quarter was once the center of Xi’an’s Hui Muslim community. Today, it is a lively food and cultural street filled with a wide variety of classic Xi’an snacks.",
     "highlights": "Ancient architecture, local snacks",
     "tips": "Avoid public holidays and visit in the morning for the best experience. Recommended foods include cold jelly in marinade, steamed dumplings, steamed pork with rice flour, egg-and-vegetable flatbread sandwich, cold skin noodles, and stir-fried cold jelly.",
     "cautions": "This is a halal dining area: no alcohol, no pork, and no outside food inside restaurants.",
@@ -4280,7 +3923,7 @@
     "lat": 34.2644,
     "lng": 108.9367,
     "district": "Lianhu",
-    "hours": "08:00-22:00",
+    "hours": "09:00-22:00",
     "duration": 60,
     "price": 1,
     "indoor": false,
@@ -4291,19 +3934,16 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "XA026": {
     "id": "XA026",
     "cityId": "XA",
     "name": "Xi'an Tang Dynasty Palace",
-    "nameZh": "???",
+    "nameZh": "唐乐宫",
     "category": "experience",
-    "description": "Tang Dynasty Palace is China's first Tang-style palace music and dance theater restaurant. Visitors can enjoy classical Tang-style performances while having food and drinks.",
-    "highlights": "Ladies' Hall, Tang-style sweets, music and dance restaurant",
+    "description": "Tang Dynasty Palace is China’s first Tang-style palace music and dance theater restaurant. Visitors can enjoy classical Tang-style performances while having food and drinks.",
+    "highlights": "Ladies’ Hall, Tang-style sweets, music and dance restaurant",
     "tips": "You can experience Hanfu styling here. The Tang palace banquet show Empress of the Great Tang is highly recommended.",
     "cautions": "Tickets are hard to get.",
     "tags": [
@@ -4316,7 +3956,7 @@
     "lat": 34.2325,
     "lng": 108.951,
     "district": "Yanta",
-    "hours": "08:00-22:00",
+    "hours": "17:00-21:15",
     "duration": 120,
     "price": 3,
     "indoor": true,
@@ -4328,18 +3968,15 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA027": {
     "id": "XA027",
     "cityId": "XA",
     "name": "The Romantic Show of Xi'an",
-    "nameZh": "?????",
+    "nameZh": "西安千古情",
     "category": "experience",
-    "description": "Xi'an Romance Park Show is a large-scale song and dance performance inside Xi'an Expo Park. It follows the story of a Chinese-descended girl returning to China to seek her roots and explore national memory.",
+    "description": "Xi’an Romance Park Show is a large-scale song and dance performance inside Xi’an Expo Park. It follows the story of a Chinese-descended girl returning to China to seek her roots and explore national memory.",
     "highlights": "Live-action performance, real NPC interactions",
     "tips": "Tickets can be booked through the \"Songcheng Tourism\" WeChat mini program. For the best view, choose seats near the center.",
     "cautions": "The park is large, so wear light and comfortable clothing. The theater air conditioning can be cold, so bring a layer. Food is not allowed during the performance.",
@@ -4352,7 +3989,7 @@
     "lat": 34.1658,
     "lng": 109.0096,
     "district": "Baqiao",
-    "hours": "08:00-22:00",
+    "hours": "13:00-19:30",
     "duration": 120,
     "price": 3,
     "indoor": false,
@@ -4364,16 +4001,13 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA028": {
     "id": "XA028",
     "cityId": "XA",
     "name": "SEG International Shopping Center",
-    "nameZh": "??????",
+    "nameZh": "赛格购物中心",
     "category": "shopping",
     "description": "SEG Shopping Center is a major international shopping area near Shaanxi History Museum. It combines shopping, dining, and popular photo spots.",
     "highlights": "Indoor waterfall, extra-long escalator, pet interactions, food street",
@@ -4388,7 +4022,7 @@
     "lat": 34.2296,
     "lng": 108.9527,
     "district": "Yanta",
-    "hours": "08:00-22:00",
+    "hours": "10:00-22:00",
     "duration": 60,
     "price": 2,
     "indoor": true,
@@ -4400,18 +4034,15 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA029": {
     "id": "XA029",
     "cityId": "XA",
     "name": "Great Tang West Market",
-    "nameZh": "????",
+    "nameZh": "大唐西市",
     "category": "attraction",
-    "description": "Tang West Market is a cultural tourism complex built on the site of the Tang Dynasty's West Market. It features shopping for antiques, jade, jewelry, calligraphy and paintings, tea, and tea ware.",
+    "description": "Tang West Market is a cultural tourism complex built on the site of the Tang Dynasty’s West Market. It features shopping for antiques, jade, jewelry, calligraphy and paintings, tea, and tea ware.",
     "highlights": "Tang Dynasty site, cultural street, antique market, rooftop garden",
     "tips": "Tang West Market includes both a museum and a shopping center.",
     "cautions": "Be cautious when buying antiques and jade. In summer, protect yourself from the heat.",
@@ -4425,7 +4056,7 @@
     "lat": 34.2577,
     "lng": 108.9138,
     "district": "Lianhu",
-    "hours": "08:00-22:00",
+    "hours": "09:00-19:00",
     "duration": 120,
     "price": 0,
     "indoor": false,
@@ -4437,16 +4068,13 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "XA030": {
     "id": "XA030",
     "cityId": "XA",
     "name": "Joy City",
-    "nameZh": "???",
+    "nameZh": "大悦城",
     "category": "shopping",
     "description": "Joy City is an international shopping mall that blends Tang Dynasty culture with modern trends. It offers shopping, dining, and entertainment in a stylish commercial space.",
     "highlights": "Sky terrace, rooftop garden, shopping mall",
@@ -4461,7 +4089,7 @@
     "lat": 34.2177,
     "lng": 108.9657,
     "district": "Yanta",
-    "hours": "08:00-22:00",
+    "hours": "10:00-22:00",
     "duration": 120,
     "price": 2,
     "indoor": true,
@@ -4473,18 +4101,47 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
+  },
+  "XA031": {
+    "id": "XA031",
+    "cityId": "XA",
+    "name": "21Club",
+    "nameZh": "21Club",
+    "category": "nightlife",
+    "description": "21Club Xi'an is an American retro-style speakeasy bar inspired by the Prohibition era. It is known for its hidden entrance, lively social atmosphere, and vintage interior design, making it popular with outgoing visitors and local nightlife lovers.",
+    "highlights": "Hidden speakeasy entrance, American vintage decor, energetic crowd, cocktails and casual bar food.",
+    "tips": "The entrance can be hard to find: visitors usually enter through an American-style front room first, then push open a hidden glass-door entrance.",
+    "cautions": "Smoking may be allowed indoors, and it can get crowded on weekends and public holidays.",
+    "tags": [
+      "Bar",
+      "Entertainment",
+      "Modern",
+      "Immersive",
+      "Instagram"
+    ],
+    "lat": 34.2571,
+    "lng": 108.9458,
+    "district": "Beilin",
+    "hours": "19:00-02:00",
+    "duration": 120,
+    "price": 2,
+    "indoor": true,
+    "bestTime": "evening",
+    "suitableFor": [
+      "solo",
+      "couple"
+    ],
+    "bookingRequired": false,
+    "foreignFriendly": 5
   },
   "CQ001": {
     "id": "CQ001",
     "cityId": "CQ",
     "name": "Jiefangbei (Liberation Monument)",
-    "nameZh": "???",
+    "nameZh": "解放碑",
     "category": "attraction",
-    "description": "The iconic heart of Chongqing, originally built to commemorate the victory in the War of Resistance. Today it's a vibrant hub for shopping, dining, and nightlife, and the go-to starting point for most visitors.",
+    "description": "The iconic heart of Chongqing, originally built to commemorate the victory in the War of Resistance. Today it’s a vibrant hub for shopping, dining, and nightlife, and the go-to starting point for most visitors.",
     "highlights": "Lively at night. Pedestrian street packed with street snacks.",
     "tips": "Best to visit Monument itself during the day. The surrounding pedestrian streets are more vibrant at night.",
     "cautions": "Can get quite crowded.",
@@ -4510,18 +4167,15 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "CQ002": {
     "id": "CQ002",
     "cityId": "CQ",
     "name": "Baixiangju (White Elephant Community)",
-    "nameZh": "???",
+    "nameZh": "白象居",
     "category": "attraction",
-    "description": "A typical hillside residential complex known for its layered, maze-like structure and direct street access without elevators, making it a perfect example of Chongqing's \"8D city\" layout.",
+    "description": "A typical hillside residential complex known for its layered, maze-like structure and direct street access without elevators, making it a perfect example of Chongqing’s \"8D city\" layout.",
     "highlights": "Popular photo spot. Three exits on the 1st, 10th, and 15th floors. Fully connected corridors throughout the building.",
     "tips": "Follow the signs to get around. Photo spot: Cable cars pass roughly every 10 minutes. Fewer crowds before 10 AM.",
     "cautions": "Residential area. Please keep quiet. No elevators. Can be confusing to navigate due to its multi-level layout.",
@@ -4547,21 +4201,18 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "CQ003": {
     "id": "CQ003",
     "cityId": "CQ",
     "name": "Hongyadong",
-    "nameZh": "???",
+    "nameZh": "洪崖洞",
     "category": "attraction",
-    "description": "Hongyadong, sits at the confluence of the Yangtze and Jialing Rivers. Built along the hillside, its 13-level complex of traditional stilted buildings is a designated 4A scenic area, famed for its dramatic night illumination, and is now one of the city's most iconic landmarks.",
+    "description": "Hongyadong, sits at the confluence of the Yangtze and Jialing Rivers. Built along the hillside, its 13-level complex of traditional stilted buildings is a designated 4A scenic area, famed for its dramatic night illumination, and is now one of the city’s most iconic landmarks.",
     "highlights": "Stunning light displays at night. Interior mainly focused on dining and entertainment. Cyberpunk.",
     "tips": "Main entrances are on Levels 11, 2, and 1. Lights are typically on from 19:30 to 23:00.",
-    "cautions": "Visit the interior during the day, as it gets extremely crowded at night-better for viewing from the outside then.",
+    "cautions": "Visit the interior during the day, as it gets extremely crowded at night—better for viewing from the outside then.",
     "tags": [
       "Must-see",
       "Landmark",
@@ -4586,21 +4237,18 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "CQ004": {
     "id": "CQ004",
     "cityId": "CQ",
     "name": "Qiansimen Bridge",
-    "nameZh": "?????",
+    "nameZh": "千厮门大桥",
     "category": "attraction",
     "description": "A major bridge spanning the Jialing River, and one of the best spots to capture Hongyadong at night. Offers wide, open views with stunning city lights.",
     "highlights": "Nighttime lighting. Classic photo spot for capturing Hongyadong.",
     "tips": "Lights on from 19:00 to 21:30. Can walk up the bridge from the Hongyadong side and head down to the riverside on the other end.",
-    "cautions": "Very heavy traffic and crowds after lighting at night. Taxis may not reach the bridge-best to walk up.",
+    "cautions": "Very heavy traffic and crowds after lighting at night. Taxis may not reach the bridge—best to walk up.",
     "tags": [
       "River View",
       "Skyline",
@@ -4624,16 +4272,13 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "CQ005": {
     "id": "CQ005",
     "cityId": "CQ",
     "name": "Chongqing Zoo",
-    "nameZh": "?????",
+    "nameZh": "重庆动物园",
     "category": "attraction",
     "description": "Chongqing City Zoo is famous for its pandas. The park is fairly large, making it ideal for a relaxed half-day visit and especially popular with families.",
     "highlights": "A wide range of rare and protected animals, including pandas and South China tigers.",
@@ -4658,16 +4303,13 @@
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "CQ006": {
     "id": "CQ006",
     "cityId": "CQ",
     "name": "Erchang Culture and Creative Park",
-    "nameZh": "????",
+    "nameZh": "鹅岭二厂",
     "category": "attraction",
     "description": "A former industrial site transformed into a creative park, featuring art spaces, cafés, and design shops. A popular spot for photos and hangouts among young visitors.",
     "highlights": "A popular citywalk route. Retro-art vibe.",
@@ -4694,18 +4336,15 @@
       "friends"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "CQ007": {
     "id": "CQ007",
     "cityId": "CQ",
     "name": "Liziba Monorail Station",
-    "nameZh": "??????",
+    "nameZh": "李子坝轻轨站",
     "category": "attraction",
-    "description": "Famous for trains passing directly through a residential building, this viral spot showcases Chongqing's unique multi-level urban transport.",
+    "description": "Famous for trains passing directly through a residential building, this viral spot showcases Chongqing’s unique multi-level urban transport.",
     "highlights": "Unique architecture. Iconic photo spot.",
     "tips": "Exit from Liziba Station Exit 2 and follow the signs down to street level, the classic photo spot is across the road.",
     "cautions": "Crowded during holidays. Trains run about every 5 minutes, so expect some waiting to get the perfect shot.",
@@ -4731,20 +4370,17 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "CQ008": {
     "id": "CQ008",
     "cityId": "CQ",
     "name": "Great Hall of the People",
-    "nameZh": "?????",
+    "nameZh": "人民大礼堂",
     "category": "attraction",
-    "description": "A grand public building in traditional Chinese architectural style, built under the direction of early Chinese revolutionary leaders. Located opposite the Three Gorges Museum, it stands as one of Chongqing's key cultural landmarks.",
+    "description": "A grand public building in traditional Chinese architectural style, built under the direction of early Chinese revolutionary leaders. Located opposite the Three Gorges Museum, it stands as one of Chongqing’s key cultural landmarks.",
     "highlights": "Traditional Chinese architecture.",
-    "tips": "Tickets can be purchased on-site via QR code for 8 CNY. The exterior is the main highlight-while the interior is open for photos, but not much to see.",
+    "tips": "Tickets can be purchased on-site via QR code for 8 CNY. The exterior is the main highlight—while the interior is open for photos, but not much to see.",
     "cautions": "Ticket sales stop at 17:30. Closed to visitors during performances or major events.",
     "tags": [
       "Historical",
@@ -4769,20 +4405,17 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "CQ009": {
     "id": "CQ009",
     "cityId": "CQ",
     "name": "Guanyinqiao District",
-    "nameZh": "???",
+    "nameZh": "观音桥",
     "category": "attraction",
-    "description": "One of Chongqing's busiest commercial districts, combining shopping malls, restaurants, and bars, and a top choice for visitors to eat and explore.",
+    "description": "One of Chongqing’s busiest commercial districts, combining shopping malls, restaurants, and bars, and a top choice for visitors to eat and explore.",
     "highlights": "Multiple malls and popular photo spots. Wide variety of food options.",
-    "tips": "Start from Guanyinqiao Metro Station (Exits 4 or 7). For local food, head to \"??????\" The pedestrian bridge near its north gate features the famous \"???? (I am in Chongqing)\" LED screen. For anime and pop culture, check out \"?? live.\" The area is especially lively at night.",
+    "tips": "Start from Guanyinqiao Metro Station (Exits 4 or 7). For local food, head to \"观音桥好吃街\" The pedestrian bridge near its north gate features the famous \"我在重庆 (I am in Chongqing)\" LED screen. For anime and pop culture, check out \"方圆 live.\" The area is especially lively at night.",
     "cautions": "Heavy crowds due to many popular photo spots so visitors should plan route based on interests. Best to go earlier in the day during summer",
     "tags": [
       "Local Life",
@@ -4803,20 +4436,17 @@
       "friends"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "CQ010": {
     "id": "CQ010",
     "cityId": "CQ",
     "name": "Mountain City Walking Trails",
-    "nameZh": "????",
+    "nameZh": "山城步道",
     "category": "attraction",
-    "description": "A hillside walking route linking old streets and residential areas, offering a close-up look at Chongqing's unique terrain and local life.",
-    "highlights": "Experience Chongqing's unique terrain and local life. Scenic river views along the way.",
-    "tips": "Setting \"?????\" as the starting point allows for a mostly downhill route. Along the way, small creative shops offer local souvenirs and street snacks. Often combined with a visit to Shibati, first walking trail, then Shibati.",
+    "description": "A hillside walking route linking old streets and residential areas, offering a close-up look at Chongqing’s unique terrain and local life.",
+    "highlights": "Experience Chongqing’s unique terrain and local life. Scenic river views along the way.",
+    "tips": "Setting \"佳实养老院\" as the starting point allows for a mostly downhill route. Along the way, small creative shops offer local souvenirs and street snacks. Often combined with a visit to Shibati, first walking trail, then Shibati.",
     "cautions": "Comfortable sneakers are recommended. Expect steep stairs and narrow paths; extra caution is advised during busy periods. Take precautions against the heat in summer.",
     "tags": [
       "Hiking",
@@ -4841,18 +4471,15 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "CQ011": {
     "id": "CQ011",
     "cityId": "CQ",
     "name": "Shibati",
-    "nameZh": "???",
+    "nameZh": "十八梯",
     "category": "attraction",
-    "description": "A historic district connecting Chongqing's upper and lower city, preserving the character of old Chongqing while now blending culture with modern commerce.",
+    "description": "A historic district connecting Chongqing’s upper and lower city, preserving the character of old Chongqing while now blending culture with modern commerce.",
     "highlights": "Old Chongqing city atmosphere. Night views. Tunnel relics.",
     "tips": "Often combined with a visit to Shibati, first walking trail, then Shibati. The atmosphere is best after dark. When visiting directly, starting from Jiaochangkou Exit 11 allows for a mostly downhill route.",
     "cautions": "Comfortable sneakers are recommended. Avoid buying souvenirs inside the area.",
@@ -4879,20 +4506,17 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "CQ012": {
     "id": "CQ012",
     "cityId": "CQ",
     "name": "Hongyadong Dock",
-    "nameZh": "?????????",
+    "nameZh": "洪崖洞旅游客运码头",
     "category": "experience",
     "description": "A classic ferry experience offering close-up views of the Yangtze and Jialing rivers, especially at their confluence.",
     "highlights": "Ferry ride. Chongqing river views.",
-    "tips": "Tickets available on-site or via WeChat mini programs, around 15 CNY per person. One-way ride takes about 15 minutes. Departures also available from Danzishi Dock (?????). Multiple routes to choose from.",
+    "tips": "Tickets available on-site or via WeChat mini programs, around 15 CNY per person. One-way ride takes about 15 minutes. Departures also available from Danzishi Dock (弹子石码头). Multiple routes to choose from.",
     "cautions": "Arriving early helps secure better views on board. Service frequency is limited, so checking departure times in advance via the mini program is recommended.",
     "tags": [
       "River View",
@@ -4915,20 +4539,17 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "CQ013": {
     "id": "CQ013",
     "cityId": "CQ",
     "name": "Ciqikou Ancient Town",
-    "nameZh": "?????",
+    "nameZh": "磁器口古镇",
     "category": "attraction",
-    "description": "A thousand-year-old town and a microcosm of Chongqing, playing a key role in the city's cultural heritage and a popular place to experience traditional local life.",
+    "description": "A thousand-year-old town and a microcosm of Chongqing, playing a key role in the city’s cultural heritage and a popular place to experience traditional local life.",
     "highlights": "Stroll through the old town and soak in the slower pace of old Chongqing.",
-    "tips": "Taking a taxi directly to the main entrance??????? is recommended. Enter from the front, explore at a relaxed pace, and exit via the back streets. Stopping at an open-air teahouse for a break is a great option.",
+    "tips": "Taking a taxi directly to the main entrance（磁器口入口） is recommended. Enter from the front, explore at a relaxed pace, and exit via the back streets. Stopping at an open-air teahouse for a break is a great option.",
     "cautions": "Dining and souvenir shopping here are generally not recommended.",
     "tags": [
       "Historical",
@@ -4953,21 +4574,18 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "CQ014": {
     "id": "CQ014",
     "cityId": "CQ",
     "name": "Exploration Cabin · Cloud Paradise",
-    "nameZh": "???·????",
+    "nameZh": "探索仓·云端乐园",
     "category": "experience",
-    "description": "An observation deck at the top of Raffles City, featuring high-altitude attractions such as the Skywalk and Cloud Swing, with panoramic views over Chongqing's two rivers.",
+    "description": "An observation deck at the top of Raffles City, featuring high-altitude attractions such as the Skywalk and Cloud Swing, with panoramic views over Chongqing’s two rivers.",
     "highlights": "A combination of skyline views and thrilling high-altitude experiences.",
     "tips": "Booking tickets at least one day in advance via Dianping is recommended. Sunset is the best time for attractions such as the Cloud Swing. Skirts, slippers, and loose accessories are not recommended.",
-    "cautions": "Not suitable for those with a fear of heights. All attractions have age and height restrictions-check requirements before booking. Last entry at 21:15",
+    "cautions": "Not suitable for those with a fear of heights. All attractions have age and height restrictions—check requirements before booking. Last entry at 21:15",
     "tags": [
       "Immersive",
       "Entertainment",
@@ -4990,21 +4608,18 @@
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "CQ015": {
     "id": "CQ015",
     "cityId": "CQ",
     "name": "World Trade Center Rooftop 131",
-    "nameZh": "????131??",
+    "nameZh": "世贸大厦131天台",
     "category": "experience",
-    "description": "A viral photo spot known for its dramatic angle and safety harness setup, creating a cinematic cyberpunk-style \"high-rise agent\" look against Chongqing's skyline.",
+    "description": "A viral photo spot known for its dramatic angle and safety harness setup, creating a cinematic cyberpunk-style \"high-rise agent\" look against Chongqing’s skyline.",
     "highlights": "Cyberpunk atmosphere. City night views.",
     "tips": "Photo packages with photography services should be booked at least one day in advance via Dianping, though hiring a personal photographer is also possible. Queue numbers are collected on-site on the day of entry. Dark-colored outfits are recommended for a stronger cyberpunk aesthetic.",
-    "cautions": "After attaching the safety harness, the shooting position is roughly two stories above the platform. Not recommended for those with a strong fear of heights. Guidance is provided before shooting, with around 3-5 minutes allocated per person; delays caused by personal issues such as fear of heights are generally not accommodated.",
+    "cautions": "After attaching the safety harness, the shooting position is roughly two stories above the platform. Not recommended for those with a strong fear of heights. Guidance is provided before shooting, with around 3–5 minutes allocated per person; delays caused by personal issues such as fear of heights are generally not accommodated.",
     "tags": [
       "Skyline",
       "River View",
@@ -5025,21 +4640,18 @@
       "friends"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "CQ016": {
     "id": "CQ016",
     "cityId": "CQ",
     "name": "Happy Valley Chongqing",
-    "nameZh": "?????",
+    "nameZh": "重庆欢乐谷",
     "category": "experience",
     "description": "A large theme park ideal for entertainment and family visits, especially suitable for those traveling with children.",
     "highlights": "A wide range of thrilling rides and live performances.",
     "tips": "Tickets can be purchased on-site or online. Admission covers both day and night sessions, with the night session running from 17:00 to 22:00.",
-    "cautions": "Food inside the park is relatively expensive-bringing snacks and water is recommended. Long queues are common during holidays. Prices may vary during peak seasons or special events.",
+    "cautions": "Food inside the park is relatively expensive—bringing snacks and water is recommended. Long queues are common during holidays. Prices may vary during peak seasons or special events.",
     "tags": [
       "Entertainment",
       "Immersive"
@@ -5058,21 +4670,18 @@
       "family"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "CQ017": {
     "id": "CQ017",
     "cityId": "CQ",
     "name": "Yangtze River Cableway",
-    "nameZh": "????",
+    "nameZh": "长江索道",
     "category": "experience",
-    "description": "An aerial cable car crossing the Yangtze River, offering panoramic views of the city and river, and one of Chongqing's most iconic experiences.",
-    "highlights": "Crossing the Yangtze River. One of the best ways to enjoy Chongqing's night skyline.",
-    "tips": "Nearby attractions include Baixiangju, Jiefangbei, Shibati, and Hongyadong on the north side, and Xiahaoli and Longmenhao Old Street on the south side. Tickets are best booked in advance via the \"????\" official WeChat mini program. Visiting after dark offers the most impressive city views.",
-    "cautions": "Tickets are time-slot based with queue numbers (e.g., 17:00-17:59). Arrival at the start of the time window is recommended, with total waiting time around one hour-plan accordingly. Opening hours may change in different periods.",
+    "description": "An aerial cable car crossing the Yangtze River, offering panoramic views of the city and river, and one of Chongqing’s most iconic experiences.",
+    "highlights": "Crossing the Yangtze River. One of the best ways to enjoy Chongqing’s night skyline.",
+    "tips": "Nearby attractions include Baixiangju, Jiefangbei, Shibati, and Hongyadong on the north side, and Xiahaoli and Longmenhao Old Street on the south side. Tickets are best booked in advance via the \"长江索道\" official WeChat mini program. Visiting after dark offers the most impressive city views.",
+    "cautions": "Tickets are time-slot based with queue numbers (e.g., 17:00–17:59). Arrival at the start of the time window is recommended, with total waiting time around one hour—plan accordingly. Opening hours may change in different periods.",
     "tags": [
       "Must-see",
       "River View",
@@ -5097,18 +4706,15 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "CQ018": {
     "id": "CQ018",
     "cityId": "CQ",
     "name": "Time Square",
-    "nameZh": "????",
+    "nameZh": "时代天街",
     "category": "shopping",
-    "description": "One of the largest single shopping complexes in China, made up of five sections (A-E) with over 1,200 brands, focusing on accessible, non-luxury retail and popular among young locals.",
+    "description": "One of the largest single shopping complexes in China, made up of five sections (A–E) with over 1,200 brands, focusing on accessible, non-luxury retail and popular among young locals.",
     "highlights": "A comprehensive experience covering dining, shopping, and entertainment.",
     "tips": "All sections are connected by walkways. In addition to shopping, a wide range of services can be found, including restaurants, bars, and salons. Fully air-conditioned in summer, making it a good place to escape the heat.",
     "cautions": "The complex is really large, so comfortable shoes are recommended, and sufficient time should be planned for a full visit.",
@@ -5132,19 +4738,16 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "CQ019": {
     "id": "CQ019",
     "cityId": "CQ",
     "name": "Xiahaoli Old Street",
-    "nameZh": "?????",
+    "nameZh": "下浩里老街",
     "category": "attraction",
     "description": "An emerging artsy district blending historic architecture with modern design, ideal for a slow stroll and photography.",
-    "highlights": "A relaxed glimpse into Chongqing's local lifestyle.",
+    "highlights": "A relaxed glimpse into Chongqing’s local lifestyle.",
     "tips": "Best visited around sunset, with the most beautiful views after dark. The most popular photo spots are the Waterfall Viewing Platform and Haoyue Bookstore Terrace, with clear signage throughout the area. Most shops operate between 10:00 and 22:00.",
     "cautions": "The area is mostly uphill, so comfortable, non-slip shoes are recommended. Viewing platforms can get crowded, so allow extra time. Take sun protection and stay cool in summer. Steps may be slippery on rainy days.",
     "tags": [
@@ -5168,16 +4771,13 @@
       "family"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 2,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 2
   },
   "CQ020": {
     "id": "CQ020",
     "cityId": "CQ",
     "name": "The Ring Shopping Park",
-    "nameZh": "??????",
+    "nameZh": "光环购物广场",
     "category": "shopping",
     "description": "A shopping mall that gained popularity for its environment and design, known as a social media hotspot.",
     "highlights": "The \"Luminous Forest\" indoor garden, featuring lush greenery reminiscent of Singapore-style design.",
@@ -5204,21 +4804,18 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 2,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 2
   },
   "CQ021": {
     "id": "CQ021",
     "cityId": "CQ",
     "name": "Xiyangyang Restaurant",
-    "nameZh": "???",
+    "nameZh": "喜洋洋",
     "category": "restaurant",
-    "description": "A long-running local favorite featured on Chongqing's must-eat lists, serving a wide variety of traditional Chongqing home-style dishes for over 20 years.",
-    "highlights": "Retro local-style restaurant. Offers a broad range of flavors-from light and savory to sweet, sour, and spicy-providing a great introduction to local Chongqing cuisine.",
-    "tips": "The menu is handwritten in Chinese with no photos-ordering via Dianping based on pictures of recommended dishes is helpful. Top picks include Steamed Pork Ribs with Millet, Signature Soy Sauce Chicken, and Fish-Fragrant Shredded Pork. Suitable for those who prefer mild flavors but still want to experience local food.",
-    "cautions": "Queues are common during peak hours-taking a number in advance via Dianping is recommended. Tissues are charged separately. Closed during the Chinese New Year period.",
+    "description": "A long-running local favorite featured on Chongqing’s must-eat lists, serving a wide variety of traditional Chongqing home-style dishes for over 20 years.",
+    "highlights": "Retro local-style restaurant. Offers a broad range of flavors—from light and savory to sweet, sour, and spicy—providing a great introduction to local Chongqing cuisine.",
+    "tips": "The menu is handwritten in Chinese with no photos—ordering via Dianping based on pictures of recommended dishes is helpful. Top picks include Steamed Pork Ribs with Millet, Signature Soy Sauce Chicken, and Fish-Fragrant Shredded Pork. Suitable for those who prefer mild flavors but still want to experience local food.",
+    "cautions": "Queues are common during peak hours—taking a number in advance via Dianping is recommended. Tissues are charged separately. Closed during the Chinese New Year period.",
     "tags": [
       "Hotpot",
       "Foodie",
@@ -5228,7 +4825,7 @@
     "lat": 29.5579,
     "lng": 106.5728,
     "district": "Yuzhong",
-    "hours": "08:00-22:00",
+    "hours": "11:00-14:00",
     "duration": 60,
     "price": 1,
     "indoor": true,
@@ -5241,21 +4838,18 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   },
   "CQ022": {
     "id": "CQ022",
     "cityId": "CQ",
     "name": "Yuanman Traditional Hot Pot",
-    "nameZh": "?????",
+    "nameZh": "圆满老火锅",
     "category": "restaurant",
     "description": "A classic neighborhood hot pot restaurant with over 30 years of history, known for its authentic Chongqing flavors.",
     "highlights": "Authentic Chongqing hot pot. Fresh ingredients and a clean dining environment.",
-    "tips": "For those sensitive to spice, a ?? (yuan-yang) pot (half spicy, half mild broth) is recommended. Spice levels are adjustable, mild spicy is suitable for most. The menu is in Chinese only, so ordering based on Dianping recommendations is helpful. Classic local ingredients such as beef tripe, duck blood, and braised chicken feet are worth trying depending on preference. For a break from the heat, try the brown sugar iced tofu pudding or chilled sweet rice balls available in-store.",
-    "cautions": "Queues are common during peak hours and holidays. Reservations are only available by phone or in person-visiting off-peak or allowing extra waiting time is recommended. Hot pot can be messy and has a strong smell, clothes that already worn or clothes that can handle stains are recommended. Open during the Chinese New Year, though crowds may be heavier.",
+    "tips": "For those sensitive to spice, a 鸳鸯 (yuan-yang) pot (half spicy, half mild broth) is recommended. Spice levels are adjustable, mild spicy is suitable for most. The menu is in Chinese only, so ordering based on Dianping recommendations is helpful. Classic local ingredients such as beef tripe, duck blood, and braised chicken feet are worth trying depending on preference. For a break from the heat, try the brown sugar iced tofu pudding or chilled sweet rice balls available in-store.",
+    "cautions": "Queues are common during peak hours and holidays. Reservations are only available by phone or in person—visiting off-peak or allowing extra waiting time is recommended. Hot pot can be messy and has a strong smell, clothes that already worn or clothes that can handle stains are recommended. Open during the Chinese New Year, though crowds may be heavier.",
     "tags": [
       "Hotpot",
       "Must-try",
@@ -5278,16 +4872,13 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "CQ023": {
     "id": "CQ023",
     "cityId": "CQ",
     "name": "Zuiaixian Wushan Paper-Wrapped Fish",
-    "nameZh": "????????",
+    "nameZh": "最爱鲜巫山纸包鱼",
     "category": "restaurant",
     "description": "A well-loved local restaurant with over 10 years of history, known for its signature Chongqing-style grilled fish and popular for group dining.",
     "highlights": "Live fish prepared fresh to order. Bold, spicy flavors that pair well with rice.",
@@ -5313,20 +4904,17 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "CQ024": {
     "id": "CQ024",
     "cityId": "CQ",
     "name": "Heji Stir-Fry",
-    "nameZh": "????",
+    "nameZh": "和记火爆",
     "category": "restaurant",
     "description": "A classic Chongqing jianghu cuisine restaurant, best known for its signature \"huobao\" (intense stir-fry) dishes.",
     "highlights": "Traditional jianghu-style cooking. Bold, spicy flavors that pair well with rice and drinks.",
-    "tips": "The signature \"???\" (shredded duck) is savory and not spicy. The \"??\" (huobao) series features rich, aromatic, and spicy flavors-popular choices include huobao beef tripe and huobao pork intestines, perfect with drinks.",
+    "tips": "The signature \"手撕鸭\" (shredded duck) is savory and not spicy. The \"火爆\" (huobao) series features rich, aromatic, and spicy flavors—popular choices include huobao beef tripe and huobao pork intestines, perfect with drinks.",
     "cautions": "Not ideal for those who cannot handle any spice. Reservations are by phone only. Lunch is usually less busy, while dinner can get crowded (around 30 minutes for waiting). Closed during the Chinese New Year period.",
     "tags": [
       "Local Snacks",
@@ -5336,7 +4924,7 @@
     "lat": 29.5587,
     "lng": 106.5725,
     "district": "Nanan",
-    "hours": "08:00-22:00",
+    "hours": "11:30-14:00",
     "duration": 60,
     "price": 1,
     "indoor": true,
@@ -5349,20 +4937,17 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "CQ025": {
     "id": "CQ025",
     "cityId": "CQ",
     "name": "Xianfang Noodles",
-    "nameZh": "????",
+    "nameZh": "显芳面馆",
     "category": "restaurant",
-    "description": "A local noodle shop with a casual, everyday vibe, offering authentic flavors and a glimpse into Chongqing's daily food culture.",
+    "description": "A local noodle shop with a casual, everyday vibe, offering authentic flavors and a glimpse into Chongqing’s daily food culture.",
     "highlights": "Affordable prices. Classic noodle dishes.",
-    "tips": "Ordering can be done by scanning a QR code at the table. Mild spice is recommended for most. Signature items include pea & minced pork noodles, Chongqing noodles (plain), and red chili wontons. Noodle portions come in two sizes: \"?? er liang\" (small) and \"?? san liang\" (large).",
+    "tips": "Ordering can be done by scanning a QR code at the table. Mild spice is recommended for most. Signature items include pea & minced pork noodles, Chongqing noodles (plain), and red chili wontons. Noodle portions come in two sizes: \"二两 er liang\" (small) and \"三两 san liang\" (large).",
     "cautions": "Open all day. Complimentary soup and side dishes are available.",
     "tags": [
       "Local Snacks",
@@ -5384,21 +4969,18 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "CQ026": {
     "id": "CQ026",
     "cityId": "CQ",
     "name": "Sanyangzi",
-    "nameZh": "???",
+    "nameZh": "三样子",
     "category": "restaurant",
     "description": "A local favorite dessert shop known for its handmade traditional sweet soups, made from ingredients like rice, beans, and milk.",
     "highlights": "Light, low-sugar desserts at affordable prices. Refreshing and made to order.",
     "tips": "Focused on low-sugar options, making it a good choice for those looking for something refreshing without too much sweetness. The menu includes photos, and ordering can be done by scanning a QR code at the table.",
-    "cautions": "Multiple locations across Chongqing-opening hours may vary by branch.",
+    "cautions": "Multiple locations across Chongqing—opening hours may vary by branch.",
     "tags": [
       "Dessert",
       "Takeaway",
@@ -5420,20 +5002,17 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "CQ027": {
     "id": "CQ027",
     "cityId": "CQ",
     "name": "Huang Yuming Barbecue",
-    "nameZh": "?????",
+    "nameZh": "黄玉明烤肉",
     "category": "restaurant",
     "description": "A hillside barbecue restaurant overlooking Jiefangbei and the Yuzhong skyline, combining stunning night views with live music and a lively atmosphere.",
     "highlights": "A perfect mix of Chongqing night views and barbecue dining.",
-    "tips": "Traffic on the hillside can be heavy-walking about 10 minutes from Shangxinjie Station is recommended. Arriving before sunset on a clear day offers the best transition from daylight views to nighttime scenery with live music. Vegetable dishes can be refilled for free.",
+    "tips": "Traffic on the hillside can be heavy—walking about 10 minutes from Shangxinjie Station is recommended. Arriving before sunset on a clear day offers the best transition from daylight views to nighttime scenery with live music. Vegetable dishes can be refilled for free.",
     "cautions": "Reservations are not available, so arriving early for a good seat is recommended.",
     "tags": [
       "Foodie",
@@ -5458,16 +5037,13 @@
       "elderly"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 5,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 5
   },
   "CQ028": {
     "id": "CQ028",
     "cityId": "CQ",
     "name": "Xiaoshulin Live",
-    "nameZh": "???Live",
+    "nameZh": "小树啉Live",
     "category": "restaurant",
     "description": "A riverside fusion barbecue restaurant popular for its night views and unique indoor wave projection design.",
     "highlights": "A combination of barbecue dining and scenic views. Live music performances.",
@@ -5496,10 +5072,7 @@
       "elderly"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "CQ029": {
     "id": "CQ029",
@@ -5507,7 +5080,7 @@
     "name": "Sparkling Sky Bar",
     "nameZh": "Sparkling Sky Bar",
     "category": "nightlife",
-    "description": "One of Chongqing's most popular rooftop river-view gardens, offering 360-degree views of the skyline, paired with cocktails, dining, and an energetic atmosphere.",
+    "description": "One of Chongqing’s most popular rooftop river-view gardens, offering 360-degree views of the skyline, paired with cocktails, dining, and an energetic atmosphere.",
     "highlights": "Wide cocktail selection. Front-row river views. DJ-supported nightlife atmosphere.",
     "tips": "Live band performances run daily from 19:00 to 22:00, with no minimum spending requirement. River-facing seats are highly recommended. Drone shows can sometimes be seen on weekend nights.",
     "cautions": "Reservations are recommended for river-view seating.",
@@ -5533,10 +5106,7 @@
       "friends"
     ],
     "bookingRequired": true,
-    "foreignFriendly": 4,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 4
   },
   "CQ030": {
     "id": "CQ030",
@@ -5566,9 +5136,6 @@
       "friends"
     ],
     "bookingRequired": false,
-    "foreignFriendly": 3,
-    "vegetarian": false,
-    "halal": false,
-    "containsPork": false
+    "foreignFriendly": 3
   }
 }

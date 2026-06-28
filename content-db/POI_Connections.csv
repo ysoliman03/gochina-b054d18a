@@ -1,0 +1,14 @@
+﻿Must match POIs sheet;Must match POIs sheet;taxi / metro / walk / bus;Estimated travel time;Approximate distance;Practical transit tips for foreigners
+from_poi_id;to_poi_id;travel_mode;duration_min;distance_km;notes
+BJ001;BJ003;taxi;15;3,5;Straight south on 2nd Ring Road. About 20-30 CNY.
+BJ001;BJ003;metro;25;;Line 2 from Qianmen to Tiantan Dongmen. 3 CNY.
+BJ001;BJ002;taxi;90;73;Highway drive. 200-300 CNY one way. Arrange round trip with driver.
+BJ001;BJ004;metro;20;;Line 8 from Shichahai, 2 stops. Or pleasant 25-min walk north through hutongs.
+BJ001;BJ004;walk;30;2,5;Walk north through Jingshan Park and hutong alleys. Scenic route.
+BJ003;BJ005;taxi;20;5;About 25-40 CNY depending on traffic.
+BJ004;BJ005;taxi;15;3;Short ride east. About 15-25 CNY.
+CQ001;CQ002;metro;15;4,5;Line 2 direct. The monorail ride itself is part of the experience.
+CQ001;CQ004;walk;10;0,5;Hongya Cave is right next to Jiefangbei. Easy walk.
+CQ001;CQ006;walk;8;0,4;Cableway station is a short walk from Hongya Cave along the river.
+CQ004;CQ007;walk;10;0,6;18 Steps entrance is just south of Jiefangbei.
+CQ002;CQ003;metro;25;8;Line 1 from Liziba area to Ciqikou. About 6 stops.

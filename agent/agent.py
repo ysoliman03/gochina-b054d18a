@@ -110,9 +110,12 @@ model = GroqModel("llama-3.3-70b-versatile")                      # GROQ_API_KEY
 from models import ItineraryRequest, ItineraryResult
 from tools import (
     search_pois,
+    search_cuisine,
     get_poi_details,
     get_transit_time,
     get_city_info,
+    get_transport_hubs,
+    get_city_connections,
     check_travel_constraints,
 )
 
@@ -135,7 +138,9 @@ Call tools in this order:
   2. tool_check_constraints  — once, to catch holidays / weather warnings
   3. tool_search_pois        — for attractions (categories=["attraction","park","market"])
   4. tool_search_pois        — for restaurants (categories=["restaurant"])
-  5. tool_get_transit_time   — between each pair of consecutive stops you pick
+  5. tool_search_cuisine     — for safe dish ideas matching dietary restrictions
+  6. tool_get_transport_hubs — only if arrival/departure logistics matter
+  7. tool_get_transit_time   — between each pair of consecutive stops you pick
   ✘ Do NOT call tool_get_poi_details — the search results already contain
     hours and duration. Only call it if you genuinely need extra detail
     on one specific POI.
@@ -344,6 +349,52 @@ async def tool_get_city_info(ctx: RunContext[ItineraryRequest]) -> dict | None:
 
 
 @agent.tool
+async def tool_search_cuisine(
+    ctx: RunContext[ItineraryRequest],
+    dietary_restrictions: list[str] | None = None,
+    max_results: int = 10,
+) -> list[dict]:
+    """
+    Search cuisine dishes in the destination city.
+    Use this to find dishes that are safe for the traveller's dietary restrictions.
+    The city is read automatically from context. If dietary_restrictions is omitted,
+    the traveller profile restrictions are used.
+    """
+    restrictions = dietary_restrictions
+    if restrictions is None:
+        restrictions = ctx.deps.profile.dietaryRestrictions or None
+
+    return search_cuisine(
+        city_id=ctx.deps.cityId,
+        dietary_restrictions=restrictions,
+        max_results=max_results,
+    )
+
+
+@agent.tool
+async def tool_get_transport_hubs(ctx: RunContext[ItineraryRequest]) -> list[dict]:
+    """
+    Return airports and railway stations for the destination city.
+    Use this for arrival/departure planning, first-day logistics, and station warnings.
+    Takes NO arguments; the city is read automatically from context.
+    """
+    return get_transport_hubs(ctx.deps.cityId)
+
+
+@agent.tool
+async def tool_get_city_connections(
+    ctx: RunContext[ItineraryRequest],
+    from_city_id: str,
+    to_city_id: str,
+) -> list[dict]:
+    """
+    Return known train/flight connections between two city ids.
+    Use this only for multi-city transfer reasoning. Do not invent city ids.
+    """
+    return get_city_connections(from_city_id, to_city_id)
+
+
+@agent.tool
 async def tool_check_constraints(ctx: RunContext[ItineraryRequest]) -> list[dict]:
     """
     Return travel constraints for the destination city: public holidays, weather
@@ -351,4 +402,8 @@ async def tool_check_constraints(ctx: RunContext[ItineraryRequest]) -> list[dict
     Takes NO arguments — the city is read automatically from context.
     Do not pass any parameters when calling this tool.
     """
-    return check_travel_constraints(ctx.deps.cityId)
+    return check_travel_constraints(
+        ctx.deps.cityId,
+        ctx.deps.startDate,
+        ctx.deps.endDate,
+    )
