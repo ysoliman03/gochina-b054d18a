@@ -1,0 +1,702 @@
+[
+  {
+    "id": "D001",
+    "cityId": "BJ",
+    "poiIds": [
+      "BJ022"
+    ],
+    "name": "Peking Duck",
+    "nameZh": "北京烤鸭",
+    "category": "barbecue",
+    "dietaryTags": [
+      "no_pork",
+      "dairy_free",
+      "nut_free",
+      "egg_free"
+    ],
+    "description": "Peking Duck is a world-famous Beijing dish featuring roasted duck with crispy skin and tender meat. It is traditionally sliced in front of diners and served wrapped in thin pancakes with sweet bean sauce, cucumber, and scallions. The skin is often dipped in sugar for a melt-in-the-mouth texture.",
+    "imageKey": "D001_cover.jpg"
+  },
+  {
+    "id": "D002",
+    "cityId": "BJ",
+    "poiIds": [
+      "BJ005"
+    ],
+    "name": "Braised Sea Cucumber with Scallions",
+    "nameZh": "葱烧海参",
+    "category": "seafood",
+    "dietaryTags": [
+      "no_pork",
+      "dairy_free",
+      "nut_free",
+      "egg_free",
+      "low_spice"
+    ],
+    "description": "This is a classic Shandong masterpiece featured at DaDong, showcasing premium sea cucumber braised with caramelized Chinese scallions. The sea cucumber absorbs the rich, savory, and slightly sweet sauce while retaining a gelatinous yet firm texture. It is a highly celebrated delicacy in high-end Chinese dining.",
+    "imageKey": "D002_cover.jpg"
+  },
+  {
+    "id": "D003",
+    "cityId": "BJ",
+    "poiIds": [
+      "BJ024"
+    ],
+    "name": "Instant-Boiled Mutton",
+    "nameZh": "老北京涮羊肉",
+    "category": "hotpot",
+    "dietaryTags": [
+      "halal",
+      "no_pork",
+      "dairy_free",
+      "nut_free",
+      "egg_free"
+    ],
+    "description": "A traditional Beijing-style hotpot featuring paper-thin slices of high-quality mutton quick-boiled in a copper pot with clear broth. It is traditionally paired with a rich dipping sauce made of sesame paste, fermented bean curd, and leek flower sauce. The dish highlights the natural, tender flavor of premium lamb.",
+    "imageKey": "D003_cover.jpg"
+  },
+  {
+    "id": "D004",
+    "cityId": "BJ",
+    "poiIds": [
+      "BJ025"
+    ],
+    "name": "Fresh Mutton Slices",
+    "nameZh": "手切鲜羊肉",
+    "category": "hotpot",
+    "dietaryTags": [
+      "halal",
+      "no_pork",
+      "dairy_free",
+      "nut_free",
+      "egg_free"
+    ],
+    "description": "A signature offering at JuBaoYuan featuring fresh, hand-cut mutton slices that are thick yet incredibly tender. Unlike frozen rolled meat, these fresh cuts stick to the plate even when turned upside down, proving their premium moisture control and quality. It offers a chewy, juicy texture after a brief poaching in the hotpot.",
+    "imageKey": "D004_cover.jpg"
+  },
+  {
+    "id": "D005",
+    "cityId": "BJ",
+    "poiIds": [
+      "BJ026"
+    ],
+    "name": "Stir-fried Pig's Liver",
+    "nameZh": "姚记炒肝",
+    "category": "soup",
+    "dietaryTags": [
+      "dairy_free",
+      "nut_free",
+      "egg_free",
+      "low_spice"
+    ],
+    "description": "A legendary Beijing street food consisting of thoroughly cleaned pig's liver and intestines thoroughly stewed in a thick, glossy soup flavored with garlic and soy sauce. The soup is thickened with starch to achieve a smooth texture, resulting in a savory and aromatic local comfort breakfast.",
+    "imageKey": "D005_cover.jpg"
+  },
+  {
+    "id": "D006",
+    "cityId": "BJ",
+    "poiIds": [
+      "BJ027"
+    ],
+    "name": "Deep-Fried Dough Rings",
+    "nameZh": "焦圈",
+    "category": "snack",
+    "dietaryTags": [
+      "vegetarian",
+      "vegan",
+      "no_pork",
+      "no_beef",
+      "dairy_free",
+      "nut_free",
+      "egg_free"
+    ],
+    "description": "A classic, ring-shaped traditional Beijing snack made of flour that is deep-fried to a golden, translucent crispness. It has an incredibly crunchy texture and can be preserved for days without losing its crispness. Locals almost always pair it with fermented mung bean milk (Douzhi) or savor it inside a sesame flatbread.",
+    "imageKey": "D006_cover.jpg"
+  },
+  {
+    "id": "D007",
+    "cityId": "BJ",
+    "poiIds": [
+      "BJ028"
+    ],
+    "name": "Matsutake and Chicken Soup",
+    "nameZh": "松茸鸡汤",
+    "category": "soup",
+    "dietaryTags": [
+      "no_pork",
+      "no_beef",
+      "dairy_free",
+      "nut_free",
+      "egg_free",
+      "low_spice"
+    ],
+    "description": "It‘s a premium, clear double-boiled chicken soup combining nourishing fresh yams and highly prized matsutake mushrooms. The soup delivers an intensely clean, and elegant aroma while preserving the natural health benefits of the ingredients.",
+    "imageKey": "D007_cover.jpg"
+  },
+  {
+    "id": "D008",
+    "cityId": "BJ",
+    "poiIds": [
+      "BJ028"
+    ],
+    "name": "Steamed Chicken Feet with Black Bean Sauce",
+    "nameZh": "豉汁蒸凤爪",
+    "category": "snack",
+    "dietaryTags": [
+      "no_pork",
+      "no_beef",
+      "dairy_free",
+      "nut_free",
+      "egg_free",
+      "low_spice"
+    ],
+    "description": "A quintessential Cantonese dim sum dish featuring deep-fried then steamed chicken feet braised in a savory, aromatic fermented black bean sauce. The culinary process creates an incredibly puffed, tender texture where the skin easily separates from the bone.",
+    "imageKey": "D008_cover.jpg"
+  },
+  {
+    "id": "D009",
+    "cityId": "BJ",
+    "poiIds": [
+      "BJ028"
+    ],
+    "name": "Pineapple Bun with Cold Butter",
+    "nameZh": "冰火菠萝油",
+    "category": "pastry",
+    "dietaryTags": [
+      "vegetarian",
+      "no_pork",
+      "no_beef",
+      "nut_free",
+      "low_spice"
+    ],
+    "description": "A classic Cantonese bakery favorite featuring a freshly baked, warm pineapple bun sliced open with a thick slab of ice-cold butter stuffed inside. The bun itself contains no actual pineapple but is named for its sweet, crunchy, pineapple-textured cookie crust. It offers a sensory delight from the temperature contrast and the rich butter melting into the soft, sweet bread.",
+    "imageKey": "D009_cover.jpg"
+  },
+  {
+    "id": "D010",
+    "cityId": "BJ",
+    "poiIds": [
+      "BJ028"
+    ],
+    "name": "Black Bean Qizi Pastry",
+    "nameZh": "黑豆起子馍",
+    "category": "pastry",
+    "dietaryTags": [
+      "vegetarian",
+      "no_pork",
+      "no_beef",
+      "nut_free",
+      "egg_free",
+      "low_spice"
+    ],
+    "description": "A traditional Beijing-style baked pastry from the historic Daoxiangcun bakery, made with a leavened dough base and filled with a nutritious black bean paste. It features a dense, slightly chewy, and layered bread-like texture with a subtle natural sweetness from the beans.",
+    "imageKey": "D010_cover.jpg"
+  },
+  {
+    "id": "D011",
+    "cityId": "BJ",
+    "poiIds": [
+      "BJ028"
+    ],
+    "name": "Oat Lattice Pastry",
+    "nameZh": "稻香村燕麦格子酥",
+    "category": "pastry",
+    "dietaryTags": [
+      "vegetarian",
+      "no_pork",
+      "no_beef",
+      "nut_free",
+      "egg_free",
+      "low_spice"
+    ],
+    "description": "A modern, health-conscious traditional pastry from Daoxiangcun featuring a distinct lattice-patterned outer crust made with wholesome oats. It has a delightfully crisp, flaky texture and is lightly sweetened to highlight the natural, nutty aroma of the grains. This nutritious snack is popular among health-focused individuals looking for a fiber-rich and comforting accompaniment to tea.",
+    "imageKey": "D011_cover.jpg"
+  },
+  {
+    "id": "D012",
+    "cityId": "BJ",
+    "poiIds": [
+      "BJ030"
+    ],
+    "name": "Traditional Beef Meat Pie",
+    "nameZh": "一品牛肉肉饼",
+    "category": "dumpling",
+    "dietaryTags": [
+      "no_pork",
+      "dairy_free",
+      "nut_free",
+      "egg_free"
+    ],
+    "description": "A classic northern Chinese pan-fried meat pie filled with a generous, juicy mixture of seasoned minced beef and scallions wrapped in thin dough. The pie is pan-fried until both sides achieve a beautiful golden-brown, crispy crust while locking the savory juices inside.",
+    "imageKey": "D012_cover.jpg"
+  },
+  {
+    "id": "D013",
+    "cityId": "BJ",
+    "poiIds": [
+      "BJ023"
+    ],
+    "name": "Mixed Bean Sprout with Sauce",
+    "nameZh": "巧拌豆苗",
+    "category": "salad",
+    "dietaryTags": [
+      "vegetarian",
+      "vegan",
+      "no_pork",
+      "no_beef",
+      "dairy_free",
+      "nut_free",
+      "egg_free",
+      "low_spice"
+    ],
+    "description": "A refreshing cold appetizer featuring crisp, tender young pea shoots lightly blanched and quickly shocked in ice water. The sprouts are tossed in a delicate, savory sauce typically made with light soy sauce, sesame oil, and a touch of vinegar. It offers a clean, vibrant taste profile that beautifully highlights the natural sweetness and crunchy texture of fresh greens.",
+    "imageKey": "D013_cover.jpg"
+  },
+  {
+    "id": "D014",
+    "cityId": "BJ",
+    "poiIds": [
+      "BJ005"
+    ],
+    "name": "Sesame Flatbread",
+    "nameZh": "麻酱烧饼",
+    "category": "pastry",
+    "dietaryTags": [
+      "halal",
+      "vegetarian",
+      "no_pork",
+      "no_beef",
+      "dairy_free",
+      "egg_free"
+    ],
+    "description": "A beloved traditional Beijing baked flatbread layered generously with rich sesame paste and savory hints of Chinese five-spice powder. The exterior is coated with a dense layer of aromatic white sesame seeds and baked until beautifully crispy, while the interior remains soft and multi-layered.",
+    "imageKey": "D014_cover.jpg"
+  },
+  {
+    "id": "D015",
+    "cityId": "BJ",
+    "poiIds": [
+      "BJ024"
+    ],
+    "name": "Braised Mutton Tots",
+    "nameZh": "红烧羊尾油",
+    "category": "cooked_dish",
+    "dietaryTags": [
+      "halal",
+      "no_pork",
+      "dairy_free",
+      "nut_free",
+      "egg_free"
+    ],
+    "description": "A unique, traditional halal delicacy featuring rich bits of mutton tail fat braised in a savory, deep soy-based sauce. The fat is rendered carefully until it achieves a unique, melt-in-the-mouth texture that is highly aromatic without being overwhelmingly greasy. It represents an authentic, old-school flavor favored by traditional Beijing food enthusiasts.",
+    "imageKey": "D015_cover.jpg"
+  },
+  {
+    "id": "D016",
+    "cityId": "SH",
+    "poiIds": [
+      "SH008"
+    ],
+    "name": "German Pork Knuckle",
+    "nameZh": "德式烤猪肘",
+    "category": "barbecue",
+    "dietaryTags": [
+      "low_spice",
+      "no_beef"
+    ],
+    "description": "German Pork Knuckle is a traditional German roasted meat dish featuring crispy skin and tender pork. It is commonly served with sauerkraut and mashed potatoes and is one of the signature dishes at Paulaner Restaurant.",
+    "imageKey": "D016_cover.jpg"
+  },
+  {
+    "id": "D017",
+    "cityId": "SH",
+    "poiIds": [
+      "SH019",
+      "SH024"
+    ],
+    "name": "Xiaolongbao",
+    "nameZh": "小笼包",
+    "category": "dumpling",
+    "dietaryTags": [
+      "no_beef"
+    ],
+    "description": "Xiaolongbao is a famous Shanghainese steamed dumpling filled with seasoned pork and rich soup. The thin wrapper and juicy filling make it one of the most iconic dishes in Shanghai cuisine. It is traditionally served in bamboo steamers and enjoyed with vinegar and ginger.",
+    "imageKey": "D017_cover.jpg"
+  },
+  {
+    "id": "D018",
+    "cityId": "SH",
+    "poiIds": [
+      "SH019"
+    ],
+    "name": "Shanghai Red Broth Noodles",
+    "nameZh": "红汤面",
+    "category": "noodle",
+    "dietaryTags": [
+      "low_spice",
+      "no_beef"
+    ],
+    "description": "Shanghai Red Broth Noodles are a traditional local noodle dish served in a rich soy-based broth. The savory flavor and comforting texture make it a popular everyday meal in Shanghai.",
+    "imageKey": "D018_cover.jpg"
+  },
+  {
+    "id": "D019",
+    "cityId": "SH",
+    "poiIds": [
+      "SH019",
+      "SH025"
+    ],
+    "name": "Squirrel-Shaped Mandarin Fish",
+    "nameZh": "松鼠桂鱼",
+    "category": "seafood",
+    "dietaryTags": [
+      "low_spice",
+      "no_pork",
+      "no_beef"
+    ],
+    "description": "Squirrel-Shaped Mandarin Fish is a famous Jiangnan dish made from deep-fried mandarin fish topped with a sweet and sour sauce. Its unique appearance and crispy texture make it a popular specialty in Shanghai cuisine.",
+    "imageKey": "D019_cover.jpg"
+  },
+  {
+    "id": "D020",
+    "cityId": "SH",
+    "poiIds": [
+      "SH025",
+      "SH047"
+    ],
+    "name": "Tofu with Crab Roe",
+    "nameZh": "蟹粉豆腐",
+    "category": "seafood",
+    "dietaryTags": [
+      "low_spice",
+      "no_pork",
+      "no_beef"
+    ],
+    "description": "Tofu with Crab Roe combines silky tofu with rich crab roe sauce, creating a delicate and flavorful dish. It is a well-known specialty often found in Shanghainese restaurants.",
+    "imageKey": "D020_cover.jpg"
+  },
+  {
+    "id": "D021",
+    "cityId": "SH",
+    "poiIds": [
+      "SH026"
+    ],
+    "name": "Shengjianbao",
+    "nameZh": "生煎",
+    "category": "dumpling",
+    "dietaryTags": [
+      "no_beef"
+    ],
+    "description": "Shengjianbao is a famous Shanghainese pan-fried bun filled with juicy pork and savory broth. Its crispy bottom and flavorful filling make it one of Shanghai’s most iconic street foods.",
+    "imageKey": "D021_cover.jpg"
+  },
+  {
+    "id": "D022",
+    "cityId": "SH",
+    "poiIds": [
+      "SH047"
+    ],
+    "name": "Red Bean Sponge Cake",
+    "nameZh": "赤豆松糕",
+    "category": "dessert",
+    "dietaryTags": [
+      "vegetarian",
+      "no_pork",
+      "no_beef"
+    ],
+    "description": "Red Bean Sponge Cake is a traditional Shanghainese dessert made with glutinous rice flour and sweet red beans. Its soft texture and mildly sweet flavor make it a popular local treat.",
+    "imageKey": "D022_cover.jpg"
+  },
+  {
+    "id": "D023",
+    "cityId": "SH",
+    "poiIds": [
+      "SH047"
+    ],
+    "name": "Shaoxing Wine Chicken",
+    "nameZh": "绍兴酒香鸡",
+    "category": "cooked_dish",
+    "dietaryTags": [
+      "low_spice",
+      "no_pork",
+      "no_beef"
+    ],
+    "description": "Shaoxing Wine Chicken is a traditional Jiangnan-style cold dish made with tender chicken marinated in Shaoxing rice wine. Its delicate flavor and aromatic fragrance make it a popular appetizer in Shanghainese cuisine.",
+    "imageKey": "D023_cover.jpg"
+  },
+  {
+    "id": "D024",
+    "cityId": "SH",
+    "poiIds": [
+      "SH037"
+    ],
+    "name": "Black Truffle Potato Pancake",
+    "nameZh": "黑松露土豆麦饼",
+    "category": "cooked_dish",
+    "dietaryTags": [
+      "vegetarian",
+      "no_pork",
+      "no_beef"
+    ],
+    "description": "Black Truffle Potato Pancake is a crispy savory pancake made with potato and black truffle. Its rich aroma and delicate flavor make it a popular vegetarian dish in modern Shanghainese restaurants.",
+    "imageKey": "D024_cover.jpg"
+  },
+  {
+    "id": "D025",
+    "cityId": "XA",
+    "poiIds": [
+      "XA016",
+      "XA018"
+    ],
+    "name": "Roujiamo",
+    "nameZh": "肉夹馍",
+    "category": "street_food",
+    "dietaryTags": [
+      "low_spice"
+    ],
+    "description": "Roujiamo is a traditional Shaanxi street food made with chopped braised pork stuffed inside baked flatbread. Beef versions are also available in Muslim restaurants. It is known for its savory flavor and crispy bread texture.",
+    "imageKey": "D025_cover.jpg"
+  },
+  {
+    "id": "D026",
+    "cityId": "XA",
+    "poiIds": [
+      "XA016",
+      "XA018"
+    ],
+    "name": "Liangpi",
+    "nameZh": "凉皮",
+    "category": "noodle",
+    "dietaryTags": [
+      "vegetarian",
+      "low_spice"
+    ],
+    "description": "Liangpi is a cold noodle dish made from wheat or rice starch. It is typically served with chili oil, vinegar, garlic, cucumber, and sesame sauce. The dish is especially popular during summer because of its refreshing taste.",
+    "imageKey": "D026_cover.jpg"
+  },
+  {
+    "id": "D027",
+    "cityId": "XA",
+    "poiIds": [
+      "XA017"
+    ],
+    "name": "Biangbiang Noodles",
+    "nameZh": "Biangbiang面",
+    "category": "noodle",
+    "dietaryTags": [
+      "vegetarian",
+      "low_spice"
+    ],
+    "description": "Biangbiang Noodles are wide hand-pulled noodles commonly served with chili oil, vegetables, and garlic. The noodles are known for their chewy texture and rich savory flavor. They are one of the most iconic noodle dishes in Shaanxi cuisine.",
+    "imageKey": "D027_cover.jpg"
+  },
+  {
+    "id": "D028",
+    "cityId": "XA",
+    "poiIds": [
+      "XA019",
+      "XA021"
+    ],
+    "name": "Beef and Lamb Paomo",
+    "nameZh": "牛羊肉泡馍",
+    "category": "soup",
+    "dietaryTags": [
+      "halal",
+      "no_pork"
+    ],
+    "description": "Beef and Lamb Paomo is a traditional Xi’an soup dish made with crumbled flatbread soaked in rich beef or lamb broth. It is often served with glass noodles, green onions, and pickled garlic. The dish is strongly associated with Xi’an’s Muslim food culture.",
+    "imageKey": "D028_cover.jpg"
+  },
+  {
+    "id": "D029",
+    "cityId": "XA",
+    "poiIds": [
+      "XA017"
+    ],
+    "name": "Shaanxi Oil-Splashed Noodles",
+    "nameZh": "油泼面",
+    "category": "noodle",
+    "dietaryTags": [
+      "vegetarian",
+      "low_spice"
+    ],
+    "description": "Shaanxi Oil-Splashed Noodles are hand-pulled noodles topped with garlic, chili powder, green onions, and hot oil. The hot oil releases the aroma of the spices before serving. The dish is famous for its rich and fragrant flavor.",
+    "imageKey": "D029_cover.jpg"
+  },
+  {
+    "id": "D030",
+    "cityId": "XA",
+    "poiIds": [
+      "XA020"
+    ],
+    "name": "Sticky Rice with Red Dates",
+    "nameZh": "甑糕",
+    "category": "dessert",
+    "dietaryTags": [
+      "vegetarian"
+    ],
+    "description": "Sticky Rice with Red Dates is a traditional Shaanxi dessert made with glutinous rice and sweet red dates. The texture is soft and sticky with a naturally sweet taste. It is commonly eaten as a snack or dessert.",
+    "imageKey": "D030_cover.jpg"
+  },
+  {
+    "id": "D031",
+    "cityId": "XA",
+    "poiIds": [
+      "XA020"
+    ],
+    "name": "Yogurt Ice Dessert",
+    "nameZh": "酸奶冰酪",
+    "category": "dessert",
+    "dietaryTags": [
+      "vegetarian",
+      "low_spice"
+    ],
+    "description": "Yogurt Ice Dessert is a cold dairy dessert inspired by local Shaanxi flavors. It is commonly made with yogurt, nuts, fruits, or traditional pastry toppings. The dessert is especially popular during summer.",
+    "imageKey": "D031_cover.jpg"
+  },
+  {
+    "id": "D032",
+    "cityId": "CQ",
+    "poiIds": [
+      "CQ021"
+    ],
+    "name": "Secret Soy Sauce Chicken",
+    "nameZh": "秘制酱油鸡",
+    "category": "steamed_dish",
+    "dietaryTags": [
+      "no_pork",
+      "low_spice"
+    ],
+    "description": "Secret Soy Sauce Chicken is a signature homestyle dish at Xiyangyang, made with tender chicken braised in a savory soy-based sauce. It tastes salty, slightly sweet, and aromatic, usually served as a shared main dish.",
+    "imageKey": "D032_cover.jpg"
+  },
+  {
+    "id": "D033",
+    "cityId": "CQ",
+    "poiIds": [
+      "CQ021"
+    ],
+    "name": "Millet-Steamed Pork Ribs",
+    "nameZh": "小米排骨",
+    "category": "steamed_dish",
+    "dietaryTags": [
+      "low_spice"
+    ],
+    "description": "Millet-Steamed Pork Ribs are pork ribs steamed with millet until soft and fragrant. The millet absorbs the meat juices, giving the dish a rich but not greasy texture.",
+    "imageKey": "D033_cover.jpg"
+  },
+  {
+    "id": "D034",
+    "cityId": "CQ",
+    "poiIds": [
+      "CQ021"
+    ],
+    "name": "Yu-Shiang Shredded Pork",
+    "nameZh": "鱼香肉丝",
+    "category": "stir_fry",
+    "dietaryTags": [],
+    "description": "Yu-Shiang Shredded Pork is a classic Sichuan-style stir-fried dish made with shredded pork, wood ear mushrooms, bamboo shoots, and a sweet, sour, and mildly spicy garlic sauce. It is commonly served with steamed rice and is known for its rich “fish-fragrant” flavor, even though it does not contain fish.",
+    "imageKey": "D034_cover.jpg"
+  },
+  {
+    "id": "D035",
+    "cityId": "CQ",
+    "poiIds": [
+      "CQ022"
+    ],
+    "name": "Chongqing Hotpot",
+    "nameZh": "重庆火锅",
+    "category": "hotpot",
+    "dietaryTags": [],
+    "description": "Chongqing Hotpot is a classic spicy hotpot dish served with a rich red oil broth and various ingredients such as beef, tripe, vegetables, tofu skin, and mushrooms. It is known for its numbing, spicy flavor and is commonly enjoyed as a shared meal with dipping sauce.",
+    "imageKey": "D035_cover.jpg"
+  },
+  {
+    "id": "D036",
+    "cityId": "CQ",
+    "poiIds": [
+      "CQ023"
+    ],
+    "name": "Paper-Wrapped Fish",
+    "nameZh": "纸包鱼",
+    "category": "fish",
+    "dietaryTags": [
+      "no_pork"
+    ],
+    "description": "Paper-Wrapped Fish is a Chongqing-style fish dish wrapped and cooked with spicy sauce and vegetables. The fish stays tender while absorbing the savory and spicy seasoning.",
+    "imageKey": "D036_cover.jpg"
+  },
+  {
+    "id": "D037",
+    "cityId": "CQ",
+    "poiIds": [
+      "CQ024"
+    ],
+    "name": "Fire-Fried Yellow Throat",
+    "nameZh": "火爆黄喉",
+    "category": "stir_fry",
+    "dietaryTags": [],
+    "description": "Fire-Fried Yellow Throat is a Chongqing stir-fried dish known for its crisp texture and strong wok aroma. It is usually cooked quickly with chili and spices for a bold, numbing flavor.",
+    "imageKey": "D037_cover.jpg"
+  },
+  {
+    "id": "D038",
+    "cityId": "CQ",
+    "poiIds": [
+      "CQ025"
+    ],
+    "name": "Pea and Minced Pork Noodles",
+    "nameZh": "豌豆杂酱面",
+    "category": "noodle",
+    "dietaryTags": [],
+    "description": "Pea and Minced Pork Noodles combine soft peas, minced pork sauce, and chewy noodles. The dish is hearty and savory, often mixed well before eating.",
+    "imageKey": "D038_cover.jpg"
+  },
+  {
+    "id": "D039",
+    "cityId": "CQ",
+    "poiIds": [
+      "CQ025"
+    ],
+    "name": "Chongqing Noodles",
+    "nameZh": "重庆小面",
+    "category": "noodle",
+    "dietaryTags": [
+      "vegetarian"
+    ],
+    "description": "Chongqing Noodles are a simple but iconic noodle dish seasoned with chili oil, garlic, scallions, and soy sauce. It is commonly served as a quick street-style meal with a fragrant spicy taste.",
+    "imageKey": "D039_cover.jpg"
+  },
+  {
+    "id": "D040",
+    "cityId": "CQ",
+    "poiIds": [
+      "CQ026"
+    ],
+    "name": "Fresh Milk Mochi",
+    "nameZh": "鲜奶麻薯",
+    "category": "dessert",
+    "dietaryTags": [
+      "vegetarian",
+      "low_spice"
+    ],
+    "description": "Fresh Milk Mochi is a soft and chewy dessert made with milk, sugar, and starch. It has a creamy, mildly sweet flavor and is often served with various toppings such as crushed Oreo, matcha powder, crushed peanuts, soybean powder, and brown sugar syrup.",
+    "imageKey": "D040_cover.jpg"
+  },
+  {
+    "id": "D041",
+    "cityId": "CQ",
+    "poiIds": [
+      "CQ026"
+    ],
+    "name": "Iced Tofu Pudding",
+    "nameZh": "冰豆花",
+    "category": "dessert",
+    "dietaryTags": [
+      "vegetarian",
+      "low_spice"
+    ],
+    "description": "Iced Tofu Pudding is a refreshing Chongqing-style dessert made with soft tofu pudding served chilled with sweet syrup and toppings. It is light, smooth, and commonly eaten as a cooling snack after spicy food.",
+    "imageKey": "D041_cover.jpg"
+  }
+]

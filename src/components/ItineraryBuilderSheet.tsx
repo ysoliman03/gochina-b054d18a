@@ -13,7 +13,7 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { useAppStore } from "@/store/useAppStore";
-import { cities } from "@/data/cities";
+import { cities } from "@/data/generated/cities";
 import { Sparkles, Loader2, CheckCircle2, AlertCircle, ChevronRight } from "lucide-react";
 
 // ── Config ────────────────────────────────────────────────────────────────

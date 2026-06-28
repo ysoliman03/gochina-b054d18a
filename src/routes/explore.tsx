@@ -1,17 +1,50 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MobileShell } from "@/components/MobileShell";
 import { useAppStore } from "@/store/useAppStore";
-import { pois } from "@/data/pois";
-import { cities } from "@/data/cities";
+import { pois } from "@/data/generated/pois";
+import { cities } from "@/data/generated/cities";
+import { transportHubs } from "@/data/generated/transportHubs";
 import { CityMap } from "@/components/CityMap";
-import { ArrowRight, Heart, Plus, X, ChevronDown, ArrowUpRight, Lightbulb } from "lucide-react";
-import { useMemo, useState } from "react";
-import { dishes as allDishes, type Dish } from "@/data/dishes";
-import { AlertTriangle } from "lucide-react";
+import {
+  ArrowRight,
+  Heart,
+  Plus,
+  X,
+  ChevronDown,
+  ArrowUpRight,
+  Lightbulb,
+  Plane,
+  TrainFront,
+  Check,
+} from "lucide-react";
+import { useEffect, useMemo, useState, type SyntheticEvent } from "react";
+import { cuisine } from "@/data/generated/cuisine";
+import type { CuisineDish, TransportHub } from "@/data/types";
+import {
+  getDishFallbackEmoji,
+  getDishImageSrc,
+  getPoiFallbackEmoji,
+  getPoiImageSrc,
+} from "@/lib/contentMedia";
+import { dishMatchesProfile } from "@/lib/foodCompatibility";
+import { scorePoi } from "@/engine/itineraryEngine";
+import {
+  formatBestTime,
+  formatOpeningHours,
+  getPoiDisplayChips,
+  normalizePoiTextList,
+} from "@/lib/poiDisplay";
 import { pageHead } from "@/lib/seo";
+
+type ExploreSearch = { city?: string; category?: string; poi?: string };
 
 export const Route = createFileRoute("/explore")({
   component: Explore,
+  validateSearch: (search: Record<string, unknown>): ExploreSearch => ({
+    city: typeof search.city === "string" ? search.city : undefined,
+    category: typeof search.category === "string" ? search.category : undefined,
+    poi: typeof search.poi === "string" ? search.poi : undefined,
+  }),
   head: () =>
     pageHead({
       path: "/explore",
@@ -171,29 +204,129 @@ const CATEGORY_LABEL: Record<string, string> = {
   shopping: "Shopping",
 };
 
+const CUISINE_GRADIENTS: Record<string, string> = {
+  barbecue: "from-amber-100 to-orange-200",
+  dumpling: "from-rose-100 to-pink-200",
+  hotpot: "from-red-100 to-rose-200",
+  noodle: "from-amber-100 to-yellow-200",
+  pastry: "from-yellow-100 to-amber-200",
+  seafood: "from-cyan-100 to-blue-200",
+  snack: "from-lime-100 to-emerald-200",
+  soup: "from-orange-100 to-amber-200",
+};
+
+const DIETARY_TAG_LABELS: Record<string, string> = {
+  dairy_free: "Dairy free",
+  egg_free: "Egg free",
+  halal: "Halal",
+  low_spice: "Low spice",
+  no_beef: "No beef",
+  no_pork: "No pork",
+  nut_free: "Nut free",
+  vegan: "Vegan",
+  vegetarian: "Veg",
+};
+
+function cuisineGradient(dish: CuisineDish) {
+  return CUISINE_GRADIENTS[dish.category] ?? "from-stone-100 to-slate-200";
+}
+
+function dietaryTagLabel(tag: string) {
+  return DIETARY_TAG_LABELS[tag] ?? tag.replaceAll("_", " ");
+}
+
+/** Source CSVs sometimes lost their Chinese text on export, leaving literal "?" placeholders. */
+function zhName(value: string | undefined | null) {
+  if (!value) return null;
+  return /^\?+$/.test(value.trim()) ? null : value;
+}
+
+function hideBrokenImage(event: SyntheticEvent<HTMLImageElement>) {
+  event.currentTarget.style.display = "none";
+}
+
+function isPoiInTrip(trip: any, cityId: string, poiId: string) {
+  const days = trip.itinerary[cityId] || [];
+  return days.some((d: any) => (d.stops || []).some((s: any) => s.id === poiId));
+}
+
+function isKnownCityId(cityId: unknown): cityId is keyof typeof cities {
+  return typeof cityId === "string" && Object.prototype.hasOwnProperty.call(cities, cityId);
+}
+
+function hubTypeLabel(hub: TransportHub) {
+  if (hub.type === "airport") return "Airport";
+  if (hub.type === "railway_station") return "Railway station";
+  return "Transport hub";
+}
+
 function Explore() {
+  const search = Route.useSearch();
   const trip = useAppStore((s) => s.trip);
   const savedPois = useAppStore((s) => s.savedPois);
   const toggleSavePoi = useAppStore((s) => s.toggleSavePoi);
   const addPOIToDay = useAppStore((s) => s.addPOIToDay);
+  const updateTrip = useAppStore((s) => s.updateTrip);
+  const profile = useAppStore((s) => s.profile);
   const digitalTools = useAppStore((s) => s.digitalTools);
   const updateDigitalTool = useAppStore((s) => s.updateDigitalTool);
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState(() =>
+    search.category && FILTERS.some((f) => f.id === search.category) ? search.category : "all",
+  );
   const [openTool, setOpenTool] = useState<string | null>("alipay");
   const [selectedDishId, setSelectedDishId] = useState<string | null>(null);
-  const city = (cities as any)[trip.currentCityId];
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const linkedPoi: any = search.poi ? (pois as any)[search.poi] : null;
+  const requestedCityId =
+    linkedPoi && isKnownCityId(linkedPoi.cityId)
+      ? linkedPoi.cityId
+      : isKnownCityId(search.city)
+        ? search.city
+        : undefined;
+  const currentCityId =
+    requestedCityId ?? (isKnownCityId(trip.currentCityId) ? trip.currentCityId : "BJ");
+  const city = (cities as any)[currentCityId];
   const selected: any = selectedId ? (pois as any)[selectedId] : null;
 
+  // Deep-link support: /explore?city=SH&category=restaurant switches city + filter on arrival.
+  useEffect(() => {
+    if (requestedCityId && requestedCityId !== trip.currentCityId) {
+      updateTrip({ currentCityId: requestedCityId });
+    } else if (!isKnownCityId(trip.currentCityId) && currentCityId !== trip.currentCityId) {
+      updateTrip({ currentCityId });
+    }
+    if (search.category && FILTERS.some((f) => f.id === search.category)) {
+      setFilter(search.category);
+    }
+    if (linkedPoi && search.poi) {
+      setSelectedId(search.poi);
+    }
+  }, [
+    currentCityId,
+    linkedPoi,
+    requestedCityId,
+    search.category,
+    search.poi,
+    trip.currentCityId,
+    updateTrip,
+  ]);
+
   const cityPois = useMemo(
-    () => Object.values(pois).filter((p: any) => p.cityId === trip.currentCityId),
-    [trip.currentCityId],
+    () => Object.values(pois).filter((p: any) => p.cityId === currentCityId),
+    [currentCityId],
   );
 
   const filtered = useMemo(() => {
-    if (filter === "all") return cityPois;
-    return cityPois.filter((p: any) => p.category === filter);
-  }, [cityPois, filter]);
+    const list = filter === "all" ? cityPois : cityPois.filter((p: any) => p.category === filter);
+    // Surface POIs that actually match this traveler's interests/budget/group type first.
+    return [...list].sort((a: any, b: any) => scorePoi(b, profile) - scorePoi(a, profile));
+  }, [cityPois, filter, profile]);
+
+  const cityTransportHubs = useMemo(
+    () => transportHubs.filter((hub) => hub.cityId === currentCityId),
+    [currentCityId],
+  );
 
   const mapMarkers = useMemo(
     () =>
@@ -221,34 +354,22 @@ function Explore() {
     return "¥".repeat(Math.max(1, Math.min(4, p)));
   }
 
-  const profile = useAppStore((s) => s.profile);
   const dietary = profile.dietaryRestrictions || [];
-  const isVeg = dietary.includes("Vegetarian") || dietary.includes("Vegan");
-  const isHalal = dietary.includes("Halal");
-  const noPork = isHalal || dietary.includes("No Pork");
   const filteredDishes = useMemo(() => {
-    return allDishes.filter((d) => {
-      if (isVeg && !d.vegetarian) return false;
-      if (isHalal && !d.halal) return false;
-      if (noPork && d.containsPork) return false;
-      return true;
-    });
-  }, [isVeg, isHalal, noPork]);
+    return cuisine.filter(
+      (dish) => dish.cityId === currentCityId && dishMatchesProfile(dish, profile),
+    );
+  }, [currentCityId, profile]);
   const selectedDish = selectedDishId
-    ? allDishes.find((d) => d.id === selectedDishId) || null
+    ? cuisine.find((dish) => dish.id === selectedDishId) || null
     : null;
+  const selectedImageSrc = selected ? getPoiImageSrc(selected) : null;
+  const selectedDishImageSrc = selectedDish ? getDishImageSrc(selectedDish) : null;
   const dishRestaurants = useMemo(() => {
     if (!selectedDish) return [] as any[];
-    const ids = Object.values(selectedDish.restaurantsByCity).flat();
-    return ids.map((id) => (pois as any)[id]).filter(Boolean);
+    return selectedDish.poiIds.map((id) => (pois as any)[id]).filter(Boolean);
   }, [selectedDish]);
-  const dietaryLabel = isVeg
-    ? "Vegetarian"
-    : isHalal
-      ? "Halal"
-      : noPork
-        ? "No Pork"
-        : null;
+  const dietaryLabel = dietary.length ? dietary.join(", ") : null;
 
   return (
     <MobileShell>
@@ -290,34 +411,53 @@ function Explore() {
           markers={mapMarkers}
           className="h-64"
           onMarkerClick={(id) => setSelectedId(id)}
+          selectedId={selectedId}
         />
       </div>
 
       <section className="pl-5 pb-5" aria-labelledby="top-picks-heading">
-        <h2 id="top-picks-heading" className="sr-only">Top picks</h2>
+        <h2 id="top-picks-heading" className="sr-only">
+          Top picks
+        </h2>
         <div className="flex gap-3 overflow-x-auto no-scrollbar pr-5 snap-x snap-mandatory">
           {filtered.map((p: any) => {
             const saved = savedPois.includes(p.id);
-            const dayIdx = (trip.itinerary[trip.currentCityId] || []).length - 1;
+            const dayIdx = (trip.itinerary[currentCityId] || []).length - 1;
+            const isHighlighted = p.id === selectedId;
+            const inTrip = isPoiInTrip(trip, currentCityId, p.id);
+            const imageSrc = getPoiImageSrc(p);
+            const fallbackEmoji = getPoiFallbackEmoji(p);
             return (
               <article
                 key={p.id}
-                className="snap-start shrink-0 w-[78%] rounded-2xl bg-card border border-border overflow-hidden flex flex-col"
+                onClick={() => setSelectedId(p.id)}
+                className={
+                  "snap-start shrink-0 w-[78%] rounded-2xl bg-card border overflow-hidden flex flex-col cursor-pointer transition-colors " +
+                  (isHighlighted ? "border-primary ring-2 ring-primary/30" : "border-border")
+                }
               >
-                <div className="relative h-36 bg-gradient-to-br from-accent/50 via-secondary to-primary/20 flex items-center justify-center">
-                  <span className="text-5xl">
-                    {p.category === "restaurant"
-                      ? "🍜"
-                      : p.category === "experience"
-                        ? "🎭"
-                        : p.category === "nightlife"
-                          ? "🌃"
-                          : p.category === "shopping"
-                            ? "🛍️"
-                            : "🗺️"}
-                  </span>
+                <div className="relative h-36 bg-gradient-to-br from-accent/50 via-secondary to-primary/20 overflow-hidden">
+                  <div
+                    className="absolute inset-0 flex items-center justify-center text-5xl"
+                    aria-hidden="true"
+                  >
+                    {fallbackEmoji}
+                  </div>
+                  {imageSrc && (
+                    <img
+                      src={imageSrc}
+                      alt=""
+                      loading="lazy"
+                      onError={hideBrokenImage}
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/0 to-black/5 pointer-events-none" />
                   <button
-                    onClick={() => toggleSavePoi(p.id, p.name)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleSavePoi(p.id, p.name);
+                    }}
                     className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background/85 backdrop-blur flex items-center justify-center"
                     aria-label="Save"
                   >
@@ -336,20 +476,37 @@ function Explore() {
                     {p.district} · ⏱ {formatDuration(p.duration)} · {priceLabel(p.price)}
                   </p>
                   <div className="flex flex-wrap gap-1 mt-2">
-                    {(p.tags || []).slice(0, 2).map((t: string) => (
+                    {getPoiDisplayChips(p).map((chip) => (
                       <span
-                        key={t}
+                        key={chip}
                         className="text-[11px] px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground"
                       >
-                        {t}
+                        {chip}
                       </span>
                     ))}
                   </div>
                   <button
-                    onClick={() => addPOIToDay(trip.currentCityId, Math.max(0, dayIdx), p)}
-                    className="mt-3 w-full py-2.5 rounded-full bg-primary text-primary-foreground font-semibold text-sm inline-flex items-center justify-center gap-1.5 hover:bg-primary/90"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!inTrip) addPOIToDay(currentCityId, Math.max(0, dayIdx), p);
+                    }}
+                    disabled={inTrip}
+                    className={
+                      "mt-3 w-full py-2.5 rounded-full font-semibold text-sm inline-flex items-center justify-center gap-1.5 " +
+                      (inTrip
+                        ? "bg-secondary text-secondary-foreground cursor-default"
+                        : "bg-primary text-primary-foreground hover:bg-primary/90")
+                    }
                   >
-                    <Plus className="w-4 h-4" /> Add to Trip
+                    {inTrip ? (
+                      <>
+                        <Check className="w-4 h-4" /> In Trip
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4" /> Add to Trip
+                      </>
+                    )}
                   </button>
                 </div>
               </article>
@@ -357,6 +514,53 @@ function Explore() {
           })}
         </div>
       </section>
+
+      {cityTransportHubs.length > 0 && (
+        <section className="px-5 pb-8">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-xl font-bold text-foreground">Transport Hubs</h2>
+            <span className="text-sm text-muted-foreground">
+              {cityTransportHubs.length} options
+            </span>
+          </div>
+          <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
+            {cityTransportHubs.slice(0, 6).map((hub) => {
+              const HubIcon = hub.type === "airport" ? Plane : TrainFront;
+              return (
+                <article
+                  key={hub.id}
+                  className="min-w-[240px] rounded-2xl bg-card border border-border p-4"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                      <HubIcon className="w-5 h-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">
+                        {hubTypeLabel(hub)}
+                      </p>
+                      <h3 className="font-bold text-foreground leading-tight line-clamp-2">
+                        {hub.name}
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {hub.district} · {hub.openingHours}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-3 leading-snug line-clamp-2">
+                    {hub.description}
+                  </p>
+                  {hub.tips[0] && (
+                    <p className="text-xs text-primary mt-3 leading-snug line-clamp-2">
+                      {hub.tips[0]}
+                    </p>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       <section className="px-5 pb-8">
         <div className="flex items-center justify-between mb-3">
@@ -374,62 +578,84 @@ function Explore() {
           </div>
         )}
         <div className="flex flex-col gap-4">
-          {filteredDishes.map((d) => (
-            <button
-              key={d.id}
-              onClick={() => setSelectedDishId(d.id)}
-              className="text-left rounded-2xl bg-card border border-border overflow-hidden hover:border-primary/40 transition-colors"
-            >
-              <div className={`relative h-40 bg-gradient-to-br ${d.bg} overflow-hidden`}>
-                <img
-                  src={d.image}
-                  alt={d.name}
-                  loading="lazy"
-                  width={800}
-                  height={600}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute top-3 left-3 flex gap-1.5">
-                  {d.halal && (
-                    <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white">Halal</span>
-                  )}
-                  {d.vegetarian && (
-                    <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-teal-600 text-white">Veg</span>
-                  )}
-                </div>
-              </div>
-              <div className="p-4">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <h3 className="font-bold text-foreground leading-tight">{d.name}</h3>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {d.nameZh} · {d.region}
-                    </p>
+          {filteredDishes.map((d) => {
+            const imageSrc = getDishImageSrc(d);
+            const fallbackEmoji = getDishFallbackEmoji(d);
+            return (
+              <button
+                key={d.id}
+                onClick={() => setSelectedDishId(d.id)}
+                className="text-left rounded-2xl bg-card border border-border overflow-hidden hover:border-primary/40 transition-colors"
+              >
+                <div
+                  className={`relative h-40 bg-gradient-to-br ${cuisineGradient(d)} overflow-hidden`}
+                >
+                  <div
+                    className="absolute inset-0 flex items-center justify-center text-6xl"
+                    aria-hidden="true"
+                  >
+                    {fallbackEmoji}
                   </div>
-                  {d.spice > 0 && (
-                    <span className="text-sm shrink-0" aria-label={`Spice level ${d.spice}`}>
-                      {"🌶️".repeat(d.spice)}
-                    </span>
+                  {imageSrc && (
+                    <img
+                      src={imageSrc}
+                      alt=""
+                      loading="lazy"
+                      onError={hideBrokenImage}
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
                   )}
-                </div>
-                {d.allergens.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mt-2">
-                    {d.allergens.map((a) => (
-                      <span
-                        key={a}
-                        className="text-[11px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-100"
-                      >
-                        <AlertTriangle className="w-3 h-3" /> {a}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/0 to-black/5 pointer-events-none" />
+                  <div className="absolute bottom-3 left-3 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-background/85 text-foreground capitalize">
+                    {d.category}
+                  </div>
+                  <div className="absolute top-3 left-3 flex gap-1.5">
+                    {d.dietaryTags.includes("halal") && (
+                      <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white">
+                        Halal
                       </span>
-                    ))}
+                    )}
+                    {d.dietaryTags.includes("vegetarian") && (
+                      <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-teal-600 text-white">
+                        Veg
+                      </span>
+                    )}
                   </div>
-                )}
-                <p className="text-sm italic text-muted-foreground mt-2 leading-snug">
-                  Tip: {d.tip}
-                </p>
-              </div>
-            </button>
-          ))}
+                </div>
+                <div className="p-4">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-foreground leading-tight">{d.name}</h3>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {zhName(d.nameZh) ? `${zhName(d.nameZh)} · ` : ""}
+                        {(cities as any)[d.cityId]?.name || d.cityId}
+                      </p>
+                    </div>
+                    {d.dietaryTags.includes("low_spice") && (
+                      <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-100 shrink-0">
+                        Low spice
+                      </span>
+                    )}
+                  </div>
+                  {d.dietaryTags.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {d.dietaryTags.slice(0, 4).map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-[11px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground"
+                        >
+                          {dietaryTagLabel(tag)}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <p className="text-sm text-muted-foreground mt-2 leading-snug line-clamp-2">
+                    {d.description}
+                  </p>
+                </div>
+              </button>
+            );
+          })}
           {filteredDishes.length === 0 && (
             <p className="text-sm text-muted-foreground text-center py-6">
               No dishes match your dietary preferences yet.
@@ -471,13 +697,17 @@ function Explore() {
                   }}
                   className="w-full flex items-center gap-3 p-4 text-left cursor-pointer"
                 >
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0 ${tool.bg}`}>
+                  <div
+                    className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0 ${tool.bg}`}
+                  >
                     {tool.emoji}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-bold text-foreground leading-tight">{tool.name}</span>
-                      <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${tool.tagClass}`}>
+                      <span
+                        className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${tool.tagClass}`}
+                      >
                         {tool.tag}
                       </span>
                     </div>
@@ -497,7 +727,10 @@ function Explore() {
                     </button>
                   </div>
                   <ChevronDown
-                    className={"w-5 h-5 text-muted-foreground shrink-0 transition-transform " + (open ? "rotate-180" : "")}
+                    className={
+                      "w-5 h-5 text-muted-foreground shrink-0 transition-transform " +
+                      (open ? "rotate-180" : "")
+                    }
                   />
                 </div>
 
@@ -531,9 +764,7 @@ function Explore() {
                       </a>
                       <button
                         type="button"
-                        onClick={() =>
-                          updateDigitalTool(tool.id, isDone ? "not_started" : "done")
-                        }
+                        onClick={() => updateDigitalTool(tool.id, isDone ? "not_started" : "done")}
                         className="flex-1 h-11 rounded-full bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90"
                       >
                         {isDone ? "Mark Undone" : "Mark Done"}
@@ -550,18 +781,18 @@ function Explore() {
       {selected && (
         <div className="fixed inset-x-0 bottom-0 z-40 flex justify-center pointer-events-none">
           <div className="w-full max-w-md pointer-events-auto px-3 pb-20">
-            <div className="rounded-2xl bg-card border border-border shadow-2xl p-4 animate-in slide-in-from-bottom-4 duration-200">
+            <div className="rounded-2xl bg-card border border-border shadow-2xl p-4 max-h-[75dvh] overflow-y-auto animate-in slide-in-from-bottom-4 duration-200">
               <div className="flex items-start gap-3">
-                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-accent/50 to-primary/20 flex items-center justify-center text-2xl shrink-0">
-                  {selected.category === "restaurant"
-                    ? "🍜"
-                    : selected.category === "experience"
-                      ? "🎭"
-                      : selected.category === "nightlife"
-                        ? "🌃"
-                        : selected.category === "shopping"
-                          ? "🛍️"
-                          : "🗺️"}
+                <div className="relative w-14 h-14 rounded-xl bg-gradient-to-br from-accent/50 to-primary/20 overflow-hidden flex items-center justify-center text-2xl shrink-0">
+                  <span aria-hidden="true">{getPoiFallbackEmoji(selected)}</span>
+                  {selectedImageSrc && (
+                    <img
+                      src={selectedImageSrc}
+                      alt=""
+                      onError={hideBrokenImage}
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
@@ -586,6 +817,18 @@ function Explore() {
               <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
                 {selected.description}
               </p>
+              {getPoiDisplayChips(selected).length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  {getPoiDisplayChips(selected).map((chip) => (
+                    <span
+                      key={chip}
+                      className="text-[11px] px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground"
+                    >
+                      {chip}
+                    </span>
+                  ))}
+                </div>
+              )}
               <div className="flex gap-2 mt-3">
                 <button
                   onClick={() => toggleSavePoi(selected.id, selected.name)}
@@ -593,21 +836,128 @@ function Explore() {
                   aria-label="Save"
                 >
                   <Heart
-                    className={"w-4 h-4 " + (savedPois.includes(selected.id) ? "text-primary" : "text-muted-foreground")}
+                    className={
+                      "w-4 h-4 " +
+                      (savedPois.includes(selected.id) ? "text-primary" : "text-muted-foreground")
+                    }
                     fill={savedPois.includes(selected.id) ? "currentColor" : "none"}
                   />
                 </button>
-                <button
-                  onClick={() => {
-                    const dayIdx = Math.max(0, (trip.itinerary[trip.currentCityId] || []).length - 1);
-                    addPOIToDay(trip.currentCityId, dayIdx, selected);
-                    setSelectedId(null);
-                  }}
-                  className="flex-1 h-11 rounded-full bg-primary text-primary-foreground font-semibold text-sm inline-flex items-center justify-center gap-1.5 hover:bg-primary/90"
-                >
-                  <Plus className="w-4 h-4" /> Add to Trip
-                </button>
+                {isPoiInTrip(trip, selected.cityId || currentCityId, selected.id) ? (
+                  <button
+                    disabled
+                    className="flex-1 h-11 rounded-full bg-secondary text-secondary-foreground font-semibold text-sm inline-flex items-center justify-center gap-1.5 cursor-default"
+                  >
+                    <Check className="w-4 h-4" /> In Trip
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      const dayIdx = Math.max(
+                        0,
+                        (trip.itinerary[selected.cityId || currentCityId] || []).length - 1,
+                      );
+                      addPOIToDay(selected.cityId || currentCityId, dayIdx, selected);
+                      setSelectedId(null);
+                    }}
+                    className="flex-1 h-11 rounded-full bg-primary text-primary-foreground font-semibold text-sm inline-flex items-center justify-center gap-1.5 hover:bg-primary/90"
+                  >
+                    <Plus className="w-4 h-4" /> Add to Trip
+                  </button>
+                )}
               </div>
+              {(() => {
+                const tips = normalizePoiTextList(selected.tips);
+                const cautions = normalizePoiTextList(selected.cautions);
+                const highlights = normalizePoiTextList(selected.highlights);
+                const hours = formatOpeningHours(selected);
+                const bestTime = formatBestTime(selected.bestTime);
+                const dishes = normalizePoiTextList(selected.signatureDishes);
+                const hasAny =
+                  highlights.length ||
+                  tips.length ||
+                  cautions.length ||
+                  hours ||
+                  bestTime ||
+                  selected.bookingRequired ||
+                  dishes.length;
+                if (!hasAny) return null;
+                return (
+                  <div className="mt-4 pt-3 border-t border-border space-y-3">
+                    {highlights.length > 0 && (
+                      <div>
+                        <p className="text-xs font-semibold text-foreground mb-1">Highlights</p>
+                        <ul className="space-y-0.5">
+                          {highlights.map((h, i) => (
+                            <li key={i} className="text-xs text-muted-foreground">
+                              • {h}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {tips.length > 0 && (
+                      <div>
+                        <p className="text-xs font-semibold text-foreground mb-1">Visitor tips</p>
+                        {tips.map((t, i) => (
+                          <p key={i} className="text-xs text-muted-foreground leading-snug">
+                            {t}
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                    {cautions.length > 0 && (
+                      <div>
+                        <p className="text-xs font-semibold text-foreground mb-1">Cautions</p>
+                        {cautions.map((c, i) => (
+                          <p key={i} className="text-xs text-muted-foreground leading-snug">
+                            {c}
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                    {(hours || bestTime || selected.bookingRequired) && (
+                      <div className="flex flex-col gap-1">
+                        {hours && (
+                          <p className="text-xs text-muted-foreground">
+                            <span className="font-semibold text-foreground">Opening hours: </span>
+                            {hours}
+                          </p>
+                        )}
+                        {bestTime && (
+                          <p className="text-xs text-muted-foreground">
+                            <span className="font-semibold text-foreground">Best time: </span>
+                            {bestTime.replace("Best ", "")}
+                          </p>
+                        )}
+                        {selected.bookingRequired && (
+                          <p className="text-xs text-muted-foreground">
+                            <span className="font-semibold text-foreground">Booking: </span>
+                            Advance booking may be required.
+                          </p>
+                        )}
+                      </div>
+                    )}
+                    {dishes.length > 0 && (
+                      <div>
+                        <p className="text-xs font-semibold text-foreground mb-1">
+                          Signature dishes
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {dishes.map((d, i) => (
+                            <span
+                              key={i}
+                              className="text-[11px] px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground"
+                            >
+                              {d}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>
@@ -619,17 +969,30 @@ function Explore() {
           onClick={() => setSelectedDishId(null)}
         >
           <div
-            className="w-full max-w-md bg-background rounded-t-3xl max-h-[85vh] overflow-y-auto pb-8 animate-in slide-in-from-bottom duration-200"
+            className="w-full max-w-md bg-background rounded-t-3xl max-h-[85dvh] overflow-y-auto overscroll-contain pb-8 animate-in slide-in-from-bottom duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className={`relative h-40 bg-gradient-to-br ${selectedDish.bg} overflow-hidden rounded-t-3xl`}>
-              <img
-                src={selectedDish.image}
-                alt={selectedDish.name}
-                width={800}
-                height={600}
-                className="w-full h-full object-cover"
-              />
+            <div
+              className={`relative h-40 bg-gradient-to-br ${cuisineGradient(selectedDish)} overflow-hidden rounded-t-3xl`}
+            >
+              <div
+                className="absolute inset-0 flex items-center justify-center text-6xl"
+                aria-hidden="true"
+              >
+                {getDishFallbackEmoji(selectedDish)}
+              </div>
+              {selectedDishImageSrc && (
+                <img
+                  src={selectedDishImageSrc}
+                  alt=""
+                  onError={hideBrokenImage}
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/0 to-black/5 pointer-events-none" />
+              <div className="absolute bottom-3 left-3 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-background/85 text-foreground capitalize">
+                {selectedDish.category}
+              </div>
               <button
                 onClick={() => setSelectedDishId(null)}
                 className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background/85 backdrop-blur flex items-center justify-center"
@@ -641,8 +1004,8 @@ function Explore() {
             <div className="px-5 pt-4">
               <h2 className="text-xl font-bold text-foreground">{selectedDish.name}</h2>
               <p className="text-xs text-muted-foreground mt-0.5">
-                {selectedDish.nameZh} · {selectedDish.region}
-                {selectedDish.spice > 0 ? ` · ${"🌶️".repeat(selectedDish.spice)}` : ""}
+                {zhName(selectedDish.nameZh) ? `${zhName(selectedDish.nameZh)} · ` : ""}
+                {(cities as any)[selectedDish.cityId]?.name || selectedDish.cityId}
               </p>
               <p className="text-sm text-muted-foreground mt-3 leading-snug">
                 {selectedDish.description}
@@ -658,14 +1021,26 @@ function Explore() {
               ) : (
                 <div className="mt-3 flex flex-col gap-2.5">
                   {dishRestaurants.map((r: any) => {
-                    const inThisTrip = trip.cities.some((c: any) => c.cityId === r.cityId);
+                    const isSaved = savedPois.includes(r.id);
+                    const dayIdx = (trip.itinerary[r.cityId] || []).length - 1;
+                    const inTrip = isPoiInTrip(trip, r.cityId, r.id);
+                    const restaurantImageSrc = getPoiImageSrc(r);
                     return (
                       <div
                         key={r.id}
                         className="rounded-xl border border-border p-3 flex items-center gap-3"
                       >
-                        <div className="w-11 h-11 rounded-lg bg-gradient-to-br from-accent/40 to-primary/20 flex items-center justify-center text-xl shrink-0">
-                          🍜
+                        <div className="relative w-11 h-11 rounded-lg bg-gradient-to-br from-accent/40 to-primary/20 overflow-hidden flex items-center justify-center text-xl shrink-0">
+                          <span aria-hidden="true">{getPoiFallbackEmoji(r)}</span>
+                          {restaurantImageSrc && (
+                            <img
+                              src={restaurantImageSrc}
+                              alt=""
+                              loading="lazy"
+                              onError={hideBrokenImage}
+                              className="absolute inset-0 h-full w-full object-cover"
+                            />
+                          )}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="font-semibold text-foreground text-sm leading-tight truncate">
@@ -677,18 +1052,39 @@ function Explore() {
                           </div>
                         </div>
                         <button
-                          onClick={() => {
-                            const dayIdx = Math.max(
-                              0,
-                              (trip.itinerary[r.cityId] || []).length - 1,
-                            );
-                            addPOIToDay(r.cityId, dayIdx, r);
-                          }}
-                          disabled={!inThisTrip}
-                          className="shrink-0 h-9 px-3 rounded-full bg-primary text-primary-foreground text-xs font-semibold inline-flex items-center gap-1 hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed"
-                          title={inThisTrip ? "Add to trip" : "City not in your trip"}
+                          onClick={() => toggleSavePoi(r.id, r.name)}
+                          className="shrink-0 w-9 h-9 rounded-full bg-secondary flex items-center justify-center"
+                          aria-label={isSaved ? "Remove from saved places" : "Save to your places"}
                         >
-                          <Plus className="w-3.5 h-3.5" /> Add
+                          <Heart
+                            className={
+                              "w-4 h-4 " + (isSaved ? "text-primary" : "text-muted-foreground")
+                            }
+                            fill={isSaved ? "currentColor" : "none"}
+                          />
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (!inTrip) addPOIToDay(r.cityId, Math.max(0, dayIdx), r);
+                          }}
+                          disabled={inTrip}
+                          className={
+                            "shrink-0 h-9 px-3 rounded-full text-xs font-semibold inline-flex items-center gap-1 " +
+                            (inTrip
+                              ? "bg-secondary text-secondary-foreground cursor-default"
+                              : "bg-primary text-primary-foreground hover:bg-primary/90")
+                          }
+                          title={inTrip ? "Already in trip" : "Add to trip"}
+                        >
+                          {inTrip ? (
+                            <>
+                              <Check className="w-3.5 h-3.5" /> In Trip
+                            </>
+                          ) : (
+                            <>
+                              <Plus className="w-3.5 h-3.5" /> Add
+                            </>
+                          )}
                         </button>
                       </div>
                     );

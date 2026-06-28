@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { MobileShell } from "@/components/MobileShell";
 import { useAppStore } from "@/store/useAppStore";
-import { pois } from "@/data/pois";
+import { pois } from "@/data/generated/pois";
 import { Bookmark, LogOut, Settings, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";

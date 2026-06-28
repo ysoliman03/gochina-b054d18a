@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { MobileShell } from "@/components/MobileShell";
 import { GuideHeader } from "@/components/GuideHeader";
 import { useAppStore } from "@/store/useAppStore";
-import { cities } from "@/data/cities";
+import { cities } from "@/data/generated/cities";
 import { pageHead, articleJsonLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/guides/air")({

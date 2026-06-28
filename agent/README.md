@@ -27,10 +27,10 @@ agent/
 ### 1 — Export data (run once from the project root)
 
 ```bash
-npx tsx scripts/export-data.ts
+npm run export:data
 ```
 
-Re-run whenever you change files in `src/data/`.
+Re-run whenever you change files in `content-db/`.
 
 ### 2 — Create your `.env`
 

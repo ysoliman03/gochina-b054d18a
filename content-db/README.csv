@@ -1,0 +1,47 @@
+LINK FOR PROTOTYPE (INVITATION HAS BEEN SENT TO EMAIL);https://app.uizard.io/p/8254e100;
+;;
+CHINA TRAVEL ITINERARY — CONTENT DATABASE;;
+;;
+HOW TO USE THIS TEMPLATE;;
+;;
+Color coding:;;
+;RED header = required field (must fill);
+;BLUE header = optional field (fill when available);
+;Row 1 (yellow) = field description / hint;
+;Gray italic text = sample data (replace with yours);
+;;
+Sheet guide:;;
+;Cities — Your launch cities (start with 2-3);
+;POIs — Points of interest (aim for 30 per city);
+;POI_Connections — Travel time between POIs (start with top 15-20 POIs per city);
+;City_Connections — Intercity transport options;
+;Travel_Constraints — Holidays, closures, weather, events;
+;;
+DATA ENTRY PRIORITIES (do these in order):;;
+;;
+1. Cities — Fill in your launch cities first;;
+2. POIs — Focus on these fields first: name_en, name_zh, category, description, lat/lng, avg_duration_min, opening_hours, booking_required;;
+3. POI_Connections — Use Amap/Baidu Maps to get realistic travel times between your top POIs;;
+4. Travel_Constraints — Add major holidays and closures;;
+5. City_Connections — Add when you support multi-city trips;;
+;;
+TIPS:;;
+;• avg_duration_min is the MOST important field. Be realistic, not optimistic.;
+;• name_zh is critical — tourists need it for taxis, map apps, and asking directions.;
+;• visitor_tips should answer: what would I tell a friend visiting for the first time?;
+;• Dropdowns are pre-configured for category, price_level, indoor/outdoor, etc.;
+;• Export to CSV or JSON for your backend to consume.;
+;;
+MVP ?????????? POI_Connections?:;;
+;???????? Haversine ???? POI ????????;import math
+;  ???? × 1.4 ? ????;
+;  ??????? ÷ 15km/h ? ?????????;def travel_minutes(lat1, lng1, lat2, lng2, urban=True):
+;  ??????? ÷ 40km/h ? ????;"    """"""straight-line distance ? approx. time"""""""
+;;    R = 6371
+;?????????? 3.8km × 1.4 = 5.3km ÷ 15 = 21 ?????? 15-25 ???;    dlat = math.radians(lat2 - lat1)
+;;    dlng = math.radians(lng2 - lng1)
+;? ??????????????????????????????;    a = math.sin(dlat/2)**2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlng/2)**2
+;  ??????????? API ?? POI_Connections ???????;    km = R * 2 * math.asin(math.sqrt(a))
+;;    road_km = km * 1.4
+;;    speed = 15 if urban else 40  # km/h
+;;    return round(road_km / speed * 60)

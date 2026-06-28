@@ -1,0 +1,464 @@
+[
+  {
+    "id": "BJ051",
+    "cityId": "BJ",
+    "name": "Beijing Capital Int'l Airport (PEK)",
+    "nameZh": "北京首都国际机场",
+    "type": "airport",
+    "description": "The main gateway to Beijing, located in the northeast.",
+    "tips": [
+      "Use the Airport Express for a 20-30 min ride to downtown."
+    ],
+    "cautions": [
+      "Massive terminals; double-check if you are T2 or T3. Arrive at the station 3 hour in advance."
+    ],
+    "tags": [
+      "transport"
+    ],
+    "lat": 40.08,
+    "lng": 116.58,
+    "district": "Shunyi",
+    "openingHours": "24h",
+    "foreignFriendly": 5
+  },
+  {
+    "id": "BJ052",
+    "cityId": "BJ",
+    "name": "Beijing Daxing Int'l Airport (PKX)",
+    "nameZh": "北京大兴机场",
+    "type": "airport",
+    "description": "Beijing's second international airport, along with Beijing Capital International Airport, is one of Beijing's two major international airports.",
+    "tips": [
+      "Check out the rooftop gardens and digital art installations."
+    ],
+    "cautions": [
+      "Distance from city center is far (use the fast rail). Arrive at the station 3 hour in advance."
+    ],
+    "tags": [
+      "transport"
+    ],
+    "lat": 39.51,
+    "lng": 116.41,
+    "district": "Daxing",
+    "openingHours": "24h",
+    "foreignFriendly": 5
+  },
+  {
+    "id": "BJ053",
+    "cityId": "BJ",
+    "name": "Beijing Railway Station",
+    "nameZh": "北京站",
+    "type": "railway_station",
+    "description": "A classic 1950s landmark serving traditional rail lines.",
+    "tips": [
+      "Central location; easy access to the Metro Line 2."
+    ],
+    "cautions": [
+      "Very crowded; Arrive at the station 1 hour in advance."
+    ],
+    "tags": [
+      "transport"
+    ],
+    "lat": 39.9,
+    "lng": 116.43,
+    "district": "Dongcheng",
+    "openingHours": "24h",
+    "foreignFriendly": 4
+  },
+  {
+    "id": "BJ054",
+    "cityId": "BJ",
+    "name": "Beijing West Railway Station",
+    "nameZh": "北京西站",
+    "type": "railway_station",
+    "description": "One of the busiest hubs, primarily serving high-speed lines to the south/west.",
+    "tips": [
+      "Give yourself extra time to navigate the massive, complex layout."
+    ],
+    "cautions": [
+      "Arrive at the station 1 hour in advance."
+    ],
+    "tags": [
+      "transport"
+    ],
+    "lat": 39.89,
+    "lng": 116.32,
+    "district": "Fengtai",
+    "openingHours": "24h",
+    "foreignFriendly": 4
+  },
+  {
+    "id": "BJ055",
+    "cityId": "BJ",
+    "name": "Beijing South Railway Station",
+    "nameZh": "北京南站",
+    "type": "railway_station",
+    "description": "The primary hub for the Beijing-Shanghai High-Speed Railway.",
+    "tips": [
+      "Best for \"Bullet Train\" travel to Shanghai, Tianjin, or Hangzhou."
+    ],
+    "cautions": [
+      "Arrive at the station 1 hour in advance."
+    ],
+    "tags": [
+      "transport"
+    ],
+    "lat": 39.86,
+    "lng": 116.37,
+    "district": "Fengtai",
+    "openingHours": "05:30 - 23:30",
+    "foreignFriendly": 4
+  },
+  {
+    "id": "BJ056",
+    "cityId": "BJ",
+    "name": "Beijing North Railway Station",
+    "nameZh": "北京北站",
+    "type": "railway_station",
+    "description": "The gateway to the Great Wall (Badaling) and Zhangjiakou.",
+    "tips": [
+      "Small and efficient; easy to navigate compared to others."
+    ],
+    "cautions": [
+      "Arrive at the station 1 hour in advance."
+    ],
+    "tags": [
+      "transport"
+    ],
+    "lat": 39.94,
+    "lng": 116.35,
+    "district": "Xicheng",
+    "openingHours": "06:00 - 23:00",
+    "foreignFriendly": 4
+  },
+  {
+    "id": "BJ057",
+    "cityId": "BJ",
+    "name": "Qinghe Railway Station",
+    "nameZh": "清河站",
+    "type": "railway_station",
+    "description": "A high-tech hub in the Haidian district tech corridor.",
+    "tips": [
+      "Best hub for travelers heading to the ski resorts in Chongli."
+    ],
+    "cautions": [
+      "Follow signs carefully; Arrive at the station 1 hour in advance."
+    ],
+    "tags": [
+      "transport"
+    ],
+    "lat": 40.03,
+    "lng": 116.33,
+    "district": "Haidian",
+    "openingHours": "06:00 - 23:30",
+    "foreignFriendly": 4
+  },
+  {
+    "id": "BJ058",
+    "cityId": "BJ",
+    "name": "Beijing Chaoyang Railway Station",
+    "nameZh": "北京朝阳站",
+    "type": "railway_station",
+    "description": "A new, stylish hub serving the Northeast.",
+    "tips": [
+      "No direct subway yet; rely on the shuttle buses or taxis/Didi."
+    ],
+    "cautions": [
+      "Heavy traffic jams nearby during rush hours. Arrive at the station 1 hour in advance."
+    ],
+    "tags": [
+      "transport"
+    ],
+    "lat": 39.95,
+    "lng": 116.5,
+    "district": "Chaoyang",
+    "openingHours": "05:30 - 23:30",
+    "foreignFriendly": 4
+  },
+  {
+    "id": "BJ059",
+    "cityId": "BJ",
+    "name": "Beijing Fengtai Railway Station",
+    "nameZh": "北京丰台站",
+    "type": "railway_station",
+    "description": "Asia's largest railway hub with a unique double-deck track design.",
+    "tips": [
+      "Explore the massive food court and shopping areas inside."
+    ],
+    "cautions": [
+      "Arrive at the station 1 hour in advance."
+    ],
+    "tags": [
+      "transport"
+    ],
+    "lat": 39.86,
+    "lng": 116.31,
+    "district": "Fengtai",
+    "openingHours": "06:00 - 23:30",
+    "foreignFriendly": 4
+  },
+  {
+    "id": "XA032",
+    "cityId": "XA",
+    "name": "Xi'an Railway Station",
+    "nameZh": "西安站",
+    "type": "railway_station",
+    "description": "A major rail gateway in Xi’an’s transport hub.",
+    "tips": [
+      "Check carefully whether your train departs from Xi’an Railway Station or Xi’an North Railway Station. Metro Line 4 connects directly to both stations."
+    ],
+    "cautions": [
+      "Arrive at the station 1 hour in advance."
+    ],
+    "tags": [
+      "transport"
+    ],
+    "lat": 34.2739,
+    "lng": 108.9553,
+    "district": "Xincheng",
+    "openingHours": "24h",
+    "foreignFriendly": 5
+  },
+  {
+    "id": "XA033",
+    "cityId": "XA",
+    "name": "Xi'an North Railway Station",
+    "nameZh": "西安北站",
+    "type": "railway_station",
+    "description": "Xi’an’s key high-speed rail hub.",
+    "tips": [
+      "Check carefully whether your train departs from Xi’an Railway Station or Xi’an North Railway Station. Metro Line 4 connects directly to both stations."
+    ],
+    "cautions": [
+      "Arrive at the station 1 hour in advance."
+    ],
+    "tags": [
+      "transport"
+    ],
+    "lat": 34.3798,
+    "lng": 108.9441,
+    "district": "Weiyang",
+    "openingHours": "24h",
+    "foreignFriendly": 5
+  },
+  {
+    "id": "XA034",
+    "cityId": "XA",
+    "name": "Xi'an Xianyang International Airport",
+    "nameZh": "西安咸阳机场",
+    "type": "airport",
+    "description": "Northwest China’s major airport hub.",
+    "tips": [
+      "T2 and T3 are for domestic departures, while T5 is for international flights."
+    ],
+    "cautions": [
+      "Arrive at the airport 2–3 hours in advance, as security checks may take longer during peak times."
+    ],
+    "tags": [
+      "transport"
+    ],
+    "lat": 34.435,
+    "lng": 108.7517,
+    "district": "Weicheng",
+    "openingHours": "24h",
+    "foreignFriendly": 5
+  },
+  {
+    "id": "CQ031",
+    "cityId": "CQ",
+    "name": "Chongqing West Railway Station",
+    "nameZh": "重庆西站",
+    "type": "railway_station",
+    "description": "One of Chongqing’s main high-speed railway stations.",
+    "tips": [
+      "Direct access via Loop Line and Metro Line 5, as well as multiple bus routes, to the East Square. After arrival, take the escalator down to Level 1 for security check, then proceed to Level 2 for the departure hall."
+    ],
+    "cautions": [
+      "Arriving at least 30 minutes in advance is recommended."
+    ],
+    "tags": [
+      "transport"
+    ],
+    "lat": 29.5056,
+    "lng": 106.4308,
+    "district": "Shapingba",
+    "openingHours": "24h",
+    "foreignFriendly": 5
+  },
+  {
+    "id": "CQ032",
+    "cityId": "CQ",
+    "name": "Chongqing North Railway Station",
+    "nameZh": "重庆北站",
+    "type": "railway_station",
+    "description": "One of Chongqing’s main high-speed railway stations.",
+    "tips": [
+      "Located close to the city center and accessible via Metro Line 3, 4, and 10, gates 1–13 are closer to North Square while gates 14–16 are closer to South Square."
+    ],
+    "cautions": [
+      "Arriving at least 1 hour in advance is recommended."
+    ],
+    "tags": [
+      "transport"
+    ],
+    "lat": 29.6124,
+    "lng": 106.5517,
+    "district": "Yubei",
+    "openingHours": "24h",
+    "foreignFriendly": 5
+  },
+  {
+    "id": "CQ033",
+    "cityId": "CQ",
+    "name": "Chongqing Jiangbei International Airport",
+    "nameZh": "重庆江北国际机场",
+    "type": "airport",
+    "description": "Main international airport serving Chongqing.",
+    "tips": [
+      "International flights depart from Terminal 3, accessible by metro. Check-in is on Level 4."
+    ],
+    "cautions": [
+      "Terminal 3 is divided into T3A and T3B. Gates J, K, L, and M are in T3B, which requires extra transfer time—arriving at least 2 hours in advance is recommended."
+    ],
+    "tags": [
+      "transport"
+    ],
+    "lat": 29.7192,
+    "lng": 106.6417,
+    "district": "Liangjiang",
+    "openingHours": "24h",
+    "foreignFriendly": 5
+  },
+  {
+    "id": "SH051",
+    "cityId": "SH",
+    "name": "Shanghai Railway Station",
+    "nameZh": "上海站",
+    "type": "railway_station",
+    "description": "The city's central historic station, serving both high-speed and regular trains.",
+    "tips": [
+      "Direct access via Metro Lines 1, 3, and 4. North and South Square bus terminals connect to multiple city routes."
+    ],
+    "cautions": [
+      "Arrive 45 minutes in advance under normal conditions and at least 1 hour in advance during holidays or peak travel periods."
+    ],
+    "tags": [
+      "transport"
+    ],
+    "lat": 31.2517,
+    "lng": 121.4511,
+    "district": "Jing'an",
+    "openingHours": "24h",
+    "foreignFriendly": 5
+  },
+  {
+    "id": "SH052",
+    "cityId": "SH",
+    "name": "Shanghai Hongqiao Railway Station",
+    "nameZh": "上海虹桥站",
+    "type": "railway_station",
+    "description": "One of Asia's largest high-speed rail hubs, part of a massive integrated transport complex.",
+    "tips": [
+      "Direct access via Metro Lines 2, 10, and 17. Connected to Hongqiao Airport T2 by foot in about 10 min. Airport Link Line provides direct access to Pudong Airport."
+    ],
+    "cautions": [
+      "Arrive 45 minutes in advance under normal conditions and at least 1 hour in advance during holidays or peak travel periods."
+    ],
+    "tags": [
+      "transport"
+    ],
+    "lat": 31.1942,
+    "lng": 121.327,
+    "district": "Minhang",
+    "openingHours": "24h",
+    "foreignFriendly": 5
+  },
+  {
+    "id": "SH053",
+    "cityId": "SH",
+    "name": "Shanghai South Railway Station",
+    "nameZh": "上海南站",
+    "type": "railway_station",
+    "description": "A major hub for southern routes, known for its unique circular design.",
+    "tips": [
+      "Direct access via Metro Lines 1, 3, and 15. Bus terminals are located at both North and South Squares. Airport Bus Line 7 connects to Pudong Airport."
+    ],
+    "cautions": [
+      "Arrive 45 minutes in advance under normal conditions and at least 1 hour in advance during holidays or peak travel periods. The North and South Squares are far apart, so confirming the correct entrance in advance is recommended."
+    ],
+    "tags": [
+      "transport"
+    ],
+    "lat": 31.1547,
+    "lng": 121.4296,
+    "district": "Xuhui",
+    "openingHours": "24h",
+    "foreignFriendly": 4
+  },
+  {
+    "id": "SH054",
+    "cityId": "SH",
+    "name": "Shanghai West Railway Station",
+    "nameZh": "上海西站",
+    "type": "railway_station",
+    "description": "A smaller, quieter hub primarily serving the Shanghai-Nanjing intercity line.",
+    "tips": [
+      "Accessible via Metro Lines 11, 15, and 20."
+    ],
+    "cautions": [
+      "Arrive 45 minutes in advance under normal conditions and at least 1 hour in advance during holidays or peak travel periods."
+    ],
+    "tags": [
+      "transport"
+    ],
+    "lat": 31.262,
+    "lng": 121.4009,
+    "district": "Putuo",
+    "openingHours": "05:00–23:30",
+    "foreignFriendly": 4
+  },
+  {
+    "id": "SH055",
+    "cityId": "SH",
+    "name": "Shanghai Pudong International Airport (PVG)",
+    "nameZh": "上海浦东国际机场",
+    "type": "airport",
+    "description": "China's primary international gateway, located on the eastern coast.",
+    "tips": [
+      "Metro Line 2 and the Airport Link Line provide connections to the city and Hongqiao Airport."
+    ],
+    "cautions": [
+      "For domestic flights, arrive at least 1.5–2 hours in advance depending on baggage check-in. For international and regional flights, arrive at least 3 hours in advance. Boarding gates usually close 15–20 minutes before departure."
+    ],
+    "tags": [
+      "transport"
+    ],
+    "lat": 31.1443,
+    "lng": 121.8083,
+    "district": "Pudong",
+    "openingHours": "24h",
+    "foreignFriendly": 5
+  },
+  {
+    "id": "SH056",
+    "cityId": "SH",
+    "name": "Shanghai Hongqiao International Airport (SHA)",
+    "nameZh": "上海虹桥机场",
+    "type": "airport",
+    "description": "The older, more convenient airport closer to downtown, primarily for domestic flights.",
+    "tips": [
+      "Accessible via Metro Lines 2 and 10, with Line 17 connecting to Qingpu District. The Airport Link Line connects directly to Pudong Airport. Hongqiao Railway Station is within walking distance. Airport buses, taxis, and ride-hailing services are available."
+    ],
+    "cautions": [
+      "For domestic flights, arrive at least 1–1.5 hours in advance. For international flights, arrive at least 2 hours in advance. Boarding gates generally close around 15 min before departure. Extra time may be needed when transferring between Terminal 1 and Terminal 2."
+    ],
+    "tags": [
+      "transport"
+    ],
+    "lat": 31.1979,
+    "lng": 121.3363,
+    "district": "Changning",
+    "openingHours": "24h",
+    "foreignFriendly": 5
+  }
+]

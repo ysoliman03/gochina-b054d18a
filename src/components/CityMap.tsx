@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import AMapLoader from "@amap/amap-jsapi-loader";
 import { wgs84ToGcj02 } from "@/lib/gochina/coord";
 
@@ -20,17 +20,21 @@ export function CityMap({
   markers,
   className,
   onMarkerClick,
+  selectedId,
 }: {
   center: { lat: number; lng: number };
   markers: Marker[];
   className?: string;
   onMarkerClick?: (id: string) => void;
+  selectedId?: string | null;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
+  const [loadFailed, setLoadFailed] = useState(false);
 
   useEffect(() => {
     if (!KEY || !ref.current) return;
+    setLoadFailed(false);
     if (SEC) (window as any)._AMapSecurityConfig = { securityJsCode: SEC };
     let mounted = true;
     AMapLoader.load({ key: KEY, version: "2.0", plugins: [] })
@@ -45,27 +49,37 @@ export function CityMap({
         mapRef.current = map;
         markers.forEach((m) => {
           const [mlng, mlat] = wgs84ToGcj02(m.lng, m.lat);
-          const color = CATEGORY_COLOR[m.category || "attraction"] || "#9b2c2c";
+          const isSelected = m.id === selectedId;
+          const color = isSelected
+            ? "#1d4ed8"
+            : CATEGORY_COLOR[m.category || "attraction"] || "#9b2c2c";
+          const size = isSelected ? 30 : 22;
+          const height = isSelected ? 38 : 28;
           const marker = new AMap.Marker({
             position: [mlng, mlat],
             title: m.name,
-            content: `<div style="width:22px;height:28px;transform:translate(-11px,-28px);filter:drop-shadow(0 2px 3px rgba(0,0,0,.3))"><svg viewBox="0 0 22 28" xmlns="http://www.w3.org/2000/svg"><path d="M11 0C4.9 0 0 4.9 0 11c0 8 11 17 11 17s11-9 11-17C22 4.9 17.1 0 11 0z" fill="${color}"/><circle cx="11" cy="11" r="4" fill="#fff"/></svg></div>`,
+            zIndex: isSelected ? 200 : 100,
+            content: `<div style="width:${size}px;height:${height}px;transform:translate(-${size / 2}px,-${height}px);filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))"><svg viewBox="0 0 22 28" xmlns="http://www.w3.org/2000/svg"><path d="M11 0C4.9 0 0 4.9 0 11c0 8 11 17 11 17s11-9 11-17C22 4.9 17.1 0 11 0z" fill="${color}"/><circle cx="11" cy="11" r="${isSelected ? 5 : 4}" fill="#fff"/></svg></div>`,
           });
           if (onMarkerClick) marker.on("click", () => onMarkerClick(m.id));
           map.add(marker);
         });
       })
-      .catch(() => {});
+      .catch(() => {
+        if (mounted) setLoadFailed(true);
+      });
     return () => {
       mounted = false;
       if (mapRef.current) {
-        try { mapRef.current.destroy(); } catch {}
+        try {
+          mapRef.current.destroy();
+        } catch {}
         mapRef.current = null;
       }
     };
-  }, [center.lat, center.lng, markers, onMarkerClick]);
+  }, [center.lat, center.lng, markers, onMarkerClick, selectedId]);
 
-  if (!KEY) {
+  if (!KEY || loadFailed) {
     // Fallback styled placeholder when no AMap key configured
     return (
       <div
@@ -78,19 +92,29 @@ export function CityMap({
         {markers.slice(0, 8).map((m, i) => {
           const left = 15 + ((i * 53) % 70);
           const top = 18 + ((i * 37) % 60);
-          const color = CATEGORY_COLOR[m.category || "attraction"] || "#9b2c2c";
+          const isSelected = m.id === selectedId;
+          const color = isSelected
+            ? "#1d4ed8"
+            : CATEGORY_COLOR[m.category || "attraction"] || "#9b2c2c";
+          const size = isSelected ? 30 : 22;
+          const height = isSelected ? 38 : 28;
           return (
             <button
               key={m.id}
               type="button"
               onClick={() => onMarkerClick?.(m.id)}
-              className="absolute cursor-pointer"
+              className={
+                "absolute cursor-pointer transition-transform" + (isSelected ? " z-10" : "")
+              }
               style={{ left: `${left}%`, top: `${top}%`, transform: "translate(-50%,-100%)" }}
               title={m.name}
             >
-              <svg width="22" height="28" viewBox="0 0 22 28">
-                <path d="M11 0C4.9 0 0 4.9 0 11c0 8 11 17 11 17s11-9 11-17C22 4.9 17.1 0 11 0z" fill={color} />
-                <circle cx="11" cy="11" r="4" fill="#fff" />
+              <svg width={size} height={height} viewBox="0 0 22 28">
+                <path
+                  d="M11 0C4.9 0 0 4.9 0 11c0 8 11 17 11 17s11-9 11-17C22 4.9 17.1 0 11 0z"
+                  fill={color}
+                />
+                <circle cx="11" cy="11" r={isSelected ? 5 : 4} fill="#fff" />
               </svg>
             </button>
           );
@@ -102,5 +126,10 @@ export function CityMap({
     );
   }
 
-  return <div ref={ref} className={"w-full rounded-2xl overflow-hidden border border-border " + (className || "h-56")} />;
+  return (
+    <div
+      ref={ref}
+      className={"w-full rounded-2xl overflow-hidden border border-border " + (className || "h-56")}
+    />
+  );
 }

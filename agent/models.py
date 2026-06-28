@@ -121,6 +121,7 @@ class StopOut(BaseModel):
     description: str = ""
     tips: str = ""
     duration: int = 0
+    transitInfo: dict | None = None  # real connection record (mode, distanceKm, notes) when available
 
 
 class DayOut(BaseModel):
