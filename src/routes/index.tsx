@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { MobileShell } from "@/components/MobileShell";
+import { EssentialTools } from "@/components/EssentialTools";
 import { TravelPulseCalendar } from "@/components/TravelPulseCalendar";
 import { useAppStore } from "@/store/useAppStore";
 import { pois } from "@/data/generated/pois";
@@ -68,7 +69,7 @@ function Home() {
           See all <ArrowRight className="w-4 h-4" />
         </Link>
       </section>
-      <div className="pl-5 pb-6 flex gap-3 overflow-x-auto">
+      <div className="pl-5 pb-9 flex gap-3 overflow-x-auto">
         {recommended.map((p: any) => (
           <Link
             key={p.id}
@@ -85,6 +86,8 @@ function Home() {
           </Link>
         ))}
       </div>
+
+      <EssentialTools />
     </MobileShell>
   );
 }

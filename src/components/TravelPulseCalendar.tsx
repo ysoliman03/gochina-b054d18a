@@ -322,11 +322,20 @@ export function TravelPulseCalendar({ cityId }: TravelPulseCalendarProps) {
   const currentMonth = useMemo(() => getMonthForDate(today), [today]);
   const [month, setMonth] = useState(currentMonth);
   const [selectedDateKey, setSelectedDateKey] = useState<string | null>(todayKey);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [expandedConstraintIds, setExpandedConstraintIds] = useState<Set<string>>(
+    () => new Set(),
+  );
 
   useEffect(() => {
     setMonth(currentMonth);
     setSelectedDateKey(todayKey);
   }, [cityId, currentMonth, todayKey]);
+
+  useEffect(() => {
+    setDetailsOpen(false);
+    setExpandedConstraintIds(new Set());
+  }, [cityId, month]);
 
   const cells = useMemo(() => buildCalendarCells(month), [month]);
   const relevantConstraints = useMemo(
@@ -359,6 +368,18 @@ export function TravelPulseCalendar({ cityId }: TravelPulseCalendarProps) {
   const legendTypes = activeLegendTypes.length
     ? activeLegendTypes
     : ["holiday", "event", "closure", "weather", "crowd"];
+
+  function toggleConstraint(id: string) {
+    setExpandedConstraintIds((current) => {
+      const next = new Set(current);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }
 
   return (
     <section className="mx-5 mb-4 rounded-2xl bg-card border border-border p-4">
@@ -452,38 +473,104 @@ export function TravelPulseCalendar({ cityId }: TravelPulseCalendarProps) {
         })}
       </div>
 
-      <div className="mt-3 divide-y divide-border">
-        {displayedEntries.map(({ constraint }) => {
-          const type = getConstraintType(constraint);
-          const meta = getTypeMeta(type);
-          const Icon = meta.Icon;
+      <button
+        type="button"
+        onClick={() => setDetailsOpen((open) => !open)}
+        aria-expanded={detailsOpen}
+        className="mt-3 w-full rounded-xl border border-border px-3 py-2.5 flex items-center justify-between gap-3 text-left"
+      >
+        <span className="text-sm font-semibold text-foreground">
+          Details
+          {monthEntries.length > 0 ? (
+            <span className="ml-2 text-xs font-medium text-muted-foreground">
+              {monthEntries.length}
+            </span>
+          ) : null}
+        </span>
+        <ChevronRight
+          className={
+            "w-4 h-4 text-muted-foreground shrink-0 transition-transform " +
+            (detailsOpen ? "rotate-90" : "")
+          }
+        />
+      </button>
 
-          return (
-            <div key={constraint.id} className="py-3 flex items-start gap-3">
-              <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${meta.iconBg}`}
-              >
-                <Icon className={`w-5 h-5 ${meta.iconColor}`} />
+      {detailsOpen && (
+        <div className="mt-2 divide-y divide-border">
+          {displayedEntries.map(({ constraint }) => {
+            const type = getConstraintType(constraint);
+            const meta = getTypeMeta(type);
+            const Icon = meta.Icon;
+            const expanded = expandedConstraintIds.has(constraint.id);
+
+            return (
+              <div key={constraint.id}>
+                <button
+                  type="button"
+                  onClick={() => toggleConstraint(constraint.id)}
+                  aria-expanded={expanded}
+                  className="w-full py-3 flex items-start gap-3 text-left"
+                >
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${meta.iconBg}`}
+                  >
+                    <Icon className={`w-5 h-5 ${meta.iconColor}`} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-foreground leading-tight">
+                      {constraint.title}
+                    </p>
+                    <p
+                      className={
+                        "text-xs text-muted-foreground mt-0.5 " +
+                        (expanded ? "" : "line-clamp-2")
+                      }
+                    >
+                      {formatRange(constraint, month)}
+                      {constraint.impact ? ` · ${constraint.impact}` : ""}
+                    </p>
+                  </div>
+                  <ChevronRight
+                    className={
+                      "w-4 h-4 text-muted-foreground mt-3 shrink-0 transition-transform " +
+                      (expanded ? "rotate-90" : "")
+                    }
+                  />
+                </button>
+                {expanded && (
+                  <div className="pb-3 pl-[52px] pr-1 space-y-2">
+                    {constraint.impact && (
+                      <p className="text-xs text-muted-foreground leading-snug">
+                        <span className="font-semibold text-foreground">Impact: </span>
+                        {constraint.impact}
+                      </p>
+                    )}
+                    {constraint.action && (
+                      <p className="text-xs text-muted-foreground leading-snug">
+                        <span className="font-semibold text-foreground">Action: </span>
+                        {constraint.action}
+                      </p>
+                    )}
+                    <div className="flex flex-wrap gap-1.5">
+                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground capitalize">
+                        {constraint.severity}
+                      </span>
+                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground capitalize">
+                        {constraint.recurrencePattern}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-foreground leading-tight">
-                  {constraint.title}
-                </p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {formatRange(constraint, month)}
-                  {constraint.impact ? ` · ${constraint.impact}` : ""}
-                </p>
-              </div>
-              <ChevronRight className="w-4 h-4 text-muted-foreground mt-3 shrink-0" />
-            </div>
-          );
-        })}
-        {monthEntries.length === 0 && (
-          <p className="py-4 text-sm text-muted-foreground">
-            No Travel Constraints entries for this city in {MONTH_LABEL.format(month)}.
-          </p>
-        )}
-      </div>
+            );
+          })}
+          {monthEntries.length === 0 && (
+            <p className="py-4 text-sm text-muted-foreground">
+              No Travel Constraints entries for this city in {MONTH_LABEL.format(month)}.
+            </p>
+          )}
+        </div>
+      )}
     </section>
   );
 }

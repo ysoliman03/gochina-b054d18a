@@ -59,7 +59,7 @@ function ItineraryLeg({ from, to }: { from: any; to: any }) {
   if (!distance && transitOptions.length === 0) return null;
 
   return (
-    <li className="-my-1 list-none px-1">
+    <li className="list-none px-1 py-1.5">
       <div className="flex items-center gap-2 text-[11px] font-semibold">
         {distance && <span className="text-muted-foreground">{distance}</span>}
         {gaodeUrl && (
