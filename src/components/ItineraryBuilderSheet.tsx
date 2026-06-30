@@ -17,7 +17,7 @@ import { cities } from "@/data/generated/cities";
 import { Sparkles, Loader2, CheckCircle2, AlertCircle, ChevronRight } from "lucide-react";
 
 // ── Config ────────────────────────────────────────────────────────────────
-const AGENT_URL = "http://localhost:8787";
+const AGENT_URL = "https://gochina-b054d18a-production.up.railway.app";
 
 const INTERESTS = ["historical", "food", "nightlife", "shopping", "nature", "art", "modern"];
 const DIET_OPTS = ["Vegetarian", "Vegan", "Halal", "No Pork", "No Beef", "Low Spice", "Gluten Free"];
