@@ -72,7 +72,7 @@ CONCEPT #6 — @agent.output_validator (smart retry)
 """
 from __future__ import annotations
 from pydantic_ai import Agent, ModelRetry, RunContext
-from pydantic_ai.models.groq import GroqModel
+from pydantic_ai.models.anthropic import AnthropicModel
 
 # ── Model ───────────────────────────────────────────────────────────────────
 # Pick ONE of the options below and uncomment it.
@@ -92,7 +92,7 @@ from pydantic_ai.models.groq import GroqModel
 #model = OpenAIModel("gemma3:4b-highctx",  provider=OpenAIProvider(base_url="http://localhost:11434/v1"))  # ✘ custom variants break tool calling
 #model = OpenAIModel("gemma3:12b-highctx", provider=OpenAIProvider(base_url="http://localhost:11434/v1"))  # ✘ same issue
 #model = OpenAIModel("qwen2.5:7b-highctx", provider=OpenAIProvider(base_url="http://localhost:11434/v1"))
-model = GroqModel("llama-3.3-70b-versatile")                      # GROQ_API_KEY — fast + reliable
+model = AnthropicModel("claude-haiku-4-5-20251001")                # ANTHROPIC_API_KEY
 #model = OpenAIModel("qwen2.5:14b",   provider=OpenAIProvider(base_url="http://localhost:11434/v1"))
 #model = OpenAIModel("llama3.1:8b",   provider=OpenAIProvider(base_url="http://localhost:11434/v1"))
 #model = OpenAIModel("llama3.2:3b",   provider=OpenAIProvider(base_url="http://localhost:11434/v1"))
