@@ -73,8 +73,6 @@ CONCEPT #6 — @agent.output_validator (smart retry)
 from __future__ import annotations
 from pydantic_ai import Agent, ModelRetry, RunContext
 from pydantic_ai.models.groq import GroqModel
-from pydantic_ai.models.openai import OpenAIModel
-from pydantic_ai.providers.openai import OpenAIProvider
 
 # ── Model ───────────────────────────────────────────────────────────────────
 # Pick ONE of the options below and uncomment it.
