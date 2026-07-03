@@ -104,6 +104,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from models import ItineraryRequest, ItineraryResult, StopOut, DayOut
 from agent import agent       # the Pydantic AI agent we built in agent.py
 from tools import enrich_stop # helper to add full POI data to each stop
+from guardrails import sanitize_notes, wrap_untrusted  # Task-2 input defense
 
 # ── App setup ────────────────────────────────────────────────────────────────
 
@@ -163,7 +164,7 @@ Trip details:
   Budget     : {request.profile.budget}
   Interests  : {", ".join(request.profile.interests) or "general sightseeing"}
   Dietary    : {", ".join(request.profile.dietaryRestrictions) or "no restrictions"}
-{f"  Special requests: {request.notes}" if request.notes.strip() else ""}
+{wrap_untrusted(sanitize_notes(request.notes))}
 
 YOUR OUTPUT MUST CONTAIN EXACTLY {request.days} DAYS.
 Required dayIndex values: {required_days}
