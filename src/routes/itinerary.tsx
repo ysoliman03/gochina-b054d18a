@@ -4,7 +4,7 @@ import { MobileShell } from "@/components/MobileShell";
 import { useAppStore } from "@/store/useAppStore";
 import { cities } from "@/data/generated/cities";
 import { pois } from "@/data/generated/pois";
-import { getTransitOptions, minutesToTime } from "@/engine/itineraryEngine";
+import { getTransitOptions, minutesToTime, recalculateTimes } from "@/engine/itineraryEngine";
 import {
   Clock,
   MapPin,
@@ -27,8 +27,13 @@ const TRANSIT_MODE_ICON: Record<string, typeof Car> = {
   taxi: Car,
 };
 import { ItineraryBuilderSheet } from "@/components/ItineraryBuilderSheet";
+import { PoiDetailOverlay } from "@/components/PoiDetailOverlay";
 import { pageHead } from "@/lib/seo";
-import { getConnectionsBetween } from "@/lib/cityConnections";
+import {
+  getConnectionsBetween,
+  getRecommendedConnection,
+  getRecommendedTransferHubs,
+} from "@/lib/cityConnections";
 import { HotelBaseOptimizerCard } from "@/components/HotelBaseOptimizerCard";
 import { ItineraryIssuePanel } from "@/components/ItineraryIssuePanel";
 import { detectItineraryIssues } from "@/engine/itineraryIssueDetector";
@@ -112,25 +117,40 @@ function Itinerary() {
   const trip = useAppStore((s) => s.trip);
   const profile = useAppStore((s) => s.profile);
   const [builderOpen, setBuilderOpen] = useState(false);
+  const [selectedPoi, setSelectedPoi] = useState<any | null>(null);
   const removePOIFromDay = useAppStore((s) => s.removePOIFromDay);
   const replanDay = useAppStore((s) => s.replanDay);
   const updateTrip = useAppStore((s) => s.updateTrip);
   const movePOIToDay = useAppStore((s) => s.movePOIToDay);
   const reorderStopInDay = useAppStore((s) => s.reorderStopInDay);
+  const deleteItinerary = useAppStore((s) => s.deleteItinerary);
 
   const [activeCity, setActiveCity] = useState(trip.currentCityId);
   const [activeDay, setActiveDay] = useState(0);
 
-  const days = trip.itinerary[activeCity] || [];
+  const rawDays = trip.itinerary[activeCity];
+  const days = useMemo(
+    () =>
+      (rawDays || []).map((day: any) => ({
+        ...day,
+        stops: recalculateTimes(day.stops || []),
+      })),
+    [rawDays],
+  );
   const hasTrips = trip.cities.length > 0;
 
   const activeCityIndex = trip.cities.findIndex((c) => c.cityId === activeCity);
   const prevCity = activeCityIndex > 0 ? trip.cities[activeCityIndex - 1] : null;
   const intercityConnections = prevCity ? getConnectionsBetween(prevCity.cityId, activeCity) : [];
+  const recommendedConnection = prevCity
+    ? getRecommendedConnection(prevCity.cityId, activeCity, profile.budget)
+    : undefined;
+  const recommendedHubs = prevCity
+    ? getRecommendedTransferHubs(prevCity.cityId, activeCity, recommendedConnection)
+    : { departureHub: null, arrivalHub: null };
 
-  // One base-area card per city in the trip; falls back to the currently browsed city
-  // if no cities have been added yet, so the feature is still discoverable.
-  const baseCityIds = hasTrips ? trip.cities.map((c) => c.cityId) : [trip.currentCityId];
+  // Only show base-area advice once a trip exists; the empty state stays China-wide.
+  const baseCityIds = hasTrips ? trip.cities.map((c) => c.cityId) : [];
 
   // Best-effort date for the active day — used to check date-bound constraints
   // (holidays/weather). Falls back to the day's own `date` field if AI-planned,
@@ -156,6 +176,16 @@ function Itinerary() {
     });
   }, [days, activeDay, activeCity, profile, activeDayDate]);
 
+  function handleDeleteCity(cityId: string, cityName: string) {
+    if (!window.confirm(`Delete the ${cityName} itinerary?`)) return;
+    const nextCityId = trip.cities.find((city) => city.cityId !== cityId)?.cityId ?? "";
+    deleteItinerary(cityId);
+    if (activeCity === cityId) {
+      setActiveCity(nextCityId);
+      setActiveDay(0);
+    }
+  }
+
   return (
     <MobileShell>
       <header className="px-5 pt-8 pb-3 flex items-start justify-between gap-3">
@@ -179,6 +209,11 @@ function Itinerary() {
       </div>
 
       <ItineraryBuilderSheet open={builderOpen} onOpenChange={setBuilderOpen} />
+      <PoiDetailOverlay
+        poiId={selectedPoi?.id ?? null}
+        poi={selectedPoi}
+        onClose={() => setSelectedPoi(null)}
+      />
 
       {hasTrips ? (
         <div className="px-5 flex gap-2 pb-3 overflow-x-auto">
@@ -186,8 +221,9 @@ function Itinerary() {
             const city: any = (cities as any)[c.cityId];
             const active = c.cityId === activeCity;
             return (
+              <div key={c.cityId} className="flex items-center gap-1">
               <button
-                key={c.cityId}
+                type="button"
                 onClick={() => {
                   setActiveCity(c.cityId);
                   setActiveDay(0);
@@ -201,6 +237,15 @@ function Itinerary() {
               >
                 {city?.name} · {c.days}d
               </button>
+              <button
+                type="button"
+                onClick={() => handleDeleteCity(c.cityId, city?.name || c.cityId)}
+                aria-label={`Delete ${city?.name || c.cityId} itinerary`}
+                className="w-9 h-9 rounded-full bg-card border border-border text-muted-foreground hover:text-destructive flex items-center justify-center"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+              </div>
             );
           })}
         </div>
@@ -213,6 +258,47 @@ function Itinerary() {
               Getting from {(cities as any)[prevCity.cityId]?.name || prevCity.cityId} to{" "}
               {(cities as any)[activeCity]?.name || activeCity}
             </p>
+            {recommendedConnection && (
+              <div className="pb-3 mb-3 border-b border-border">
+                {(() => {
+                  const Icon = CITY_TRAVEL_MODE_ICON[recommendedConnection.travelMode] || Car;
+                  const { departureHub, arrivalHub } = recommendedHubs;
+                  return (
+                    <div className="flex items-start gap-2.5">
+                      <Icon className="w-4 h-4 mt-0.5 text-primary shrink-0" />
+                      <div className="text-sm min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p className="font-semibold text-foreground">Recommended transfer</p>
+                          <span className="text-[11px] rounded-full bg-primary/10 px-2 py-0.5 text-primary font-semibold">
+                            Dataset match
+                          </span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {recommendedConnection.travelMode.replace(/_/g, " ")} ·{" "}
+                          {Math.floor(recommendedConnection.durationMin / 60)}h{" "}
+                          {recommendedConnection.durationMin % 60}m
+                          {recommendedConnection.frequency
+                            ? ` · ${recommendedConnection.frequency}`
+                            : ""}
+                        </p>
+                        {(departureHub || arrivalHub) && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Use {departureHub?.name || "the main departure hub"}
+                            {" -> "}
+                            {arrivalHub?.name || "the main arrival hub"}.
+                          </p>
+                        )}
+                        {recommendedConnection.notes && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {recommendedConnection.notes}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
             <div className="flex flex-col gap-2">
               {intercityConnections.map((conn, i) => {
                 const Icon = CITY_TRAVEL_MODE_ICON[conn.travelMode] || Car;
@@ -294,7 +380,11 @@ function Itinerary() {
                 {idx > 0 && <ItineraryLeg from={days[activeDay].stops[idx - 1]} to={stop} />}
                 <li className="rounded-2xl bg-card border border-border p-4">
                   <div className="flex items-start justify-between gap-2">
-                    <div>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedPoi(stop)}
+                      className="min-w-0 flex-1 text-left"
+                    >
                       <p className="text-xs text-muted-foreground flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         {minutesToTime(stop.scheduledStart)} – {minutesToTime(stop.scheduledEnd)}
@@ -303,7 +393,7 @@ function Itinerary() {
                       <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
                         <MapPin className="w-3 h-3" /> {stop.district}
                       </p>
-                    </div>
+                    </button>
                     <button
                       onClick={() => removePOIFromDay(activeCity, activeDay, stop.id)}
                       aria-label={`Remove ${stop.name} from day ${activeDay + 1}`}

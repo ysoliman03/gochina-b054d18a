@@ -1,6 +1,11 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { buildDayPlan, recalculateTimes, getTransitTime, getTransitInfo } from "@/engine/itineraryEngine";
+import {
+  buildDayPlan,
+  insertPOIIntoBestSlot,
+  planBestPOIInsertion,
+  recalculateTimes,
+} from "@/engine/itineraryEngine";
 import { pois } from "@/data/generated/pois";
 import {
   upsertProfile,
@@ -92,7 +97,7 @@ const createDefaultProfile = (): ProfileState => ({
 
 const createDefaultTrip = (): TripState => ({
   cities: [],
-  currentCityId: "BJ",
+  currentCityId: "",
   itinerary: {},
 });
 
@@ -122,8 +127,10 @@ interface AppState {
   updateProfile: (u: Partial<ProfileState>) => void;
   updateTrip: (u: Partial<TripState>) => void;
   setItinerary: (cityId: string, days: any[]) => void;
+  deleteItinerary: (cityId: string) => void;
   removePOIFromDay: (cityId: string, dayIndex: number, poiId: string) => void;
   addPOIToDay: (cityId: string, dayIndex: number, poi: any) => void;
+  addPOIToBestDay: (cityId: string, poi: any) => void;
   movePOIToDay: (cityId: string, fromDayIndex: number, toDayIndex: number, poiId: string) => void;
   reorderStopInDay: (cityId: string, dayIndex: number, poiId: string, direction: "up" | "down") => void;
   replacePOIInDay: (cityId: string, dayIndex: number, oldPoiId: string, newPoi: any) => void;
@@ -195,6 +202,29 @@ export const useAppStore = create<AppState>()(
         syncWith((uid) => upsertActiveTrip(uid, useAppStore.getState()));
       },
 
+      deleteItinerary: (cityId) => {
+        set((s) => {
+          const { [cityId]: _removed, ...itinerary } = s.trip.itinerary;
+          const cities = s.trip.cities.filter((city) => city.cityId !== cityId);
+          const currentCityId =
+            cities.length === 0
+              ? ""
+              : s.trip.currentCityId === cityId ||
+                  !cities.some((city) => city.cityId === s.trip.currentCityId)
+                ? cities[0].cityId
+                : s.trip.currentCityId;
+          return {
+            trip: {
+              ...s.trip,
+              cities,
+              currentCityId,
+              itinerary,
+            },
+          };
+        });
+        syncWith((uid) => upsertActiveTrip(uid, useAppStore.getState()));
+      },
+
       removePOIFromDay: (cityId, dayIndex, poiId) => {
         set((s) => {
           const days = (s.trip.itinerary[cityId] || []).map((day: any, i: number) => {
@@ -213,20 +243,12 @@ export const useAppStore = create<AppState>()(
           // the AI planner has ever run for it — adding a place shouldn't be a no-op.
           const days = [...(s.trip.itinerary[cityId] || [])];
           while (days.length <= dayIndex) days.push({ stops: [] });
+          if (days.some((day: any) => (day.stops || []).some((stop: any) => stop.id === poi.id))) {
+            return {};
+          }
 
           const day = days[dayIndex];
-          const lastStop = day.stops[day.stops.length - 1];
-          const transitInfo = lastStop ? getTransitInfo(lastStop.id, poi.id) : null;
-          const transit = lastStop ? getTransitTime(lastStop.id, poi.id) : 0;
-          const startTime = lastStop ? lastStop.scheduledEnd + transit : 9 * 60;
-          const newStop = {
-            ...poi,
-            scheduledStart: startTime,
-            scheduledEnd: startTime + poi.duration,
-            transitFromPrev: transit,
-            transitInfo,
-          };
-          days[dayIndex] = { ...day, stops: [...day.stops, newStop] };
+          days[dayIndex] = { ...day, stops: insertPOIIntoBestSlot(day.stops || [], poi) };
 
           const today = new Date().toISOString().split("T")[0];
           const cityInTrip = s.trip.cities.some((c) => c.cityId === cityId);
@@ -242,7 +264,78 @@ export const useAppStore = create<AppState>()(
           ];
           const updatedInterests = learnFromTags(s.profile.interests, poi.id);
           return {
-            trip: { ...s.trip, cities, itinerary: { ...s.trip.itinerary, [cityId]: days } },
+            trip: {
+              ...s.trip,
+              cities,
+              currentCityId: s.trip.currentCityId || cityId,
+              itinerary: { ...s.trip.itinerary, [cityId]: days },
+            },
+            recentActivity: activity,
+            profile: { ...s.profile, interests: updatedInterests },
+          };
+        });
+        syncWith((uid) => upsertActiveTrip(uid, useAppStore.getState()));
+      },
+
+      addPOIToBestDay: (cityId, poi) => {
+        set((s) => {
+          const existingCity = s.trip.cities.find((c) => c.cityId === cityId);
+          const days = (s.trip.itinerary[cityId] || []).map((day: any) => ({
+            ...day,
+            stops: [...(day.stops || [])],
+          }));
+          const targetDayCount = Math.max(days.length, existingCity?.days ?? 1, 1);
+          while (days.length < targetDayCount) days.push({ stops: [] });
+          if (days.some((day: any) => day.stops.some((stop: any) => stop.id === poi.id))) {
+            return {};
+          }
+
+          const hasPlannedStops = days.some((day: any) => day.stops.length > 0);
+          const emptyDayPenalty = (day: any) => (hasPlannedStops && day.stops.length === 0 ? 1200 : 0);
+          let bestDayIndex = 0;
+          let bestPlan = planBestPOIInsertion(days[0]?.stops || [], poi);
+          let bestScore =
+            bestPlan.score +
+            emptyDayPenalty(days[0]) +
+            ((days[0]?.stops || []).length === 0 ? 15 : 0);
+
+          for (let i = 1; i < days.length; i++) {
+            const plan = planBestPOIInsertion(days[i].stops || [], poi);
+            const stopCount = (days[i].stops || []).length;
+            const score =
+              plan.score +
+              stopCount * 10 +
+              emptyDayPenalty(days[i]) +
+              (plan.allOriginalsPreserved ? 0 : 5000);
+            if (score < bestScore) {
+              bestDayIndex = i;
+              bestPlan = plan;
+              bestScore = score;
+            }
+          }
+
+          days[bestDayIndex] = { ...days[bestDayIndex], stops: bestPlan.stops };
+
+          const today = new Date().toISOString().split("T")[0];
+          const cityInTrip = s.trip.cities.some((c) => c.cityId === cityId);
+          const cities = cityInTrip
+            ? s.trip.cities.map((c) =>
+                c.cityId === cityId ? { ...c, days: Math.max(c.days, days.length) } : c,
+              )
+            : [...s.trip.cities, { cityId, startDate: today, endDate: today, days: days.length }];
+
+          const activity = [
+            { type: "itinerary", text: `Added ${poi.name} to Day ${bestDayIndex + 1}`, time: "Just now" },
+            ...s.recentActivity.slice(0, 9),
+          ];
+          const updatedInterests = learnFromTags(s.profile.interests, poi.id);
+          return {
+            trip: {
+              ...s.trip,
+              cities,
+              currentCityId: s.trip.currentCityId || cityId,
+              itinerary: { ...s.trip.itinerary, [cityId]: days },
+            },
             recentActivity: activity,
             profile: { ...s.profile, interests: updatedInterests },
           };
@@ -263,7 +356,7 @@ export const useAppStore = create<AppState>()(
 
           days[fromDayIndex] = { ...fromDay, stops: recalculateTimes(fromDay.stops) };
           const toDay = days[toDayIndex];
-          days[toDayIndex] = { ...toDay, stops: recalculateTimes([...toDay.stops, stop]) };
+          days[toDayIndex] = { ...toDay, stops: insertPOIIntoBestSlot(toDay.stops || [], stop) };
 
           return { trip: { ...s.trip, itinerary: { ...s.trip.itinerary, [cityId]: days } } };
         });

@@ -139,13 +139,13 @@ function nextStatus(status: string) {
   return STATUS_ORDER[(index + 1) % STATUS_ORDER.length];
 }
 
-export function EssentialTools() {
+export function EssentialTools({ className = "px-5 pb-8" }: { className?: string }) {
   const digitalTools = useAppStore((s) => s.digitalTools);
   const updateDigitalTool = useAppStore((s) => s.updateDigitalTool);
   const [openTool, setOpenTool] = useState<string | null>("alipay");
 
   return (
-    <section className="px-5 pb-8">
+    <section className={className}>
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-xl font-bold text-foreground">Essential Tools</h2>
         <Link

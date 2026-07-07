@@ -40,7 +40,7 @@ function aqiBand(aqi: number) {
 function AirQuality() {
   const trip = useAppStore((s) => s.trip);
   const weather = useAppStore((s) => s.mockWeather);
-  const city = (cities as any)[trip.currentCityId];
+  const city = trip.cities.length ? (cities as any)[trip.currentCityId] : null;
   const aqi = weather?.aqi ?? 85;
   const band = aqiBand(aqi);
 
@@ -51,7 +51,7 @@ function AirQuality() {
       <section className="px-5 pb-5">
         <div className={`rounded-2xl ${band.color} ${band.text} p-6`}>
           <p className="text-xs font-bold uppercase tracking-wide opacity-80">
-            {city?.name || "Current City"} · Right now
+            {city?.name || "China"} · Right now
           </p>
           <div className="flex items-end gap-2 mt-1">
             <span className="text-6xl font-bold">{aqi}</span>
@@ -99,7 +99,7 @@ function AirQuality() {
 
       <section className="px-5 pb-10">
         <a
-          href="https://aqicn.org/city/beijing/"
+          href={city ? `https://aqicn.org/city/${city.name.toLowerCase()}/` : "https://aqicn.org/map/china/"}
           target="_blank"
           rel="noreferrer"
           className="block w-full h-12 rounded-full bg-primary text-primary-foreground font-semibold text-sm inline-flex items-center justify-center gap-1.5 hover:bg-primary/90"

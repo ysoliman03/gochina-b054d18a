@@ -113,10 +113,11 @@ export function ItineraryBuilderSheet({ open, onOpenChange }: Props) {
   const setItinerary = useAppStore((s) => s.setItinerary);
   const updateTrip = useAppStore((s) => s.updateTrip);
 
+  const defaultCityId = trip.cities.length ? trip.currentCityId : "";
   const existingDays = trip.cities.find((c) => c.cityId === trip.currentCityId)?.days ?? 3;
 
   const [form, setForm] = useState<FormState>({
-    cityId: trip.currentCityId,
+    cityId: defaultCityId,
     startDate: todayStr(),
     endDate: daysFromNow(existingDays - 1),  // e.g. 3-day trip → today + 2 days
     pace: profile.pace,
@@ -132,6 +133,11 @@ export function ItineraryBuilderSheet({ open, onOpenChange }: Props) {
 
   // ── Submit ──────────────────────────────────────────────────────────────
   async function handleGenerate() {
+    if (!form.cityId) {
+      setStatus("error");
+      setError("Choose a destination city first.");
+      return;
+    }
     setStatus("loading");
     setError("");
     setResult(null);
@@ -356,7 +362,7 @@ export function ItineraryBuilderSheet({ open, onOpenChange }: Props) {
             {/* Submit */}
             <button
               onClick={handleGenerate}
-              disabled={status === "loading"}
+              disabled={status === "loading" || !form.cityId}
               className="w-full rounded-xl bg-primary py-4 text-sm font-semibold text-primary-foreground flex items-center justify-center gap-2 disabled:opacity-60"
             >
               {status === "loading" ? (
