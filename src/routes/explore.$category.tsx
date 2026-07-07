@@ -29,11 +29,12 @@ function ExploreCategory() {
   const savedPois = useAppStore((s) => s.savedPois);
   const toggleSavePoi = useAppStore((s) => s.toggleSavePoi);
   const profile = useAppStore((s) => s.profile);
+  const hasTrips = trip.cities.length > 0;
 
   const items = Object.values(pois)
     .filter(
       (p: any) =>
-        p.cityId === trip.currentCityId &&
+        (hasTrips ? p.cityId === trip.currentCityId : true) &&
         (p.category === category || (p.tags || []).includes(category)),
     )
     .sort((a: any, b: any) => scorePoi(b, profile) - scorePoi(a, profile));

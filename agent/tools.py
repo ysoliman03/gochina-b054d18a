@@ -28,6 +28,7 @@ In this project the tools give the agent access to:
 """
 from __future__ import annotations
 from datetime import date, timedelta
+import math
 import re
 
 from data import (
@@ -39,6 +40,72 @@ from data import (
     POI_CONNECTIONS,
     TRANSPORT_HUBS,
 )
+
+EARTH_RADIUS_KM = 6371
+
+
+def _distance_km(a: dict | None, b: dict | None) -> float | None:
+    if not a or not b:
+        return None
+    if not isinstance(a.get("lat"), (int, float)) or not isinstance(a.get("lng"), (int, float)):
+        return None
+    if not isinstance(b.get("lat"), (int, float)) or not isinstance(b.get("lng"), (int, float)):
+        return None
+
+    lat1 = math.radians(a["lat"])
+    lat2 = math.radians(b["lat"])
+    dlat = lat2 - lat1
+    dlng = math.radians(b["lng"] - a["lng"])
+    h = (
+        math.sin(dlat / 2) ** 2
+        + math.cos(lat1) * math.cos(lat2) * math.sin(dlng / 2) ** 2
+    )
+    return 2 * EARTH_RADIUS_KM * math.asin(min(1, math.sqrt(h)))
+
+
+def estimate_transit_minutes(from_poi_id: str | None, to_poi_id: str | None) -> int:
+    """Conservative city-transit estimate from POI coordinates when no curated route exists."""
+    if not from_poi_id or not to_poi_id:
+        return 0
+
+    from_poi = POIS.get(from_poi_id)
+    to_poi = POIS.get(to_poi_id)
+    km = _distance_km(from_poi, to_poi)
+    if km is None:
+        return 20
+
+    road_km = km * 1.35
+    same_district = from_poi.get("district") and from_poi.get("district") == to_poi.get("district")
+
+    if road_km <= 1.2:
+        minutes = road_km / 4.5 * 60 + 5
+    elif same_district and road_km <= 4:
+        minutes = road_km / 14 * 60 + 8
+    elif road_km <= 12:
+        minutes = road_km / 22 * 60 + 10
+    elif road_km <= 35:
+        minutes = road_km / 32 * 60 + 15
+    else:
+        minutes = road_km / 45 * 60 + 20
+
+    return max(8, min(180, int(math.ceil(minutes / 5) * 5)))
+
+
+def _estimated_transit_info(from_poi_id: str, to_poi_id: str) -> dict | None:
+    from_poi = POIS.get(from_poi_id)
+    to_poi = POIS.get(to_poi_id)
+    if not from_poi or not to_poi:
+        return None
+
+    distance = _distance_km(from_poi, to_poi)
+    return {
+        "from": from_poi_id,
+        "to": to_poi_id,
+        "mode": "estimated",
+        "duration": estimate_transit_minutes(from_poi_id, to_poi_id),
+        "distanceKm": round(distance, 1) if distance is not None else None,
+        "notes": "Estimated from POI coordinates because this route is not in the curated transit dataset.",
+    }
 
 
 # ── Helper: trim a POI to only the fields the agent needs ──────────────────
@@ -59,6 +126,7 @@ def _slim(poi: dict) -> dict:
         "foreignFriendly": poi.get("foreignFriendly", 3),
         "suitableFor":    poi.get("suitableFor", []),
         "tips":           (poi.get("tips") or "")[:120], # first 120 chars only
+        "cautions":       (poi.get("cautions") or "")[:160],
     }
 
 
@@ -291,6 +359,7 @@ def search_pois(
     tags: list[str] | None = None,
     budget_max: int | None = None,
     dietary_restrictions: list[str] | None = None,
+    group_type: str | None = None,
     max_results: int = 20,
 ) -> list[dict]:
     """
@@ -329,8 +398,20 @@ def search_pois(
                 filtered.append(p)
         results = filtered
 
-    # Sort by foreignFriendly score (best experience for tourists first)
-    results.sort(key=lambda p: (-p.get("foreignFriendly", 0), p.get("name", "")))
+    def group_penalty(poi: dict) -> int:
+        suitable_for = poi.get("suitableFor") or []
+        if not group_type or not suitable_for:
+            return 0
+        return 0 if group_type in suitable_for else 1
+
+    # Sort by profile fit first, then foreignFriendly score.
+    results.sort(
+        key=lambda p: (
+            group_penalty(p),
+            -(p.get("foreignFriendly") or 0),
+            p.get("name", ""),
+        )
+    )
     return [_slim(p) for p in results[:max_results]]
 
 
@@ -367,21 +448,22 @@ def get_poi_details(poi_id: str) -> dict | None:
 def get_transit_time(from_poi_id: str, to_poi_id: str) -> int:
     """
     Return the fastest transit time in minutes between two POIs.
-    Returns 20 minutes as a sensible default if the route is not in the database.
+    Uses curated connections first, then estimates from POI coordinates.
     """
     matches = [
         c for c in POI_CONNECTIONS
         if (c["from"] == from_poi_id and c["to"] == to_poi_id)
         or (c["from"] == to_poi_id   and c["to"] == from_poi_id)
     ]
-    return min((c["duration"] for c in matches), default=20)
+    if matches:
+        return min(c["duration"] for c in matches)
+    return estimate_transit_minutes(from_poi_id, to_poi_id)
 
 
 def get_transit_info(from_poi_id: str | None, to_poi_id: str | None) -> dict | None:
     """
     Return the full connection record (mode, duration, distanceKm, notes) between
-    two POIs, if the curated dataset has one. Used to enrich the response with
-    real transit detail instead of just a duration estimate.
+    two POIs. Uses curated connections first, then estimates from POI coordinates.
     """
     if not from_poi_id or not to_poi_id:
         return None
@@ -391,7 +473,7 @@ def get_transit_info(from_poi_id: str | None, to_poi_id: str | None) -> dict | N
         or (c["from"] == to_poi_id   and c["to"] == from_poi_id)
     ]
     if not matches:
-        return None
+        return _estimated_transit_info(from_poi_id, to_poi_id)
     return min(matches, key=lambda c: c["duration"])
 
 

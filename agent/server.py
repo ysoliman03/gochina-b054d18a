@@ -103,6 +103,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from models import ItineraryRequest, ItineraryResult, StopOut, DayOut
 from agent import agent       # the Pydantic AI agent we built in agent.py
+from itinerary_repair import normalize_itinerary
+from prompting import build_itinerary_prompt
 from tools import enrich_stop # helper to add full POI data to each stop
 
 # ── App setup ────────────────────────────────────────────────────────────────
@@ -170,6 +172,7 @@ Required dayIndex values: {required_days}
 Each day needs at least {min_stops} stops (including 1 dinner restaurant).
 Do not stop early. Do not skip any dayIndex.
 """.strip()
+    prompt = build_itinerary_prompt(request)
 
     try:
         # ── THIS IS THE CORE PYDANTIC AI CALL ──────────────────────────────
@@ -187,6 +190,8 @@ Do not stop early. Do not skip any dayIndex.
         # before the exception propagates.
         otel_trace.get_tracer_provider().force_flush()  # type: ignore[union-attr]
 
+    normalized_output = normalize_itinerary(request, result.output)
+
     # Enrich each stop with full POI data (description, tips, etc.)
     # The agent only returned the scheduling info — this merges in everything else.
     enriched_days: list[DayOut] = []
@@ -199,7 +204,7 @@ Do not stop early. Do not skip any dayIndex.
         except ValueError:
             pass
 
-    for day in result.output.days:
+    for day in normalized_output.days:
         stops = [
             StopOut(**enrich_stop(
                 s.id,
@@ -218,8 +223,8 @@ Do not stop early. Do not skip any dayIndex.
         enriched_days.append(DayOut(dayIndex=day.dayIndex, date=day_date, stops=stops))
 
     return ItineraryResult(
-        cityId=result.output.cityId,
+        cityId=normalized_output.cityId,
         days=enriched_days,
-        summary=result.output.summary,
-        tips=result.output.tips,
+        summary=normalized_output.summary,
+        tips=normalized_output.tips,
     )

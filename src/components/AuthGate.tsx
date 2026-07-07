@@ -41,10 +41,10 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
           trip: tripRow
             ? {
                 cities: tripRow.cities ?? [],
-                currentCityId: tripRow.current_city_id ?? "BJ",
+                currentCityId: tripRow.current_city_id || tripRow.cities?.[0]?.cityId || "",
                 itinerary: tripRow.itinerary ?? {},
               }
-            : { cities: [], currentCityId: "BJ", itinerary: {} },
+            : { cities: [], currentCityId: "", itinerary: {} },
           savedPois: snap.saved,
           digitalTools: snap.tools,
           recentActivity: snap.activity,

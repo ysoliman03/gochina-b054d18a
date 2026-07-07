@@ -14,7 +14,7 @@ import {
   TrainFront,
   Check,
 } from "lucide-react";
-import { useEffect, useMemo, useState, type SyntheticEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type SyntheticEvent } from "react";
 import { cuisine } from "@/data/generated/cuisine";
 import type { CuisineDish, TransportHub } from "@/data/types";
 import {
@@ -25,6 +25,7 @@ import {
 } from "@/lib/contentMedia";
 import { dishMatchesProfile } from "@/lib/foodCompatibility";
 import { scorePoi } from "@/engine/itineraryEngine";
+import { getActiveConstraints } from "@/engine/constraintEngine";
 import {
   formatBestTime,
   formatOpeningHours,
@@ -56,6 +57,8 @@ const FILTERS = [
   { id: "attraction", label: "Attraction" },
   { id: "experience", label: "Experience" },
   { id: "restaurant", label: "Restaurant" },
+  { id: "shopping", label: "Shopping" },
+  { id: "nightlife", label: "Nightlife" },
 ];
 
 const CATEGORY_LABEL: Record<string, string> = {
@@ -122,81 +125,238 @@ function hubTypeLabel(hub: TransportHub) {
   return "Transport hub";
 }
 
+const ALL_CITY_IDS = Object.keys(cities);
+const SEVERITY_RANK: Record<string, number> = { avoid: 3, warning: 2, info: 1 };
+
+function todayKey() {
+  const d = new Date();
+  const month = `${d.getMonth() + 1}`.padStart(2, "0");
+  const day = `${d.getDate()}`.padStart(2, "0");
+  return `${d.getFullYear()}-${month}-${day}`;
+}
+
+function CityFilterChips({
+  selectedCityIds,
+  onToggle,
+  onClear,
+  compact = false,
+}: {
+  selectedCityIds: string[];
+  onToggle: (id: string) => void;
+  onClear: () => void;
+  compact?: boolean;
+}) {
+  const isAll = selectedCityIds.length === 0;
+  const sizeClasses = compact ? "px-3 py-1 text-xs" : "px-4 py-2 text-sm";
+  return (
+    <div className="flex gap-2 overflow-x-auto no-scrollbar">
+      <button
+        onClick={onClear}
+        className={
+          `${sizeClasses} rounded-full font-medium whitespace-nowrap border transition-colors ` +
+          (isAll
+            ? "bg-primary text-primary-foreground border-primary"
+            : "bg-card text-foreground border-border hover:bg-muted")
+        }
+      >
+        All Cities
+      </button>
+      {Object.values(cities).map((c: any) => {
+        const active = selectedCityIds.includes(c.id);
+        return (
+          <button
+            key={c.id}
+            onClick={() => onToggle(c.id)}
+            className={
+              `${sizeClasses} rounded-full font-medium whitespace-nowrap border transition-colors ` +
+              (active
+                ? "bg-primary text-primary-foreground border-primary"
+                : "bg-card text-foreground border-border hover:bg-muted")
+            }
+          >
+            {c.name}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/** POIs with a travel constraint (closure/crowd/holiday/etc.) active today, across all cities. */
+function buildActivePoiWarnings() {
+  const today = todayKey();
+  const map = new Map<string, "avoid" | "warning" | "info">();
+  for (const cityId of ALL_CITY_IDS) {
+    for (const constraint of getActiveConstraints(cityId, { start: today, end: today })) {
+      if (!constraint.poiId) continue;
+      const severity = (constraint.severity as "avoid" | "warning" | "info") || "info";
+      const existing = map.get(constraint.poiId);
+      if (!existing || SEVERITY_RANK[severity] > SEVERITY_RANK[existing]) {
+        map.set(constraint.poiId, severity);
+      }
+    }
+  }
+  return map;
+}
+
 function Explore() {
   const search = Route.useSearch();
   const trip = useAppStore((s) => s.trip);
   const savedPois = useAppStore((s) => s.savedPois);
   const toggleSavePoi = useAppStore((s) => s.toggleSavePoi);
-  const addPOIToDay = useAppStore((s) => s.addPOIToDay);
+  const addPOIToBestDay = useAppStore((s) => s.addPOIToBestDay);
   const updateTrip = useAppStore((s) => s.updateTrip);
   const profile = useAppStore((s) => s.profile);
-  const [filter, setFilter] = useState(() =>
-    search.category && FILTERS.some((f) => f.id === search.category) ? search.category : "all",
+  const [categoryFilters, setCategoryFilters] = useState<string[]>(() =>
+    search.category && FILTERS.some((f) => f.id === search.category) ? [search.category] : [],
   );
+  const [selectedCityIds, setSelectedCityIds] = useState<string[]>([]);
   const [selectedDishId, setSelectedDishId] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const cityFilterTouched = useRef(false);
+  const poiWarnings = useMemo(() => buildActivePoiWarnings(), []);
 
   const linkedPoi: any = search.poi ? (pois as any)[search.poi] : null;
+  const hasTrips = trip.cities.length > 0;
   const requestedCityId =
     linkedPoi && isKnownCityId(linkedPoi.cityId)
       ? linkedPoi.cityId
       : isKnownCityId(search.city)
         ? search.city
         : undefined;
-  const currentCityId =
-    requestedCityId ?? (isKnownCityId(trip.currentCityId) ? trip.currentCityId : "BJ");
-  const city = (cities as any)[currentCityId];
   const selected: any = selectedId ? (pois as any)[selectedId] : null;
 
   // Deep-link support: /explore?city=SH&category=restaurant switches city + filter on arrival.
   useEffect(() => {
     if (requestedCityId && requestedCityId !== trip.currentCityId) {
       updateTrip({ currentCityId: requestedCityId });
-    } else if (!isKnownCityId(trip.currentCityId) && currentCityId !== trip.currentCityId) {
-      updateTrip({ currentCityId });
+    } else if (
+      requestedCityId &&
+      !isKnownCityId(trip.currentCityId) &&
+      requestedCityId !== trip.currentCityId
+    ) {
+      updateTrip({ currentCityId: requestedCityId });
+    }
+    if (requestedCityId) {
+      cityFilterTouched.current = true;
+      setSelectedCityIds([requestedCityId]);
     }
     if (search.category && FILTERS.some((f) => f.id === search.category)) {
-      setFilter(search.category);
+      setCategoryFilters([search.category]);
     }
     if (linkedPoi && search.poi) {
       setSelectedId(search.poi);
     }
-  }, [
-    currentCityId,
-    linkedPoi,
-    requestedCityId,
-    search.category,
-    search.poi,
-    trip.currentCityId,
-    updateTrip,
-  ]);
+  }, [linkedPoi, requestedCityId, search.category, search.poi, trip.currentCityId, updateTrip]);
+
+  // Default to the traveler's active trip city (existing behavior) — but only once,
+  // and only if the deep-link effect above hasn't already claimed a city. With no
+  // active trip yet, the filter stays empty ("all cities") so the default/discovery
+  // view shows everything China has to offer.
+  useEffect(() => {
+    if (cityFilterTouched.current || requestedCityId) return;
+    if (hasTrips && isKnownCityId(trip.currentCityId)) {
+      setSelectedCityIds([trip.currentCityId]);
+    }
+  }, [hasTrips, requestedCityId, trip.currentCityId]);
+
+  function toggleCityFilter(id: string) {
+    cityFilterTouched.current = true;
+    setSelectedCityIds((current) =>
+      current.includes(id) ? current.filter((c) => c !== id) : [...current, id],
+    );
+  }
+
+  function clearCityFilter() {
+    cityFilterTouched.current = true;
+    setSelectedCityIds([]);
+  }
+
+  function toggleCategoryFilter(id: string) {
+    if (id === "all") {
+      setCategoryFilters([]);
+      return;
+    }
+    setCategoryFilters((current) =>
+      current.includes(id) ? current.filter((c) => c !== id) : [...current, id],
+    );
+  }
+
+  const isAllCities = selectedCityIds.length === 0;
+  const activeCityIds = isAllCities ? ALL_CITY_IDS : selectedCityIds;
+  const singleCityId = selectedCityIds.length === 1 ? selectedCityIds[0] : undefined;
+  const singleCity = singleCityId ? (cities as any)[singleCityId] : null;
+
+  // Transport Hubs and Compatible Flavors each get their own independent city
+  // filter — separate from the POI/map filter above — so a traveler can browse
+  // e.g. hubs in Beijing while cuisine still shows everywhere.
+  const [hubCityIds, setHubCityIds] = useState<string[]>([]);
+  const [cuisineCityIds, setCuisineCityIds] = useState<string[]>([]);
+  const hubFilterTouched = useRef(false);
+  const cuisineFilterTouched = useRef(false);
+
+  useEffect(() => {
+    if (hubFilterTouched.current) return;
+    if (hasTrips && isKnownCityId(trip.currentCityId)) setHubCityIds([trip.currentCityId]);
+  }, [hasTrips, trip.currentCityId]);
+
+  useEffect(() => {
+    if (cuisineFilterTouched.current) return;
+    if (hasTrips && isKnownCityId(trip.currentCityId)) setCuisineCityIds([trip.currentCityId]);
+  }, [hasTrips, trip.currentCityId]);
+
+  function toggleHubCity(id: string) {
+    hubFilterTouched.current = true;
+    setHubCityIds((current) => (current.includes(id) ? current.filter((c) => c !== id) : [...current, id]));
+  }
+  function clearHubCity() {
+    hubFilterTouched.current = true;
+    setHubCityIds([]);
+  }
+  function toggleCuisineCity(id: string) {
+    cuisineFilterTouched.current = true;
+    setCuisineCityIds((current) =>
+      current.includes(id) ? current.filter((c) => c !== id) : [...current, id],
+    );
+  }
+  function clearCuisineCity() {
+    cuisineFilterTouched.current = true;
+    setCuisineCityIds([]);
+  }
+
+  const hubActiveCityIds = hubCityIds.length === 0 ? ALL_CITY_IDS : hubCityIds;
+  const cuisineActiveCityIds = cuisineCityIds.length === 0 ? ALL_CITY_IDS : cuisineCityIds;
 
   const cityPois = useMemo(
-    () => Object.values(pois).filter((p: any) => p.cityId === currentCityId),
-    [currentCityId],
+    () => Object.values(pois).filter((p: any) => activeCityIds.includes(p.cityId)),
+    [activeCityIds],
   );
 
   const filtered = useMemo(() => {
-    const list = filter === "all" ? cityPois : cityPois.filter((p: any) => p.category === filter);
+    const list =
+      categoryFilters.length === 0
+        ? cityPois
+        : cityPois.filter((p: any) => categoryFilters.includes(p.category));
     // Surface POIs that actually match this traveler's interests/budget/group type first.
     return [...list].sort((a: any, b: any) => scorePoi(b, profile) - scorePoi(a, profile));
-  }, [cityPois, filter, profile]);
+  }, [cityPois, categoryFilters, profile]);
 
   const cityTransportHubs = useMemo(
-    () => transportHubs.filter((hub) => hub.cityId === currentCityId),
-    [currentCityId],
+    () => transportHubs.filter((hub) => hubActiveCityIds.includes(hub.cityId)),
+    [hubActiveCityIds],
   );
 
   const mapMarkers = useMemo(
     () =>
-      filtered.slice(0, 30).map((p: any) => ({
+      filtered.map((p: any) => ({
         id: p.id,
         lat: p.lat,
         lng: p.lng,
         name: p.name,
         category: p.category,
+        warningSeverity: poiWarnings.get(p.id),
       })),
-    [filtered],
+    [filtered, poiWarnings],
   );
 
   function formatDuration(min: number) {
@@ -216,9 +376,9 @@ function Explore() {
   const dietary = profile.dietaryRestrictions || [];
   const filteredDishes = useMemo(() => {
     return cuisine.filter(
-      (dish) => dish.cityId === currentCityId && dishMatchesProfile(dish, profile),
+      (dish) => cuisineActiveCityIds.includes(dish.cityId) && dishMatchesProfile(dish, profile),
     );
-  }, [currentCityId, profile]);
+  }, [cuisineActiveCityIds, profile]);
   const selectedDish = selectedDishId
     ? cuisine.find((dish) => dish.id === selectedDishId) || null
     : null;
@@ -234,7 +394,7 @@ function Explore() {
     <MobileShell>
       <header className="px-5 pt-8 pb-3 flex items-end justify-between gap-3">
         <h1 className="text-2xl font-bold text-foreground leading-tight">
-          Discover in {city?.name}
+          Discover in {singleCity ? singleCity.name : "China"}
         </h1>
         <Link
           to="/itinerary"
@@ -244,13 +404,21 @@ function Explore() {
         </Link>
       </header>
 
+      <div className="px-5 pb-3">
+        <CityFilterChips
+          selectedCityIds={selectedCityIds}
+          onToggle={toggleCityFilter}
+          onClear={clearCityFilter}
+        />
+      </div>
+
       <div className="px-5 pb-3 flex gap-2 overflow-x-auto no-scrollbar">
         {FILTERS.map((f) => {
-          const active = filter === f.id;
+          const active = f.id === "all" ? categoryFilters.length === 0 : categoryFilters.includes(f.id);
           return (
             <button
               key={f.id}
-              onClick={() => setFilter(f.id)}
+              onClick={() => toggleCategoryFilter(f.id)}
               className={
                 "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap border transition-colors " +
                 (active
@@ -266,7 +434,7 @@ function Explore() {
 
       <div className="px-5 pb-4">
         <CityMap
-          center={{ lat: city?.lat ?? 39.9, lng: city?.lng ?? 116.4 }}
+          center={{ lat: singleCity?.lat ?? 35.8617, lng: singleCity?.lng ?? 104.1954 }}
           markers={mapMarkers}
           className="h-64"
           onMarkerClick={(id) => setSelectedId(id)}
@@ -281,9 +449,8 @@ function Explore() {
         <div className="flex gap-3 overflow-x-auto no-scrollbar pr-5 snap-x snap-mandatory">
           {filtered.map((p: any) => {
             const saved = savedPois.includes(p.id);
-            const dayIdx = (trip.itinerary[currentCityId] || []).length - 1;
             const isHighlighted = p.id === selectedId;
-            const inTrip = isPoiInTrip(trip, currentCityId, p.id);
+            const inTrip = isPoiInTrip(trip, p.cityId, p.id);
             const imageSrc = getPoiImageSrc(p);
             const fallbackEmoji = getPoiFallbackEmoji(p);
             return (
@@ -347,7 +514,7 @@ function Explore() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      if (!inTrip) addPOIToDay(currentCityId, Math.max(0, dayIdx), p);
+                      if (!inTrip) addPOIToBestDay(p.cityId, p);
                     }}
                     disabled={inTrip}
                     className={
@@ -374,14 +541,24 @@ function Explore() {
         </div>
       </section>
 
-      {cityTransportHubs.length > 0 && (
-        <section className="px-5 pb-8">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-xl font-bold text-foreground">Transport Hubs</h2>
-            <span className="text-sm text-muted-foreground">
-              {cityTransportHubs.length} options
-            </span>
-          </div>
+      <section className="px-5 pb-8">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-xl font-bold text-foreground">Transport Hubs</h2>
+          <span className="text-sm text-muted-foreground">{cityTransportHubs.length} options</span>
+        </div>
+        <div className="mb-3">
+          <CityFilterChips
+            selectedCityIds={hubCityIds}
+            onToggle={toggleHubCity}
+            onClear={clearHubCity}
+            compact
+          />
+        </div>
+        {cityTransportHubs.length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-6">
+            No transport hubs in this selection yet.
+          </p>
+        ) : (
           <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
             {cityTransportHubs.slice(0, 6).map((hub) => {
               const HubIcon = hub.type === "airport" ? Plane : TrainFront;
@@ -418,18 +595,26 @@ function Explore() {
               );
             })}
           </div>
-        </section>
-      )}
+        )}
+      </section>
 
       <section className="px-5 pb-8">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-xl font-bold text-foreground">Compatible Flavors</h2>
           <Link
-            to="/explore"
+            to="/guides/food"
             className="text-sm font-medium text-primary inline-flex items-center gap-1"
           >
             Full Guide <ArrowRight className="w-4 h-4" />
           </Link>
+        </div>
+        <div className="mb-3">
+          <CityFilterChips
+            selectedCityIds={cuisineCityIds}
+            onToggle={toggleCuisineCity}
+            onClear={clearCuisineCity}
+            compact
+          />
         </div>
         {dietaryLabel && (
           <div className="mb-3 text-sm text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-2.5">
@@ -588,7 +773,7 @@ function Explore() {
                     fill={savedPois.includes(selected.id) ? "currentColor" : "none"}
                   />
                 </button>
-                {isPoiInTrip(trip, selected.cityId || currentCityId, selected.id) ? (
+                {isPoiInTrip(trip, selected.cityId, selected.id) ? (
                   <button
                     disabled
                     className="flex-1 h-11 rounded-full bg-secondary text-secondary-foreground font-semibold text-sm inline-flex items-center justify-center gap-1.5 cursor-default"
@@ -598,11 +783,7 @@ function Explore() {
                 ) : (
                   <button
                     onClick={() => {
-                      const dayIdx = Math.max(
-                        0,
-                        (trip.itinerary[selected.cityId || currentCityId] || []).length - 1,
-                      );
-                      addPOIToDay(selected.cityId || currentCityId, dayIdx, selected);
+                      addPOIToBestDay(selected.cityId, selected);
                       setSelectedId(null);
                     }}
                     className="flex-1 h-11 rounded-full bg-primary text-primary-foreground font-semibold text-sm inline-flex items-center justify-center gap-1.5 hover:bg-primary/90"
@@ -710,15 +891,15 @@ function Explore() {
 
       {selectedDish && (
         <div
-          className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center"
+          className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center px-4 pt-6 pb-24"
           onClick={() => setSelectedDishId(null)}
         >
           <div
-            className="w-full max-w-md bg-background rounded-t-3xl max-h-[85dvh] overflow-y-auto overscroll-contain pb-8 animate-in slide-in-from-bottom duration-200"
+            className="w-full max-w-md bg-background rounded-2xl max-h-[calc(100dvh-7rem)] overflow-y-auto overscroll-contain pb-8 shadow-2xl animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             <div
-              className={`relative h-40 bg-gradient-to-br ${cuisineGradient(selectedDish)} overflow-hidden rounded-t-3xl`}
+              className={`relative h-40 bg-gradient-to-br ${cuisineGradient(selectedDish)} overflow-hidden rounded-t-2xl`}
             >
               <div
                 className="absolute inset-0 flex items-center justify-center text-6xl"
@@ -767,7 +948,6 @@ function Explore() {
                 <div className="mt-3 flex flex-col gap-2.5">
                   {dishRestaurants.map((r: any) => {
                     const isSaved = savedPois.includes(r.id);
-                    const dayIdx = (trip.itinerary[r.cityId] || []).length - 1;
                     const inTrip = isPoiInTrip(trip, r.cityId, r.id);
                     const restaurantImageSrc = getPoiImageSrc(r);
                     return (
@@ -810,7 +990,7 @@ function Explore() {
                         </button>
                         <button
                           onClick={() => {
-                            if (!inTrip) addPOIToDay(r.cityId, Math.max(0, dayIdx), r);
+                            if (!inTrip) addPOIToBestDay(r.cityId, r);
                           }}
                           disabled={inTrip}
                           className={

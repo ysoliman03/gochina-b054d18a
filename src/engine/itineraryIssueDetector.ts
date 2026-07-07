@@ -31,6 +31,8 @@ export type ItineraryIssueType =
   | "active_constraint"
   | "poi_caution"
   | "poi_tip"
+  | "over_budget"
+  | "unsuitable_group"
   | "best_time_mismatch"
   | "idle_gap";
 
@@ -54,6 +56,8 @@ export type ItineraryIssueDatasetSource =
   | "visitor_tips"
   | "caution_notes"
   | "best_time_of_day"
+  | "price_level"
+  | "suitable_for"
   | "duration"
   | "constraint"
   | "derived";
@@ -101,19 +105,22 @@ export function parseClockTimeToMinutes(value: string): number | null {
   if (!match) return null;
   const h = Number(match[1]);
   const m = Number(match[2]);
-  if (Number.isNaN(h) || Number.isNaN(m) || h > 24 || m > 59) return null;
+  if (Number.isNaN(h) || Number.isNaN(m) || m > 59) return null;
+  if (h === 24) return m === 0 ? 23 * 60 + 59 : null;
+  if (h > 23) return null;
   return h * 60 + m;
 }
 
 function parseHoursWindow(hours: string | undefined): { open: number; close: number } | null {
   if (!hours) return null;
-  if (hours === "24h") return { open: 0, close: 24 * 60 };
+  if (hours === "24h") return { open: 0, close: 23 * 60 + 59 };
   const parts = hours.split("-");
   if (parts.length !== 2) return null;
   const open = parseClockTimeToMinutes(parts[0]);
   const close = parseClockTimeToMinutes(parts[1]);
-  if (open == null || close == null || close <= open) return null;
-  return { open, close };
+  if (open == null || close == null) return null;
+  if (close <= open) return open < 23 * 60 + 59 ? { open, close: 23 * 60 + 59 } : null;
+  return { open, close: Math.min(close, 23 * 60 + 59) };
 }
 
 export function getStopStartMinutes(stop: ItineraryStop): number | null {
@@ -199,6 +206,20 @@ function paceMajorStopLimit(pace: string | undefined): number {
   return 4; // moderate / unset
 }
 
+function budgetPriceCeiling(budget: string | undefined): number | null {
+  if (!budget) return null;
+  if (budget === "budget") return 1;
+  if (budget === "mid") return 2;
+  if (budget === "luxury") return 5;
+  return null;
+}
+
+function matchesGroupType(poi: POI, groupType: string | undefined): boolean {
+  if (!groupType || !poi.suitableFor?.length) return true;
+  const normalizedGroup = groupType.toLowerCase();
+  return poi.suitableFor.some((value) => value.toLowerCase() === normalizedGroup);
+}
+
 const LUNCH_WINDOW = { start: 11 * 60 + 30, end: 14 * 60 };
 const DINNER_WINDOW = { start: 18 * 60, end: 20 * 60 + 30 };
 
@@ -221,6 +242,8 @@ const PRIORITY_ORDER: ItineraryIssueType[] = [
   "schedule_too_tight",
   "long_transfer",
   "too_many_stops",
+  "over_budget",
+  "unsuitable_group",
   "poi_caution",
   "best_time_mismatch",
   "missing_meal",
@@ -521,6 +544,49 @@ export function detectItineraryIssues(args: {
   }
 
   // ── POI caution notes (capped) ───────────────────────────────────────
+  // Budget and group fit come directly from POIs.price and POIs.suitable_for.
+  const priceCeiling = budgetPriceCeiling(profile?.budget);
+  for (const stop of stops) {
+    const poi = getPoiById(stop.id);
+    if (!poi) continue;
+
+    if (priceCeiling != null && typeof poi.price === "number" && poi.price > priceCeiling) {
+      issues.push({
+        id: makeId(dayIndex, "over_budget", stop.id),
+        type: "over_budget",
+        severity: "warning",
+        dayIndex,
+        stopId: stop.id,
+        poiId: stop.id,
+        poiName: poi.name,
+        stopTitle: poi.name,
+        stopTime: formatStopTime(stop),
+        title: "Above your budget preference",
+        message: `${poi.name} has price level ${poi.price}, above your selected ${profile?.budget} budget.`,
+        datasetSource: "price_level",
+        suggestedFixes: [{ label: "Replace stop", action: "replace_stop" }],
+      });
+    }
+
+    if (!matchesGroupType(poi, profile?.groupType)) {
+      issues.push({
+        id: makeId(dayIndex, "unsuitable_group", stop.id),
+        type: "unsuitable_group",
+        severity: "info",
+        dayIndex,
+        stopId: stop.id,
+        poiId: stop.id,
+        poiName: poi.name,
+        stopTitle: poi.name,
+        stopTime: formatStopTime(stop),
+        title: "May not fit your travel group",
+        message: `${poi.name} is listed as suitable for ${poi.suitableFor.join(", ")}, not ${profile?.groupType}.`,
+        datasetSource: "suitable_for",
+        suggestedFixes: [{ label: "Replace stop", action: "replace_stop" }],
+      });
+    }
+  }
+
   let cautionCount = 0;
   for (const stop of stops) {
     if (cautionCount >= MAX_CAUTION_ISSUES) break;
