@@ -342,27 +342,16 @@ function sourceLabel(constraint: TravelConstraint) {
 
 export function TravelPulseCalendar({ cityId, trip }: TravelPulseCalendarProps) {
   const [openedToday] = useState(() => new Date());
+  const tripCityIds = useMemo(
+    () => new Set((trip?.cities || []).map((city) => city.cityId)),
+    [trip?.cities],
+  );
   const activeTripCity = useMemo(() => {
-    if (!trip?.cities?.length) return null;
-    return trip.cities.find((city) => city.cityId === cityId) ?? trip.cities[0] ?? null;
+    if (!trip?.cities?.length || !cityId) return null;
+    return trip.cities.find((city) => city.cityId === cityId) ?? null;
   }, [cityId, trip?.cities]);
-  const hasGeneratedTrip = !!activeTripCity;
-  const activeCityId = hasGeneratedTrip ? activeTripCity?.cityId : cityId || null;
-  const plannedPoiIds = useMemo(() => {
-    const ids = new Set<string>();
-    if (!trip?.itinerary) return ids;
-
-    const cityIds = activeCityId ? [activeCityId] : Object.keys(trip.itinerary);
-    for (const id of cityIds) {
-      for (const day of trip.itinerary[id] || []) {
-        for (const stop of day.stops || []) {
-          if (stop.id) ids.add(stop.id);
-        }
-      }
-    }
-    return ids;
-  }, [activeCityId, trip?.itinerary]);
-
+  const hasGeneratedTrip = !!trip?.cities?.length;
+  const activeCityId = cityId ? activeTripCity?.cityId || cityId : null;
   const preferredDate = openedToday;
 
   const [month, setMonth] = useState(() => getMonthStart(preferredDate));
@@ -385,12 +374,19 @@ export function TravelPulseCalendar({ cityId, trip }: TravelPulseCalendarProps) 
   const relevantConstraints = useMemo(() => {
     return constraints.filter((constraint) => {
       if (!isUsefulCalendarConstraint(constraint)) return false;
+      if (constraint.poiId) return false;
       if (activeCityId && constraint.cityId && constraint.cityId !== activeCityId) return false;
-      if (!activeCityId && constraint.cityId && hasGeneratedTrip) return false;
-      if (!constraint.poiId) return true;
-      return plannedPoiIds.has(constraint.poiId);
+      if (
+        !activeCityId &&
+        hasGeneratedTrip &&
+        constraint.cityId &&
+        !tripCityIds.has(constraint.cityId)
+      ) {
+        return false;
+      }
+      return true;
     });
-  }, [activeCityId, hasGeneratedTrip, plannedPoiIds]);
+  }, [activeCityId, hasGeneratedTrip, tripCityIds]);
 
   const constraintsByDate = useMemo(() => {
     const grouped = new Map<string, TravelConstraint[]>();
@@ -410,7 +406,11 @@ export function TravelPulseCalendar({ cityId, trip }: TravelPulseCalendarProps) 
   const monthConstraintCount = new Set(
     [...constraintsByDate.values()].flat().map((constraint) => constraint.id),
   ).size;
-  const cityName = activeCityId ? (cities as any)[activeCityId]?.name || activeCityId : "All cities";
+  const cityName = activeCityId
+    ? (cities as any)[activeCityId]?.name || activeCityId
+    : hasGeneratedTrip
+      ? "Trip cities"
+      : "All cities";
 
   function toggleConstraint(id: string) {
     setExpandedConstraintIds((current) => {
@@ -577,7 +577,7 @@ export function TravelPulseCalendar({ cityId, trip }: TravelPulseCalendarProps) 
             <div className="rounded-xl border border-border bg-muted/40 p-4 flex items-start gap-3">
               <CalendarDays className="w-5 h-5 text-muted-foreground mt-0.5" />
               <p className="text-sm text-muted-foreground">
-                No city or itinerary travel constraints are active for this date.
+                No city travel constraints are active for this date.
               </p>
             </div>
           )}

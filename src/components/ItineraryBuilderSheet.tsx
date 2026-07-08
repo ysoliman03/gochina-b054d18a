@@ -4,7 +4,7 @@
  * A bottom sheet with a smart form that calls the Pydantic AI agent to
  * generate a personalised itinerary, then imports it into the Zustand store.
  */
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Sheet,
   SheetContent,
@@ -13,6 +13,7 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { useAppStore } from "@/store/useAppStore";
+import type { TripCity } from "@/store/useAppStore";
 import { cities } from "@/data/generated/cities";
 import { Sparkles, Loader2, CheckCircle2, AlertCircle, ChevronRight } from "lucide-react";
 
@@ -101,6 +102,54 @@ function daysFromNow(n: number) {
   return new Date(Date.now() + n * 86400000).toISOString().split("T")[0];
 }
 
+function addDays(dateStr: string, n: number) {
+  const date = new Date(`${dateStr}T00:00:00`);
+  date.setDate(date.getDate() + n);
+  return date.toISOString().split("T")[0];
+}
+
+function dateValue(dateStr: string) {
+  const value = new Date(`${dateStr}T00:00:00`).getTime();
+  return Number.isFinite(value) ? value : null;
+}
+
+function formatDateRange(startDate: string, endDate: string) {
+  if (!startDate || !endDate) return "";
+  return `${formatDisplayDate(startDate)} - ${formatDisplayDate(endDate)}`;
+}
+
+function getNextAvailableStart(plannedCities: TripCity[]) {
+  const today = todayStr();
+  const latestEnd = plannedCities
+    .map((city) => city.endDate)
+    .filter(Boolean)
+    .sort()
+    .at(-1);
+  if (!latestEnd || latestEnd < today) return today;
+  return addDays(latestEnd, 1);
+}
+
+function findDateOverlap(
+  plannedCities: TripCity[],
+  startDate: string,
+  endDate: string,
+  ignoredCityId?: string,
+) {
+  const start = dateValue(startDate);
+  const end = dateValue(endDate);
+  if (start == null || end == null || end < start) return null;
+
+  return (
+    plannedCities.find((city) => {
+      if (city.cityId === ignoredCityId) return false;
+      const cityStart = dateValue(city.startDate);
+      const cityEnd = dateValue(city.endDate);
+      if (cityStart == null || cityEnd == null) return false;
+      return start <= cityEnd && end >= cityStart;
+    }) ?? null
+  );
+}
+
 // ── Component ──────────────────────────────────────────────────────────────
 interface Props {
   open: boolean;
@@ -113,12 +162,13 @@ export function ItineraryBuilderSheet({ open, onOpenChange }: Props) {
   const setItinerary = useAppStore((s) => s.setItinerary);
   const updateTrip = useAppStore((s) => s.updateTrip);
 
-  const defaultCityId = trip.cities.length ? trip.currentCityId : "";
-  const existingDays = trip.cities.find((c) => c.cityId === trip.currentCityId)?.days ?? 3;
+  const defaultStartDate = getNextAvailableStart(trip.cities);
+  const defaultDayCount = 3;
+  const existingDays = defaultDayCount;
 
   const [form, setForm] = useState<FormState>({
-    cityId: defaultCityId,
-    startDate: todayStr(),
+    cityId: "",
+    startDate: defaultStartDate,
     endDate: daysFromNow(existingDays - 1),  // e.g. 3-day trip → today + 2 days
     pace: profile.pace,
     budget: profile.budget,
@@ -130,12 +180,53 @@ export function ItineraryBuilderSheet({ open, onOpenChange }: Props) {
   const [status, setStatus] = useState<Status>("idle");
   const [result, setResult] = useState<AgentResult | null>(null);
   const [error, setError] = useState("");
+  const dateOverlap = useMemo(
+    () => findDateOverlap(trip.cities, form.startDate, form.endDate, form.cityId),
+    [form.cityId, form.endDate, form.startDate, trip.cities],
+  );
+  const selectedExistingCity = trip.cities.find((city) => city.cityId === form.cityId) ?? null;
+  const hasInvalidDates = !form.startDate || !form.endDate || form.endDate < form.startDate;
+  const generateDisabled = status === "loading" || !form.cityId || hasInvalidDates || !!dateOverlap;
+
+  useEffect(() => {
+    if (!open) return;
+    const nextStart = getNextAvailableStart(trip.cities);
+    setForm({
+      cityId: "",
+      startDate: nextStart,
+      endDate: addDays(nextStart, defaultDayCount - 1),
+      pace: profile.pace,
+      budget: profile.budget,
+      interests: [...profile.interests],
+      dietaryRestrictions: [...profile.dietaryRestrictions],
+      notes: "",
+    });
+    setStatus("idle");
+    setResult(null);
+    setError("");
+  }, [open]);
 
   // ── Submit ──────────────────────────────────────────────────────────────
   async function handleGenerate() {
     if (!form.cityId) {
       setStatus("error");
       setError("Choose a destination city first.");
+      return;
+    }
+    if (hasInvalidDates) {
+      setStatus("error");
+      setError("Choose a valid start and end date.");
+      return;
+    }
+    if (dateOverlap) {
+      const overlapCity = (cities as any)[dateOverlap.cityId];
+      setStatus("error");
+      setError(
+        `These dates overlap with ${overlapCity?.name || dateOverlap.cityId} (${formatDateRange(
+          dateOverlap.startDate,
+          dateOverlap.endDate,
+        )}). Choose non-overlapping dates.`,
+      );
       return;
     }
     setStatus("loading");
@@ -180,25 +271,34 @@ export function ItineraryBuilderSheet({ open, onOpenChange }: Props) {
   // ── Import into store ────────────────────────────────────────────────────
   function handleImport() {
     if (!result) return;
-
-    // Ensure the city exists in the trip; if not, add it
-    const cityExists = trip.cities.some((c) => c.cityId === result.cityId);
-    if (!cityExists) {
-      updateTrip({
-        cities: [
-          ...trip.cities,
-          {
-            cityId: result.cityId,
-            startDate: form.startDate,   // use the actual dates from the form
-            endDate: form.endDate,
-            days: result.days.length,
-          },
-        ],
-      });
+    const overlap = findDateOverlap(trip.cities, form.startDate, form.endDate, result.cityId);
+    if (overlap) {
+      const overlapCity = (cities as any)[overlap.cityId];
+      setStatus("error");
+      setError(
+        `These dates overlap with ${overlapCity?.name || overlap.cityId} (${formatDateRange(
+          overlap.startDate,
+          overlap.endDate,
+        )}). Choose non-overlapping dates.`,
+      );
+      setResult(null);
+      return;
     }
 
+    const nextCity = {
+      cityId: result.cityId,
+      startDate: form.startDate,
+      endDate: form.endDate,
+      days: result.days.length,
+    };
+    const cityExists = trip.cities.some((c) => c.cityId === result.cityId);
+    const nextCities = (cityExists
+      ? trip.cities.map((city) => (city.cityId === result.cityId ? nextCity : city))
+      : [...trip.cities, nextCity]
+    ).sort((a, b) => a.startDate.localeCompare(b.startDate));
+
     setItinerary(result.cityId, result.days);
-    updateTrip({ currentCityId: result.cityId });
+    updateTrip({ cities: nextCities, currentCityId: result.cityId });
     onOpenChange(false);
   }
 
@@ -215,7 +315,8 @@ export function ItineraryBuilderSheet({ open, onOpenChange }: Props) {
             AI Itinerary Builder
           </SheetTitle>
           <SheetDescription className="text-sm">
-            Describe your trip and the agent will build a personalised day-by-day plan.
+            Generate one city at a time. Add another city with non-overlapping dates to build a
+            multi-city trip.
           </SheetDescription>
         </SheetHeader>
 
@@ -228,12 +329,19 @@ export function ItineraryBuilderSheet({ open, onOpenChange }: Props) {
                 {Object.values(cities).map((c) => (
                   <Chip
                     key={c.id}
-                    label={c.name}
+                    label={`${c.name}${trip.cities.some((city) => city.cityId === c.id) ? " (planned)" : ""}`}
                     active={form.cityId === c.id}
                     onClick={() => setForm((f) => ({ ...f, cityId: c.id }))}
                   />
                 ))}
               </div>
+              {selectedExistingCity && (
+                <p className="text-xs text-muted-foreground">
+                  This will replace the existing{" "}
+                  {(cities as any)[selectedExistingCity.cityId]?.name || selectedExistingCity.cityId}{" "}
+                  itinerary for {formatDateRange(selectedExistingCity.startDate, selectedExistingCity.endDate)}.
+                </p>
+              )}
             </Field>
 
             {/* Travel dates */}
@@ -275,6 +383,30 @@ export function ItineraryBuilderSheet({ open, onOpenChange }: Props) {
                   ? ` · ${formatDisplayDate(form.startDate)} → ${formatDisplayDate(form.endDate)}`
                   : ""}
               </p>
+              {dateOverlap && (
+                <p className="text-xs text-destructive mt-1">
+                  Overlaps with {(cities as any)[dateOverlap.cityId]?.name || dateOverlap.cityId}:{" "}
+                  {formatDateRange(dateOverlap.startDate, dateOverlap.endDate)}.
+                </p>
+              )}
+              {trip.cities.length > 0 && (
+                <div className="mt-3 rounded-xl border border-border bg-muted/40 p-3">
+                  <p className="text-xs font-semibold text-foreground mb-2">
+                    Existing itinerary dates
+                  </p>
+                  <div className="space-y-1">
+                    {trip.cities.map((city) => (
+                      <p key={city.cityId} className="text-xs text-muted-foreground">
+                        <span className="font-medium text-foreground">
+                          {(cities as any)[city.cityId]?.name || city.cityId}
+                        </span>
+                        {" - "}
+                        {formatDateRange(city.startDate, city.endDate)}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              )}
             </Field>
 
             {/* Pace */}
@@ -362,7 +494,7 @@ export function ItineraryBuilderSheet({ open, onOpenChange }: Props) {
             {/* Submit */}
             <button
               onClick={handleGenerate}
-              disabled={status === "loading" || !form.cityId}
+              disabled={generateDisabled}
               className="w-full rounded-xl bg-primary py-4 text-sm font-semibold text-primary-foreground flex items-center justify-center gap-2 disabled:opacity-60"
             >
               {status === "loading" ? (

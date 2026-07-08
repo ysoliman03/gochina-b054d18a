@@ -148,3 +148,21 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+.time-range-input::-webkit-calendar-picker-indicator,
+.time-range-input::-webkit-inner-spin-button,
+.time-range-input::-webkit-clear-button {
+  display: none;
+}
+
+.time-range-input {
+  appearance: none;
+  -webkit-appearance: none;
+  min-width: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.time-range-input::-webkit-datetime-edit,
+.time-range-input::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+}

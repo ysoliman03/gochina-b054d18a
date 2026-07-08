@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Fragment, useMemo, useState } from "react";
+import type { SyntheticEvent } from "react";
 import { MobileShell } from "@/components/MobileShell";
 import { useAppStore } from "@/store/useAppStore";
 import { cities } from "@/data/generated/cities";
@@ -24,6 +25,8 @@ import {
   Car,
   Plane,
   Navigation,
+  CalendarDays,
+  Plus,
 } from "lucide-react";
 
 const TRANSIT_MODE_ICON: Record<string, typeof Car> = {
@@ -44,6 +47,7 @@ import { ItineraryIssuePanel } from "@/components/ItineraryIssuePanel";
 import { detectItineraryIssues } from "@/engine/itineraryIssueDetector";
 import { formatDistanceKm, getGaodeDistanceKm } from "@/lib/gochina/distance";
 import { getGaodeDirectionsUrl } from "@/lib/gochina/gaodeLinks";
+import { getPoiFallbackEmoji, getPoiImageSrc } from "@/lib/contentMedia";
 import type { CityId } from "@/data/types";
 
 const CITY_TRAVEL_MODE_ICON: Record<string, typeof Car> = {
@@ -55,8 +59,39 @@ function resolvePoi(stop: any) {
   return ((pois as any)[stop?.id] ?? stop) as any;
 }
 
+function hideBrokenImage(event: SyntheticEvent<HTMLImageElement>) {
+  event.currentTarget.style.display = "none";
+}
+
 function transitModeLabel(mode: string) {
   return mode.replace(/_/g, " ");
+}
+
+function formatShortDate(dateStr: string | null | undefined) {
+  if (!dateStr) return "";
+  return new Date(`${dateStr}T00:00:00`).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function formatDateRange(startDate: string | null | undefined, endDate: string | null | undefined) {
+  if (!startDate || !endDate) return "Dates not set";
+  return `${formatShortDate(startDate)} - ${formatShortDate(endDate)}`;
+}
+
+function parseTimeInput(value: string) {
+  const [h, m] = value.split(":").map(Number);
+  if (!Number.isFinite(h) || !Number.isFinite(m)) return null;
+  return h * 60 + m;
+}
+
+function getStopDurationMinutes(stop: any) {
+  const duration = Number(stop?.duration);
+  if (Number.isFinite(duration) && duration > 0) return Math.round(duration);
+  const range = Number(stop?.scheduledEnd) - Number(stop?.scheduledStart);
+  if (Number.isFinite(range) && range > 0) return Math.round(range);
+  return 60;
 }
 
 function ItineraryLeg({ from, to }: { from: any; to: any }) {
@@ -197,13 +232,15 @@ function Itinerary() {
           <h1 className="text-2xl font-bold text-foreground">Your Itinerary</h1>
           <p className="text-sm text-muted-foreground">Tap any day to view stops</p>
         </div>
-        <button
-          onClick={() => setBuilderOpen(true)}
-          className="flex items-center gap-1.5 rounded-xl bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground flex-shrink-0 mt-1"
-        >
-          <Wand2 className="w-3.5 h-3.5" />
-          AI Plan
-        </button>
+        {!hasTrips && (
+          <button
+            onClick={() => setBuilderOpen(true)}
+            className="flex items-center gap-1.5 rounded-xl bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground flex-shrink-0 mt-1"
+          >
+            <Wand2 className="w-3.5 h-3.5" />
+            AI Plan
+          </button>
+        )}
       </header>
 
       <div className="px-5 pb-4 flex flex-col gap-2">
@@ -218,6 +255,22 @@ function Itinerary() {
         poi={selectedPoi}
         onClose={() => setSelectedPoi(null)}
       />
+
+      {hasTrips && (
+        <div className="px-5 pb-2 flex items-center justify-between gap-3">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            City itineraries
+          </p>
+          <button
+            type="button"
+            onClick={() => setBuilderOpen(true)}
+            className="h-9 rounded-full bg-primary px-3 text-xs font-semibold text-primary-foreground inline-flex items-center gap-1.5"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            Add AI Itinerary
+          </button>
+        </div>
+      )}
 
       {hasTrips ? (
         <div className="px-5 flex gap-2 pb-3 overflow-x-auto">
@@ -252,6 +305,25 @@ function Itinerary() {
               </div>
             );
           })}
+        </div>
+      ) : null}
+
+      {hasTrips && activeTripCity ? (
+        <div className="px-5 pb-4">
+          <div className="rounded-2xl border border-border bg-card p-3 flex items-start gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+              <CalendarDays className="w-5 h-5" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-foreground">
+                {(cities as any)[activeTripCity.cityId]?.name || activeTripCity.cityId}
+              </p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {formatDateRange(activeTripCity.startDate, activeTripCity.endDate)} -{" "}
+                {activeTripCity.days} days
+              </p>
+            </div>
+          </div>
         </div>
       ) : null}
 
@@ -328,24 +400,43 @@ function Itinerary() {
 
       {hasTrips ? (
         <div className="px-5 flex gap-2 pb-4 overflow-x-auto">
-          {days.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setActiveDay(i)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap ${
-                i === activeDay ? "bg-foreground text-background" : "bg-muted text-foreground"
-              }`}
-            >
-              Day {i + 1}
-            </button>
-          ))}
+          {days.map((day: any, i) => {
+            const dayDate = deriveDayDate(day?.date, activeTripCity?.startDate ?? null, i);
+            return (
+              <button
+                key={i}
+                onClick={() => setActiveDay(i)}
+                className={`min-w-[82px] px-3 py-2 rounded-xl text-sm font-medium whitespace-nowrap ${
+                  i === activeDay ? "bg-foreground text-background" : "bg-muted text-foreground"
+                }`}
+              >
+                <span className="block">Day {i + 1}</span>
+                {dayDate && (
+                  <span
+                    className={
+                      i === activeDay
+                        ? "block text-[11px] text-background/70"
+                        : "block text-[11px] text-muted-foreground"
+                    }
+                  >
+                    {formatShortDate(dayDate)}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
       ) : null}
 
       <section className="px-5">
         {hasTrips ? (
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold">Day {activeDay + 1}</h2>
+            <div>
+              <h2 className="text-lg font-semibold">Day {activeDay + 1}</h2>
+              {activeDayDate && (
+                <p className="text-xs text-muted-foreground">{formatShortDate(activeDayDate)}</p>
+              )}
+            </div>
             {days[activeDay] ? (
               <button
                 onClick={() => replanDay(activeCity, activeDay)}
@@ -379,39 +470,43 @@ function Itinerary() {
         <ol className="space-y-3">
           {(days[activeDay]?.stops || []).map((stop: any, idx: number) => {
             const stopCount = days[activeDay]?.stops.length ?? 0;
+            const poi = resolvePoi(stop);
+            const imageSrc = getPoiImageSrc(poi);
+            const fallbackEmoji = getPoiFallbackEmoji(poi);
+            const poiName = poi.name ?? stop.name;
+            const poiDistrict = poi.district ?? stop.district;
             return (
               <Fragment key={`${stop.id}-${idx}`}>
                 {idx > 0 && <ItineraryLeg from={days[activeDay].stops[idx - 1]} to={stop} />}
                 <li className="rounded-2xl bg-card border border-border p-4">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Clock className="w-3 h-3 shrink-0" />
-                        <input
-                          type="time"
-                          value={minutesToTime(stop.scheduledStart)}
-                          onClick={(e) => e.stopPropagation()}
-                          onChange={(e) => {
-                            const [h, m] = e.target.value.split(":").map(Number);
-                            if (Number.isFinite(h) && Number.isFinite(m)) {
-                              setStopTime(activeCity, activeDay, stop.id, h * 60 + m);
-                            }
-                          }}
-                          aria-label={`Start time for ${stop.name}`}
-                          className="bg-transparent border-0 p-0 text-xs text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary rounded"
-                        />
-                        <span>– {minutesToTime(stop.scheduledEnd)}</span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setSelectedPoi(stop)}
-                        className="w-full text-left"
-                      >
-                        <h3 className="font-semibold text-foreground mt-0.5">{stop.name}</h3>
-                        <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                          <MapPin className="w-3 h-3" /> {stop.district}
-                        </p>
-                      </button>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="inline-flex items-center gap-1 rounded-lg bg-secondary px-2.5 py-1.5 text-xs font-semibold text-secondary-foreground">
+                      <Clock className="w-3.5 h-3.5 shrink-0 text-primary" />
+                      <input
+                        type="time"
+                        value={minutesToTime(stop.scheduledStart)}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => {
+                          const minutes = parseTimeInput(e.target.value);
+                          if (minutes != null) setStopTime(activeCity, activeDay, stop.id, minutes);
+                        }}
+                        aria-label={`Start time for ${stop.name}`}
+                        className="time-range-input w-[43px] bg-transparent p-0 text-center text-xs font-semibold text-secondary-foreground focus:outline-none focus:ring-1 focus:ring-primary rounded"
+                      />
+                      <span className="text-muted-foreground">-</span>
+                      <input
+                        type="time"
+                        value={minutesToTime(stop.scheduledEnd)}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => {
+                          const minutes = parseTimeInput(e.target.value);
+                          if (minutes == null) return;
+                          const duration = getStopDurationMinutes(stop);
+                          setStopTime(activeCity, activeDay, stop.id, Math.max(0, minutes - duration));
+                        }}
+                        aria-label={`End time for ${stop.name}`}
+                        className="time-range-input w-[43px] bg-transparent p-0 text-center text-xs font-semibold text-secondary-foreground focus:outline-none focus:ring-1 focus:ring-primary rounded"
+                      />
                     </div>
                     <button
                       onClick={() => removePOIFromDay(activeCity, activeDay, stop.id)}
@@ -421,6 +516,32 @@ function Itinerary() {
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPoi(poi)}
+                    className="mt-5 flex w-full items-center gap-4 text-left"
+                    aria-label={`Open details for ${poiName}`}
+                  >
+                    <div className="relative w-20 h-20 shrink-0 overflow-hidden rounded-xl border border-border bg-gradient-to-br from-accent/50 to-primary/20 flex items-center justify-center text-3xl">
+                      <span aria-hidden="true">{fallbackEmoji}</span>
+                      {imageSrc && (
+                        <img
+                          src={imageSrc}
+                          alt=""
+                          loading="lazy"
+                          onError={hideBrokenImage}
+                          className="absolute inset-0 h-full w-full object-cover"
+                        />
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-semibold text-foreground leading-tight">{poiName}</h3>
+                      <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
+                        <MapPin className="w-4 h-4 shrink-0" />
+                        <span className="truncate">{poiDistrict}</span>
+                      </p>
+                    </div>
+                  </button>
                   {false && stop.transitFromPrev > 0 && (
                     <div className="text-xs text-muted-foreground mt-2">
                       {stop.transitInfo ? (

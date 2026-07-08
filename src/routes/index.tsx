@@ -64,7 +64,7 @@ function Home() {
         </div>
       </section>
 
-      <TravelPulseCalendar cityId={hasTrips ? trip.currentCityId : null} trip={trip} />
+      <TravelPulseCalendar cityId={null} trip={trip} />
 
       <section className="px-5 mb-2 flex items-center justify-between">
         <h2 className="text-lg font-semibold text-foreground">Recommended for you</h2>
