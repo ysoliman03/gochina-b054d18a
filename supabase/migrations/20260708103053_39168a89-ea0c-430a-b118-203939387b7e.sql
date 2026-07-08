@@ -1,0 +1,1 @@
+CREATE POLICY "users update own saved" ON public.saved_pois FOR UPDATE USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
