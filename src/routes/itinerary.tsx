@@ -421,11 +421,6 @@ function Itinerary() {
                           previous
                         </p>
                       )}
-                      {stop.transitInfo?.notes && (
-                        <p className="mt-0.5 text-[11px] text-muted-foreground/80">
-                          {stop.transitInfo.notes}
-                        </p>
-                      )}
                     </div>
                   )}
                   <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
