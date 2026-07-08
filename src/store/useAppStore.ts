@@ -399,6 +399,12 @@ export const useAppStore = create<AppState>()(
             const swapWith = direction === "up" ? idx - 1 : idx + 1;
             if (swapWith < 0 || swapWith >= stops.length) return day;
             [stops[idx], stops[swapWith]] = [stops[swapWith], stops[idx]];
+            // Moving a stop is an explicit re-sequencing action — a pinned
+            // time from an earlier manual edit (see setStopTime) belonged to
+            // the *old* position and would otherwise freeze both stops in
+            // place, making the swap look like it did nothing.
+            stops[idx] = { ...stops[idx], pinnedStart: false };
+            stops[swapWith] = { ...stops[swapWith], pinnedStart: false };
             return { ...day, stops: recalculateTimes(stops) };
           });
           return { trip: { ...s.trip, itinerary: { ...s.trip.itinerary, [cityId]: days } } };
