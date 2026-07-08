@@ -86,7 +86,7 @@ function estimateTransitOption(fromId?: string, toId?: string) {
     mode: "estimated",
     duration: Math.max(8, Math.min(180, Math.ceil(minutes / 5) * 5)),
     distanceKm: Math.round(km * 10) / 10,
-    notes: "Estimated from POI coordinates because this route is not in the curated transit dataset.",
+    notes: "",
   };
 }
 
@@ -173,13 +173,34 @@ function preserveStopSchedule(
   stop: any,
   currentTime: number,
   previousId: string | undefined,
-  latestEnd = MAX_CLOCK_MINUTE,
+  latestEnd = DAY_END,
 ) {
   const poi = resolveStopPoi(stop);
   const duration = getStopDuration(stop);
-  const { open, close } = hoursFor(stop);
   const transitInfo = previousId ? getTransitInfo(previousId, stop.id) : null;
   const transit = previousId ? (transitInfo?.duration ?? 20) : 0;
+
+  // A traveller-set time (see setStopTime) is a hard anchor — never
+  // reflowed by transit/bestTime heuristics. Later stops in the day still
+  // schedule relative to this one's real end time via the normal cursor.
+  if (stop?.pinnedStart && Number.isFinite(Number(stop.scheduledStart))) {
+    const start = clampMinute(Number(stop.scheduledStart));
+    const end = Math.min(start + duration, MAX_CLOCK_MINUTE);
+    return {
+      ...stop,
+      name: stop?.name ?? poi?.name,
+      district: stop?.district ?? poi?.district,
+      category: stop?.category ?? poi?.category,
+      duration,
+      scheduledStart: start,
+      scheduledEnd: clampMinute(end > start ? end : start + 1),
+      transitFromPrev: transit,
+      transitInfo,
+      pinnedStart: true,
+    };
+  }
+
+  const { open, close } = hoursFor(stop);
   const earliest = previousId ? currentTime + transit : currentTime;
   const effectiveLatest = Math.max(1, Math.min(latestEnd, MAX_CLOCK_MINUTE));
   const hoursLatest = Math.max(1, Math.min(effectiveLatest, close));
@@ -201,6 +222,17 @@ function preserveStopSchedule(
   const maxStart = Math.max(0, effectiveLatest - 1);
   start = Math.max(0, Math.min(start, maxStart));
   let end = Math.min(start + duration, effectiveLatest);
+  // A reorder can leave no room at all for this stop before the day's cutoff,
+  // which used to silently produce a near-zero "visit" (e.g. 1 minute at a
+  // museum that's already closed) — technically bounded, but not honest and
+  // exactly what read as "glitchy". Guarantee a sane minimum instead; the
+  // issue detector still flags the stop as tight/closed, and the traveller
+  // can fix the time directly via setStopTime.
+  const minViableDuration = Math.min(duration, 30);
+  if (end - start < minViableDuration) {
+    end = start + minViableDuration;
+  }
+  end = Math.min(end, MAX_CLOCK_MINUTE);
   if (end <= start) end = Math.min(MAX_CLOCK_MINUTE, start + 1);
 
   return {
@@ -236,7 +268,10 @@ function adjacentCategoryPenalty(stops: any[], poiId: string) {
 
   for (const category of neighborCategories) {
     if (!category || category !== currentCategory) continue;
-    penalty += currentCategory === "restaurant" ? 600 : 45;
+    // Two restaurants back-to-back is a near-hard rule, not a soft
+    // preference — this must outweigh any realistic combination of transit
+    // and timing penalties so another valid slot always wins when one exists.
+    penalty += currentCategory === "restaurant" ? 5000 : 45;
   }
 
   return penalty;

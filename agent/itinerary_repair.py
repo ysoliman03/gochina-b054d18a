@@ -116,13 +116,17 @@ def _fallback_stop_ids(
     used_ids: set[str],
     max_results: int,
 ) -> list[str]:
+    # search_pois sorts deterministically by profile fit, so once a repair
+    # pass has already excluded several POIs (used elsewhere, already tried
+    # and rejected), the top of that fixed ordering is exhausted well before
+    # the city's real pool is. Over-fetch enough to see past every exclusion.
     results = search_pois(
         city_id=request.cityId,
         categories=categories,
         budget_max=_budget_max(request),
         dietary_restrictions=request.profile.dietaryRestrictions or None,
         group_type=request.profile.groupType,
-        max_results=max_results * 3,
+        max_results=max_results * 3 + len(used_ids),
     )
     return [p["id"] for p in results if p.get("id") not in used_ids][:max_results]
 
@@ -313,10 +317,12 @@ def _repair_day(
     max_total = MAX_STOPS_BY_PACE.get(request.profile.pace, 4)
     max_non_restaurants = max(1, max_total - 1)
     dinner = _choose_dinner(request, source_day.stops, used_ids)
-    non_restaurants = _candidate_non_restaurants(
+    dinner_id = dinner.id if dinner else None
+
+    candidate_pool = _candidate_non_restaurants(
         request,
         source_day.stops,
-        dinner.id if dinner else None,
+        dinner_id,
         used_ids,
         max_non_restaurants,
     )
@@ -324,20 +330,64 @@ def _repair_day(
     planned: list[StopOut] = []
     current_time = DAY_START
     previous_id: str | None = None
+    attempted_ids: set[str] = set()
 
-    for stop in _order_non_restaurants(non_restaurants):
-        if len(planned) >= max_non_restaurants:
-            break
-        poi = POIS.get(stop.id)
-        if not poi:
-            continue
-        target = BEST_TIME_TARGET.get(str(poi.get("bestTime") or "any"), DAY_START)
-        scheduled = _schedule_stop(stop.id, current_time, previous_id, DINNER_TARGET - 30, target)
-        if not scheduled:
-            continue
-        planned.append(scheduled)
-        current_time = scheduled.scheduledEnd
-        previous_id = scheduled.id
+    def _try_schedule(candidates: list[StopOut]) -> None:
+        nonlocal current_time, previous_id
+        for stop in _order_non_restaurants(candidates):
+            if len(planned) >= max_non_restaurants:
+                break
+            if stop.id in attempted_ids:
+                continue
+            attempted_ids.add(stop.id)
+            poi = POIS.get(stop.id)
+            if not poi:
+                continue
+            target = BEST_TIME_TARGET.get(str(poi.get("bestTime") or "any"), DAY_START)
+            scheduled = _schedule_stop(stop.id, current_time, previous_id, DINNER_TARGET - 30, target)
+            if not scheduled:
+                continue
+            planned.append(scheduled)
+            current_time = scheduled.scheduledEnd
+            previous_id = scheduled.id
+
+    _try_schedule(candidate_pool)
+
+    # A candidate can fail to schedule (hours window, transit overrun) even
+    # though it looked valid on paper. Rather than silently leaving the day
+    # under-filled (the "day with just one restaurant" bug), pull a wider
+    # fallback pool and keep trying until the quota is met or the city's POI
+    # pool for these categories is genuinely exhausted.
+    refill_rounds = 0
+    while len(planned) < max_non_restaurants and refill_rounds < 6:
+        refill_rounds += 1
+        exclude = used_ids | attempted_ids
+        if dinner_id:
+            exclude.add(dinner_id)
+        # As the day gets later, more candidates fail on closing hours than
+        # succeed — ask for extra headroom each round instead of exactly the
+        # remaining count, so a single mostly-failed round doesn't end the
+        # search while plenty of untried POIs remain.
+        more_ids = _fallback_stop_ids(
+            request,
+            ["attraction", "experience", "shopping", "nightlife"],
+            exclude,
+            (max_non_restaurants - len(planned)) * 2,
+        )
+        if not more_ids:
+            break  # pool genuinely exhausted — nothing left to try
+        _try_schedule(
+            [
+                StopOut(
+                    id=poi_id,
+                    name=POIS[poi_id].get("name", poi_id),
+                    scheduledStart=DAY_START,
+                    scheduledEnd=DAY_START + _stop_duration(POIS[poi_id]),
+                    transitFromPrev=0,
+                )
+                for poi_id in more_ids
+            ]
+        )
 
     if dinner:
         scheduled_dinner = _schedule_dinner(dinner, planned)

@@ -123,6 +123,7 @@ function Itinerary() {
   const updateTrip = useAppStore((s) => s.updateTrip);
   const movePOIToDay = useAppStore((s) => s.movePOIToDay);
   const reorderStopInDay = useAppStore((s) => s.reorderStopInDay);
+  const setStopTime = useAppStore((s) => s.setStopTime);
   const deleteItinerary = useAppStore((s) => s.deleteItinerary);
 
   const [activeCity, setActiveCity] = useState(trip.currentCityId);
@@ -173,6 +174,7 @@ function Itinerary() {
       dayIndex: activeDay,
       profile,
       date: activeDayDate,
+      allDays: days,
     });
   }, [days, activeDay, activeCity, profile, activeDayDate]);
 
@@ -380,20 +382,35 @@ function Itinerary() {
                 {idx > 0 && <ItineraryLeg from={days[activeDay].stops[idx - 1]} to={stop} />}
                 <li className="rounded-2xl bg-card border border-border p-4">
                   <div className="flex items-start justify-between gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedPoi(stop)}
-                      className="min-w-0 flex-1 text-left"
-                    >
-                      <p className="text-xs text-muted-foreground flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {minutesToTime(stop.scheduledStart)} – {minutesToTime(stop.scheduledEnd)}
-                      </p>
-                      <h3 className="font-semibold text-foreground mt-0.5">{stop.name}</h3>
-                      <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                        <MapPin className="w-3 h-3" /> {stop.district}
-                      </p>
-                    </button>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Clock className="w-3 h-3 shrink-0" />
+                        <input
+                          type="time"
+                          value={minutesToTime(stop.scheduledStart)}
+                          onClick={(e) => e.stopPropagation()}
+                          onChange={(e) => {
+                            const [h, m] = e.target.value.split(":").map(Number);
+                            if (Number.isFinite(h) && Number.isFinite(m)) {
+                              setStopTime(activeCity, activeDay, stop.id, h * 60 + m);
+                            }
+                          }}
+                          aria-label={`Start time for ${stop.name}`}
+                          className="bg-transparent border-0 p-0 text-xs text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary rounded"
+                        />
+                        <span>– {minutesToTime(stop.scheduledEnd)}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPoi(stop)}
+                        className="w-full text-left"
+                      >
+                        <h3 className="font-semibold text-foreground mt-0.5">{stop.name}</h3>
+                        <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                          <MapPin className="w-3 h-3" /> {stop.district}
+                        </p>
+                      </button>
+                    </div>
                     <button
                       onClick={() => removePOIFromDay(activeCity, activeDay, stop.id)}
                       aria-label={`Remove ${stop.name} from day ${activeDay + 1}`}

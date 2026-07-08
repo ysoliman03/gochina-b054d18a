@@ -23,6 +23,7 @@ export type ItineraryIssueSeverity = "info" | "warning" | "critical";
 
 export type ItineraryIssueType =
   | "closed_at_scheduled_time"
+  | "duplicate_poi"
   | "schedule_too_tight"
   | "long_transfer"
   | "booking_required"
@@ -237,6 +238,7 @@ const RELEVANT_CONSTRAINT_TYPES = new Set(["holiday", "crowd", "event", "closure
 
 const PRIORITY_ORDER: ItineraryIssueType[] = [
   "closed_at_scheduled_time",
+  "duplicate_poi",
   "active_constraint",
   "booking_required",
   "schedule_too_tight",
@@ -397,12 +399,53 @@ export function detectItineraryIssues(args: {
   dayIndex: number;
   profile?: ProfileState | null;
   date?: string | null;
+  /** All days in this city's itinerary (by array position), used to flag POIs booked on more than one day. Omit to skip that check. */
+  allDays?: ItineraryDay[];
 }): ItineraryIssue[] {
-  const { cityId, day, dayIndex, profile } = args;
+  const { cityId, day, dayIndex, profile, allDays } = args;
   const stops = day?.stops || [];
   const issues: ItineraryIssue[] = [];
   issueCounter = 0;
   if (!stops.length) return issues;
+
+  // ── Duplicate POI booked on another day ───────────────────────────────
+  if (allDays && allDays.length > 1) {
+    for (const stop of stops) {
+      if (!stop.id) continue;
+      const otherDayIndexes = allDays
+        .map((otherDay, otherIndex) => ({ otherDay, otherIndex }))
+        .filter(
+          ({ otherDay, otherIndex }) =>
+            otherIndex !== dayIndex && (otherDay?.stops || []).some((s) => s.id === stop.id),
+        )
+        .map(({ otherIndex }) => otherIndex + 1);
+      if (!otherDayIndexes.length) continue;
+      const poi = getPoiById(stop.id);
+      const name = poi?.name || stop.name || "This stop";
+      const otherDaysLabel =
+        otherDayIndexes.length === 1
+          ? `Day ${otherDayIndexes[0]}`
+          : `Days ${otherDayIndexes.join(", ")}`;
+      issues.push({
+        id: makeId(dayIndex, "duplicate_poi", stop.id),
+        type: "duplicate_poi",
+        severity: "warning",
+        dayIndex,
+        stopId: stop.id,
+        poiId: stop.id,
+        poiName: poi?.name,
+        stopTitle: name,
+        stopTime: formatStopTime(stop),
+        title: "Already planned on another day",
+        message: `${name} is also scheduled on ${otherDaysLabel} of this trip. Remove it from one day or swap it for a different stop.`,
+        datasetSource: "derived",
+        suggestedFixes: [
+          { label: "Replace stop", action: "replace_stop" },
+          { label: "Remove stop", action: "remove_stop" },
+        ],
+      });
+    }
+  }
 
   // ── Closed at scheduled time ─────────────────────────────────────────
   for (const stop of stops) {

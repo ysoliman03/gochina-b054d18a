@@ -104,7 +104,7 @@ def _estimated_transit_info(from_poi_id: str, to_poi_id: str) -> dict | None:
         "mode": "estimated",
         "duration": estimate_transit_minutes(from_poi_id, to_poi_id),
         "distanceKm": round(distance, 1) if distance is not None else None,
-        "notes": "Estimated from POI coordinates because this route is not in the curated transit dataset.",
+        "notes": "",
     }
 
 

@@ -106,7 +106,6 @@ from agent import agent       # the Pydantic AI agent we built in agent.py
 from itinerary_repair import normalize_itinerary
 from prompting import build_itinerary_prompt
 from tools import enrich_stop # helper to add full POI data to each stop
-from guardrails import sanitize_notes, wrap_untrusted  # Task-2 input defense
 
 # ── App setup ────────────────────────────────────────────────────────────────
 
@@ -143,36 +142,23 @@ async def generate_itinerary(request: ItineraryRequest) -> ItineraryResult:
       • validates the return value against ItineraryResult
       • shows both schemas in the interactive docs at /docs
     """
-    # Build a human-readable date range string for the prompt
-    date_line = ""
-    if request.startDate and request.endDate:
-        date_line = f"  Dates      : {request.startDate} → {request.endDate} ({request.days} days)"
-    else:
-        date_line = f"  Duration   : {request.days} day(s)"
+    # Fail fast on bad dates instead of silently generating an itinerary with
+    # blank per-day dates (confusing — the UI just shows "Day 1", "Day 2" with
+    # no calendar date and no explanation why).
+    try:
+        parsed_start = _date.fromisoformat(request.startDate)
+        parsed_end = _date.fromisoformat(request.endDate)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=422,
+            detail="startDate and endDate must be valid YYYY-MM-DD dates.",
+        ) from exc
+    if parsed_end < parsed_start:
+        raise HTTPException(status_code=422, detail="endDate must not be before startDate.")
 
-    # Enumerate the exact dayIndex values the model must produce — very explicit
-    required_days = list(range(request.days))  # e.g. [0, 1, 2, 3, 4, 5] for 6 days
-
-    min_stops = {"slow": 3, "moderate": 4, "fast": 5}.get(request.profile.pace, 4)
-
-    # Build the user message — this is what the agent "reads" as input
-    prompt = f"""
-Create a {request.days}-day itinerary for {request.cityId.upper()}.
-
-Trip details:
-{date_line}
-  Group type : {request.profile.groupType}
-  Pace       : {request.profile.pace}  (minimum {min_stops} stops per day including dinner)
-  Budget     : {request.profile.budget}
-  Interests  : {", ".join(request.profile.interests) or "general sightseeing"}
-  Dietary    : {", ".join(request.profile.dietaryRestrictions) or "no restrictions"}
-{wrap_untrusted(sanitize_notes(request.notes))}
-
-YOUR OUTPUT MUST CONTAIN EXACTLY {request.days} DAYS.
-Required dayIndex values: {required_days}
-Each day needs at least {min_stops} stops (including 1 dinner restaurant).
-Do not stop early. Do not skip any dayIndex.
-""".strip()
+    # Build the user message — this is what the agent "reads" as input.
+    # build_itinerary_prompt() (prompting.py) sanitizes request.notes itself
+    # before it ever reaches the model — see guardrails.py.
     prompt = build_itinerary_prompt(request)
 
     try:
@@ -197,13 +183,9 @@ Do not stop early. Do not skip any dayIndex.
     # The agent only returned the scheduling info — this merges in everything else.
     enriched_days: list[DayOut] = []
 
-    # Compute the starting calendar date (if provided by the frontend)
-    trip_start: _date | None = None
-    if request.startDate:
-        try:
-            trip_start = _date.fromisoformat(request.startDate)
-        except ValueError:
-            pass
+    # Compute the starting calendar date — already validated above, so every
+    # day is guaranteed a real date rather than a blank/confusing one.
+    trip_start: _date = parsed_start
 
     for day in normalized_output.days:
         stops = [
@@ -217,9 +199,7 @@ Do not stop early. Do not skip any dayIndex.
             for idx, s in enumerate(day.stops)
         ]
         # Attach the actual calendar date to each day (e.g. "2025-06-15")
-        day_date = ""
-        if trip_start is not None:
-            day_date = (trip_start + timedelta(days=day.dayIndex)).isoformat()
+        day_date = (trip_start + timedelta(days=day.dayIndex)).isoformat()
 
         enriched_days.append(DayOut(dayIndex=day.dayIndex, date=day_date, stops=stops))
 

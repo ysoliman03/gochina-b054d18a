@@ -133,6 +133,7 @@ interface AppState {
   addPOIToBestDay: (cityId: string, poi: any) => void;
   movePOIToDay: (cityId: string, fromDayIndex: number, toDayIndex: number, poiId: string) => void;
   reorderStopInDay: (cityId: string, dayIndex: number, poiId: string, direction: "up" | "down") => void;
+  setStopTime: (cityId: string, dayIndex: number, poiId: string, startMinutes: number) => void;
   replacePOIInDay: (cityId: string, dayIndex: number, oldPoiId: string, newPoi: any) => void;
   replanDay: (cityId: string, dayIndex: number) => void;
   toggleSavePoi: (poiId: string, name: string) => void;
@@ -380,6 +381,24 @@ export const useAppStore = create<AppState>()(
         syncWith((uid) => upsertActiveTrip(uid, useAppStore.getState()));
       },
 
+      setStopTime: (cityId, dayIndex, poiId, startMinutes) => {
+        set((s) => {
+          const days = (s.trip.itinerary[cityId] || []).map((day: any, i: number) => {
+            if (i !== dayIndex) return day;
+            const stops = day.stops.map((stop: any) =>
+              stop.id === poiId
+                ? { ...stop, scheduledStart: startMinutes, pinnedStart: true }
+                : stop,
+            );
+            // recalculateTimes respects pinnedStart (see preserveStopSchedule)
+            // and reflows every other stop's time around it.
+            return { ...day, stops: recalculateTimes(stops) };
+          });
+          return { trip: { ...s.trip, itinerary: { ...s.trip.itinerary, [cityId]: days } } };
+        });
+        syncWith((uid) => upsertActiveTrip(uid, useAppStore.getState()));
+      },
+
       replacePOIInDay: (cityId, dayIndex, oldPoiId, newPoi) => {
         set((s) => {
           const days = (s.trip.itinerary[cityId] || []).map((day: any, i: number) => {
@@ -391,6 +410,7 @@ export const useAppStore = create<AppState>()(
                 scheduledStart: stop.scheduledStart,
                 scheduledEnd: stop.scheduledStart + newPoi.duration,
                 transitFromPrev: stop.transitFromPrev,
+                pinnedStart: stop.pinnedStart,
               };
             });
             return { ...day, stops: recalculateTimes(stops) };
