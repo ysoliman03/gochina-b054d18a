@@ -366,6 +366,46 @@ function timingIssuePenalty(stop: any) {
   return penalty;
 }
 
+function scheduleQualityPenalty(stops: any[], cityId?: string, date?: string | null) {
+  let penalty = 0;
+  let previousEnd = -1;
+
+  for (const stop of stops) {
+    const start = Number(stop?.scheduledStart ?? Number.NaN);
+    const end = Number(stop?.scheduledEnd ?? Number.NaN);
+    const duration = getStopDuration(stop);
+
+    if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) {
+      penalty += 50000;
+      continue;
+    }
+
+    if (previousEnd >= 0 && start < previousEnd) {
+      penalty += 50000 + (previousEnd - start) * 200;
+    }
+
+    const allocated = end - start;
+    if (allocated < duration) {
+      penalty += 10000 + (duration - allocated) * 150;
+    }
+    if (end >= MAX_CLOCK_MINUTE && allocated < duration) {
+      penalty += 30000;
+    }
+    if (end > DAY_END) {
+      penalty += (end - DAY_END) * 35;
+    }
+    if (start > DAY_END) {
+      penalty += (start - DAY_END) * 45;
+    }
+
+    penalty += timingIssuePenalty(stop);
+    penalty += constraintScorePenalty(cityId, date, stop.id);
+    previousEnd = end;
+  }
+
+  return penalty;
+}
+
 function scheduleOrderedStops(stops: any[], preserve = false) {
   const scheduled: any[] = [];
   // Always seed from the same fixed anchor, never from a previous
@@ -586,8 +626,7 @@ export function planBestPOIInsertion(
       totalTransitMinutes(scheduled) * 2 +
       Math.abs(start - target) +
       adjacentCategoryPenalty(scheduled, poi.id) +
-      timingIssuePenalty(insertedStop) +
-      constraintScorePenalty(cityId, date, poi.id);
+      scheduleQualityPenalty(scheduled, cityId, date);
 
     if (!best || score < best.score) {
       best = { stops: scheduled, score, inserted, allOriginalsPreserved };

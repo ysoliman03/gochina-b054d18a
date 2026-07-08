@@ -22,6 +22,7 @@ import type { ProfileState } from "@/store/useAppStore";
 export type ItineraryIssueSeverity = "info" | "warning" | "critical";
 
 export type ItineraryIssueType =
+  | "day_overloaded"
   | "closed_at_scheduled_time"
   | "duplicate_poi"
   | "schedule_too_tight"
@@ -237,6 +238,7 @@ const BEST_TIME_WINDOWS: Record<string, { start: number; end: number }> = {
 const RELEVANT_CONSTRAINT_TYPES = new Set(["holiday", "crowd", "event", "closure"]);
 
 const PRIORITY_ORDER: ItineraryIssueType[] = [
+  "day_overloaded",
   "closed_at_scheduled_time",
   "duplicate_poi",
   "active_constraint",
@@ -256,6 +258,11 @@ const PRIORITY_ORDER: ItineraryIssueType[] = [
 const MAX_TOTAL_ISSUES = 6;
 const MAX_CAUTION_ISSUES = 2;
 const MAX_TIP_ISSUES = 2;
+const SHORTENED_VISIT_GRACE_MINUTES = 5;
+const SHORTENED_VISIT_WARNING_RATIO = 0.95;
+const SHORTENED_VISIT_CRITICAL_RATIO = 0.7;
+const COMFORTABLE_DAY_END = 21 * 60 + 30;
+const LAST_CLOCK_MINUTE = 23 * 60 + 59;
 
 let issueCounter = 0;
 function makeId(dayIndex: number, type: ItineraryIssueType, key: string) {
@@ -371,7 +378,13 @@ function dedupeIssues(rawIssues: ItineraryIssue[]) {
     }
   }
 
-  if (issues.some((issue) => issue.type === "schedule_too_tight" && !removed.has(issue.id))) {
+  if (
+    issues.some(
+      (issue) =>
+        (issue.type === "schedule_too_tight" || issue.type === "day_overloaded") &&
+        !removed.has(issue.id),
+    )
+  ) {
     for (const issue of issues) {
       if (issue.type === "too_many_stops") removed.add(issue.id);
     }
@@ -407,6 +420,9 @@ export function detectItineraryIssues(args: {
   const issues: ItineraryIssue[] = [];
   issueCounter = 0;
   if (!stops.length) return issues;
+  let latestEnd = 0;
+  let shortenedStopCount = 0;
+  let lastStopName = "the final stop";
 
   // ── Duplicate POI booked on another day ───────────────────────────────
   if (allDays && allDays.length > 1) {
@@ -484,20 +500,32 @@ export function detectItineraryIssues(args: {
     const start = getStopStartMinutes(stop);
     const end = getStopEndMinutes(stop);
     if (!poi || !poi.duration || start == null || end == null) continue;
-    const allocated = end - start;
-    if (allocated > 0 && allocated < poi.duration * 0.7) {
+    if (end > latestEnd) {
+      latestEnd = end;
+      lastStopName = poi.name;
+    }
+    const allocated = Math.round(end - start);
+    const recommended = Math.round(poi.duration);
+    const shortBy = recommended - allocated;
+    if (
+      allocated > 0 &&
+      shortBy > SHORTENED_VISIT_GRACE_MINUTES &&
+      allocated < recommended * SHORTENED_VISIT_WARNING_RATIO
+    ) {
+      shortenedStopCount += 1;
+      const severe = allocated < recommended * SHORTENED_VISIT_CRITICAL_RATIO;
       issues.push({
         id: makeId(dayIndex, "schedule_too_tight", stop.id),
         type: "schedule_too_tight",
-        severity: "warning",
+        severity: severe ? "critical" : "warning",
         dayIndex,
         stopId: stop.id,
         poiId: stop.id,
         poiName: poi.name,
         stopTitle: poi.name,
         stopTime: formatStopTime(stop),
-        title: "This stop may be rushed",
-        message: `Only ${allocated} minutes planned, but ${poi.name} usually takes about ${poi.duration} minutes.`,
+        title: severe ? "This stop is too rushed" : "This stop may feel rushed",
+        message: `Only ${allocated} minutes are planned, but the dataset recommends about ${recommended} minutes. This usually means the day is too packed or a manual time is pushing the schedule too late.`,
         datasetSource: "duration",
         suggestedFixes: [
           { label: "Reduce this day", action: "reduce_day" },
@@ -508,6 +536,27 @@ export function detectItineraryIssues(args: {
   }
 
   // ── Too many stops for pace ───────────────────────────────────────────
+  if (latestEnd > COMFORTABLE_DAY_END || shortenedStopCount > 0) {
+    const endsAtLimit = latestEnd >= LAST_CLOCK_MINUTE;
+    const shortenedText =
+      shortenedStopCount > 0
+        ? ` ${shortenedStopCount} stop${shortenedStopCount === 1 ? " is" : "s are"} shorter than the dataset's recommended visit time.`
+        : "";
+    issues.push({
+      id: makeId(dayIndex, "day_overloaded", "day"),
+      type: "day_overloaded",
+      severity: endsAtLimit || shortenedStopCount > 0 ? "critical" : "warning",
+      dayIndex,
+      title: "This day is too packed",
+      message: `The plan runs until ${minutesToTime(latestEnd)} at ${lastStopName}.${shortenedText} Move one or more stops to another day before adding more places.`,
+      datasetSource: shortenedStopCount > 0 ? "duration" : "derived",
+      suggestedFixes: [
+        { label: "Reduce this day", action: "reduce_day" },
+        { label: "Remove stop", action: "remove_stop" },
+      ],
+    });
+  }
+
   // Restaurant stops aren't treated as "major" sightseeing load.
   const majorStops = stops.filter((s) => s.category !== "restaurant");
   const limit = paceMajorStopLimit(profile?.pace);
