@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import {
   buildDayPlan,
+  deriveDayDate,
   insertPOIIntoBestSlot,
   planBestPOIInsertion,
   recalculateTimes,
@@ -19,6 +20,12 @@ function syncWith(fn: (uid: string) => Promise<unknown>) {
   const uid = useAppStore.getState().userId;
   if (!uid) return;
   fn(uid).catch((e) => console.error("[cloudSync]", e));
+}
+
+/** The real calendar date for a city's Nth trip day, used so scheduling can check date-bound travel_constraints (closures/crowds/holidays). */
+function dayDateFor(cities: TripCity[], cityId: string, dayIndex: number, explicitDate?: string) {
+  const cityStartDate = cities.find((c) => c.cityId === cityId)?.startDate ?? null;
+  return deriveDayDate(explicitDate, cityStartDate, dayIndex);
 }
 
 function learnFromTags(currentInterests: string[], poiId: string) {
@@ -249,7 +256,11 @@ export const useAppStore = create<AppState>()(
           }
 
           const day = days[dayIndex];
-          days[dayIndex] = { ...day, stops: insertPOIIntoBestSlot(day.stops || [], poi) };
+          const date = dayDateFor(s.trip.cities, cityId, dayIndex, day.date);
+          days[dayIndex] = {
+            ...day,
+            stops: insertPOIIntoBestSlot(day.stops || [], poi, cityId, date),
+          };
 
           const today = new Date().toISOString().split("T")[0];
           const cityInTrip = s.trip.cities.some((c) => c.cityId === cityId);
@@ -294,14 +305,24 @@ export const useAppStore = create<AppState>()(
           const hasPlannedStops = days.some((day: any) => day.stops.length > 0);
           const emptyDayPenalty = (day: any) => (hasPlannedStops && day.stops.length === 0 ? 1200 : 0);
           let bestDayIndex = 0;
-          let bestPlan = planBestPOIInsertion(days[0]?.stops || [], poi);
+          let bestPlan = planBestPOIInsertion(
+            days[0]?.stops || [],
+            poi,
+            cityId,
+            dayDateFor(s.trip.cities, cityId, 0, days[0]?.date),
+          );
           let bestScore =
             bestPlan.score +
             emptyDayPenalty(days[0]) +
             ((days[0]?.stops || []).length === 0 ? 15 : 0);
 
           for (let i = 1; i < days.length; i++) {
-            const plan = planBestPOIInsertion(days[i].stops || [], poi);
+            const plan = planBestPOIInsertion(
+              days[i].stops || [],
+              poi,
+              cityId,
+              dayDateFor(s.trip.cities, cityId, i, days[i]?.date),
+            );
             const stopCount = (days[i].stops || []).length;
             const score =
               plan.score +
@@ -357,7 +378,11 @@ export const useAppStore = create<AppState>()(
 
           days[fromDayIndex] = { ...fromDay, stops: recalculateTimes(fromDay.stops) };
           const toDay = days[toDayIndex];
-          days[toDayIndex] = { ...toDay, stops: insertPOIIntoBestSlot(toDay.stops || [], stop) };
+          const toDate = dayDateFor(s.trip.cities, cityId, toDayIndex, toDay?.date);
+          days[toDayIndex] = {
+            ...toDay,
+            stops: insertPOIIntoBestSlot(toDay.stops || [], stop, cityId, toDate),
+          };
 
           return { trip: { ...s.trip, itinerary: { ...s.trip.itinerary, [cityId]: days } } };
         });
@@ -427,7 +452,8 @@ export const useAppStore = create<AppState>()(
           const usedIds = allDays
             .filter((_: any, i: number) => i !== dayIndex)
             .flatMap((d: any) => (d.stops || []).map((p: any) => p.id));
-          const newStops = buildDayPlan(cityId, null, profile, usedIds, true);
+          const date = dayDateFor(s.trip.cities, cityId, dayIndex, allDays[dayIndex]?.date);
+          const newStops = buildDayPlan(cityId, date, profile, usedIds, true);
           const days = allDays.map((day: any, i: number) =>
             i === dayIndex ? { ...day, stops: newStops } : day,
           );

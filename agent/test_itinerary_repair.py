@@ -166,6 +166,77 @@ class ItineraryRepairTests(unittest.TestCase):
         self.assertGreaterEqual(len(day.stops), 4)
         self.assertLessEqual(len(day.stops), MAX_STOPS_BY_PACE["fast"])
 
+    def test_repair_excludes_poi_closed_on_its_scheduled_date(self):
+        """
+        The real dataset has a constraint (C013): Terracotta Warriors (XA002)
+        is closed on Mondays. 2026-07-06 is a Monday. Even if the model
+        scheduled XA002 that day, the repair pass must drop/replace it rather
+        than trusting the model to have honored the constraint on its own.
+        """
+        request = ItineraryRequest(
+            cityId="XA",
+            startDate="2026-07-06",  # a Monday
+            endDate="2026-07-06",
+            profile=UserProfile(groupType="couple", pace="moderate", budget="mid"),
+        )
+        raw = ItineraryResult(
+            cityId="XA",
+            summary="A Xi'an plan.",
+            tips=[],
+            days=[
+                DayOut(
+                    dayIndex=0,
+                    stops=[
+                        StopOut(
+                            id="XA002",
+                            name="Terracotta Warriors",
+                            scheduledStart=540,
+                            scheduledEnd=720,
+                            transitFromPrev=0,
+                        ),
+                    ],
+                ),
+            ],
+        )
+
+        repaired = ir.normalize_itinerary(request, raw)
+
+        scheduled_ids = {stop.id for stop in repaired.days[0].stops}
+        self.assertNotIn("XA002", scheduled_ids)
+
+    def test_repair_allows_poi_on_a_date_it_is_not_closed(self):
+        """Control case: the same POI is not excluded on a date it's actually open (a Wednesday)."""
+        request = ItineraryRequest(
+            cityId="XA",
+            startDate="2026-07-08",  # a Wednesday
+            endDate="2026-07-08",
+            profile=UserProfile(groupType="couple", pace="moderate", budget="mid"),
+        )
+        raw = ItineraryResult(
+            cityId="XA",
+            summary="A Xi'an plan.",
+            tips=[],
+            days=[
+                DayOut(
+                    dayIndex=0,
+                    stops=[
+                        StopOut(
+                            id="XA002",
+                            name="Terracotta Warriors",
+                            scheduledStart=540,
+                            scheduledEnd=720,
+                            transitFromPrev=0,
+                        ),
+                    ],
+                ),
+            ],
+        )
+
+        repaired = ir.normalize_itinerary(request, raw)
+
+        scheduled_ids = {stop.id for stop in repaired.days[0].stops}
+        self.assertIn("XA002", scheduled_ids)
+
 
 if __name__ == "__main__":
     unittest.main()

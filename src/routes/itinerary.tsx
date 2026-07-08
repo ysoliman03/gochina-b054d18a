@@ -4,7 +4,12 @@ import { MobileShell } from "@/components/MobileShell";
 import { useAppStore } from "@/store/useAppStore";
 import { cities } from "@/data/generated/cities";
 import { pois } from "@/data/generated/pois";
-import { getTransitOptions, minutesToTime, recalculateTimes } from "@/engine/itineraryEngine";
+import {
+  deriveDayDate,
+  getTransitOptions,
+  minutesToTime,
+  recalculateTimes,
+} from "@/engine/itineraryEngine";
 import {
   Clock,
   MapPin,
@@ -157,14 +162,11 @@ function Itinerary() {
   // (holidays/weather). Falls back to the day's own `date` field if AI-planned,
   // else derives from the trip city's start date, else skips date-bound checks.
   const activeTripCity = trip.cities.find((c) => c.cityId === activeCity);
-  const activeDayDate = (() => {
-    const explicit = days[activeDay]?.date;
-    if (explicit) return explicit;
-    if (!activeTripCity?.startDate) return null;
-    const start = new Date(`${activeTripCity.startDate}T00:00:00Z`);
-    if (Number.isNaN(start.getTime())) return null;
-    return new Date(start.getTime() + activeDay * 86400000).toISOString().split("T")[0];
-  })();
+  const activeDayDate = deriveDayDate(
+    days[activeDay]?.date,
+    activeTripCity?.startDate ?? null,
+    activeDay,
+  );
 
   const issues = useMemo(() => {
     if (!days[activeDay]) return [];

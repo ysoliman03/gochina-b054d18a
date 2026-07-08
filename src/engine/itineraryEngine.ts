@@ -1,12 +1,78 @@
 import { pois } from "@/data/generated/pois";
 import { poiConnections } from "@/data/generated/poiConnections";
 import { matchedInterests } from "@/lib/interestTags";
+import { getActiveConstraints } from "@/engine/constraintEngine";
 
 const EARTH_RADIUS_KM = 6371;
 const DAY_START = 9 * 60;
 const DAY_END = 21 * 60;
 const DINNER_TARGET = 18 * 60 + 30;
 const MAX_CLOCK_MINUTE = 23 * 60 + 59;
+
+const RELEVANT_CONSTRAINT_TYPES = new Set(["holiday", "crowd", "event", "closure"]);
+const CONSTRAINT_SEVERITY_WEIGHT: Record<string, number> = { avoid: 6000, warning: 300, info: 50 };
+
+/** Real calendar date for a trip day: prefer an explicit stored date, else derive from the city's trip start date + day offset. Shared so the store and route don't each reimplement this. */
+export function deriveDayDate(
+  explicitDate: string | null | undefined,
+  cityStartDate: string | null | undefined,
+  dayIndex: number,
+): string | null {
+  if (explicitDate) return explicitDate;
+  if (!cityStartDate) return null;
+  const start = new Date(`${cityStartDate}T00:00:00Z`);
+  if (Number.isNaN(start.getTime())) return null;
+  return new Date(start.getTime() + dayIndex * 86400000).toISOString().split("T")[0];
+}
+
+/**
+ * Soft scoring penalty for placing/keeping a POI on a given date: how much a
+ * candidate placement should be deprioritized because of an active
+ * holiday/crowd/event/closure warning. City-wide (non-POI-specific)
+ * constraints nudge less than ones targeting this exact POI.
+ */
+function constraintScorePenalty(
+  cityId: string | undefined,
+  dateStr: string | null | undefined,
+  poiId: string,
+): number {
+  if (!cityId || !dateStr) return 0;
+  const active = getActiveConstraints(cityId, { start: dateStr, end: dateStr });
+  let penalty = 0;
+  for (const constraint of active) {
+    if (!RELEVANT_CONSTRAINT_TYPES.has(constraint.type)) continue;
+    if (constraint.poiId && constraint.poiId !== poiId) continue;
+    const weight = CONSTRAINT_SEVERITY_WEIGHT[constraint.severity] ?? 50;
+    penalty += constraint.poiId ? weight : weight * 0.25;
+  }
+  return penalty;
+}
+
+/**
+ * True if this POI is genuinely inaccessible on this exact date (e.g. a
+ * museum's weekly closure day) — a hard exclusion, not a scoring nudge.
+ * Deliberately narrow: only non-daily "closure" constraints with severity
+ * "avoid" count. A "daily" recurrence in this dataset is used for standing
+ * caution notes (e.g. a temple dress code), not a real closure — a POI
+ * that's genuinely closed every single day wouldn't be a recommendable
+ * attraction in the first place, so treating "daily" as a closure would
+ * wrongly blacklist it from every itinerary forever.
+ */
+export function isPoiClosedOnDate(
+  cityId: string | undefined,
+  dateStr: string | null | undefined,
+  poiId: string,
+): boolean {
+  if (!cityId || !dateStr) return false;
+  const active = getActiveConstraints(cityId, { start: dateStr, end: dateStr });
+  return active.some(
+    (constraint) =>
+      constraint.poiId === poiId &&
+      constraint.type === "closure" &&
+      constraint.severity === "avoid" &&
+      constraint.recurrencePattern !== "daily",
+  );
+}
 
 const BEST_TIME_TARGET: Record<string, number> = {
   morning: DAY_START,
@@ -206,6 +272,8 @@ function preserveStopSchedule(
   const hoursLatest = Math.max(1, Math.min(effectiveLatest, close));
   const target = targetStartFor(stop);
   const latestFullStart = Math.max(0, hoursLatest - duration);
+  // The one true floor: this stop physically cannot start before it can be
+  // reached (previous stop's end + transit) or before the POI opens.
   const earliestOpenStart = Math.max(earliest, Math.min(open, MAX_CLOCK_MINUTE));
 
   let start = earliestOpenStart;
@@ -216,23 +284,29 @@ function preserveStopSchedule(
     start = Math.max(latestFullStart, Math.min(open, MAX_CLOCK_MINUTE));
   }
   if (start + duration > hoursLatest && latestFullStart < earliestOpenStart) {
-    start = Math.max(earliest, Math.min(target, effectiveLatest - 1));
+    // Nothing fits within the day's ideal window (e.g. a reorder pushed this
+    // stop's turn very late). Previously this fell back to
+    // `min(target, effectiveLatest - 1)`, which could land *before*
+    // earliestOpenStart and silently teleport the stop backward in time —
+    // that's what collapsed multiple stops onto the same identical slot.
+    // There is no valid "ideal" placement here, so just start as soon as
+    // physically possible and let the visit run long; the issue detector
+    // will flag it as tight/closed, and the traveller can fix the time
+    // directly via setStopTime or move stops to another day.
+    start = earliestOpenStart;
   }
 
-  const maxStart = Math.max(0, effectiveLatest - 1);
-  start = Math.max(0, Math.min(start, maxStart));
-  let end = Math.min(start + duration, effectiveLatest);
-  // A reorder can leave no room at all for this stop before the day's cutoff,
-  // which used to silently produce a near-zero "visit" (e.g. 1 minute at a
-  // museum that's already closed) — technically bounded, but not honest and
-  // exactly what read as "glitchy". Guarantee a sane minimum instead; the
-  // issue detector still flags the stop as tight/closed, and the traveller
-  // can fix the time directly via setStopTime.
-  const minViableDuration = Math.min(duration, 30);
-  if (end - start < minViableDuration) {
-    end = start + minViableDuration;
-  }
-  end = Math.min(end, MAX_CLOCK_MINUTE);
+  // Absolute invariant, enforced regardless of which branch above fired:
+  // never move a stop earlier than it can physically happen. This is what
+  // guarantees stops stay in real, non-overlapping sequence even when the
+  // day has overflowed past its ideal end time.
+  start = Math.max(start, earliestOpenStart);
+  start = Math.min(start, MAX_CLOCK_MINUTE - 1);
+
+  // Always the POI's real duration — never a truncated "fake" visit. The
+  // day's ideal end time (effectiveLatest) only steers *where* we try to
+  // place the stop above; it no longer clips the result after the fact.
+  let end = Math.min(start + duration, MAX_CLOCK_MINUTE);
   if (end <= start) end = Math.min(MAX_CLOCK_MINUTE, start + 1);
 
   return {
@@ -294,7 +368,15 @@ function timingIssuePenalty(stop: any) {
 
 function scheduleOrderedStops(stops: any[], preserve = false) {
   const scheduled: any[] = [];
-  let currentTime = Math.max(DAY_START, Math.min(stops[0]?.scheduledStart ?? DAY_START, DAY_END));
+  // Always seed from the same fixed anchor, never from a previous
+  // computation's output. Seeding from `stops[0].scheduledStart` (a mutable
+  // value that's itself the result of the last recalculation) is what let
+  // repeated edits ratchet the whole day earlier or later indefinitely —
+  // every recalculation must start from the same reference point so it's
+  // idempotent for the same input order. A pinned first stop still works
+  // correctly regardless of this seed, since preserveStopSchedule ignores
+  // `currentTime` entirely for pinned stops.
+  let currentTime = DAY_START;
   let previousId: string | undefined;
 
   for (const stop of stops) {
@@ -397,7 +479,7 @@ export function getAlternativePOIs(
 
 export function buildDayPlan(
   cityId: string,
-  _date: string | null,
+  date: string | null,
   profile: any,
   usedPoiIds: string[] = [],
   useJitter = false,
@@ -409,7 +491,8 @@ export function buildDayPlan(
       p.cityId === cityId &&
       !usedPoiIds.includes(p.id) &&
       p.category !== "restaurant" &&
-      isDietCompatible(p, profile),
+      isDietCompatible(p, profile) &&
+      !isPoiClosedOnDate(cityId, date, p.id),
   );
   const compatibleNonRestaurants = candidateNonRestaurants.filter((p: any) =>
     isPlannerCompatible(p, profile),
@@ -419,7 +502,10 @@ export function buildDayPlan(
     : candidateNonRestaurants;
 
   const scored = cityPois
-    .map((p: any) => ({ ...p, score: scorePoi(p, profile, useJitter) }))
+    .map((p: any) => ({
+      ...p,
+      score: scorePoi(p, profile, useJitter) - constraintScorePenalty(cityId, date, p.id) / 100,
+    }))
     .sort(
       (a: any, b: any) =>
         b.score - a.score || (TIME_ORDER[a.bestTime] ?? 1) - (TIME_ORDER[b.bestTime] ?? 1),
@@ -443,13 +529,17 @@ export function buildDayPlan(
       p.cityId === cityId &&
       p.category === "restaurant" &&
       !usedPoiIds.includes(p.id) &&
-      isDietCompatible(p, profile),
+      isDietCompatible(p, profile) &&
+      !isPoiClosedOnDate(cityId, date, p.id),
   );
   const compatibleRestaurants = candidateRestaurants.filter((p: any) =>
     isPlannerCompatible(p, profile),
   );
   const restaurants = (compatibleRestaurants.length ? compatibleRestaurants : candidateRestaurants).sort(
-    (a: any, b: any) => scorePoi(b, profile) - scorePoi(a, profile),
+    (a: any, b: any) =>
+      scorePoi(b, profile) -
+      constraintScorePenalty(cityId, date, b.id) / 100 -
+      (scorePoi(a, profile) - constraintScorePenalty(cityId, date, a.id) / 100),
   );
 
   for (const dinner of restaurants) {
@@ -462,7 +552,12 @@ export function buildDayPlan(
   return plan;
 }
 
-export function planBestPOIInsertion(stops: any[], poi: any) {
+export function planBestPOIInsertion(
+  stops: any[],
+  poi: any,
+  cityId?: string,
+  date?: string | null,
+) {
   const originalIds = new Set(stops.map((stop) => stop.id));
   let best:
     | {
@@ -491,7 +586,8 @@ export function planBestPOIInsertion(stops: any[], poi: any) {
       totalTransitMinutes(scheduled) * 2 +
       Math.abs(start - target) +
       adjacentCategoryPenalty(scheduled, poi.id) +
-      timingIssuePenalty(insertedStop);
+      timingIssuePenalty(insertedStop) +
+      constraintScorePenalty(cityId, date, poi.id);
 
     if (!best || score < best.score) {
       best = { stops: scheduled, score, inserted, allOriginalsPreserved };
@@ -507,8 +603,13 @@ export function planBestPOIInsertion(stops: any[], poi: any) {
   };
 }
 
-export function insertPOIIntoBestSlot(stops: any[], poi: any) {
-  return planBestPOIInsertion(stops, poi).stops;
+export function insertPOIIntoBestSlot(
+  stops: any[],
+  poi: any,
+  cityId?: string,
+  date?: string | null,
+) {
+  return planBestPOIInsertion(stops, poi, cityId, date).stops;
 }
 
 export function minutesToTime(minutes: number) {

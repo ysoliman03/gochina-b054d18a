@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import re
+from datetime import date as _date, timedelta
 
 from data import POIS
 from models import DayOut, ItineraryRequest, ItineraryResult, StopOut
-from tools import get_transit_time, search_pois
+from tools import check_travel_constraints, get_transit_time, search_pois
 
 
 DAY_START = 9 * 60
@@ -50,6 +51,40 @@ def _poi_for_stop(stop: StopOut) -> dict | None:
 def _valid_city_poi(stop: StopOut, city_id: str) -> bool:
     poi = _poi_for_stop(stop)
     return bool(poi and poi.get("cityId") == city_id)
+
+
+def _day_date(request: ItineraryRequest, day_index: int) -> str | None:
+    """Real calendar date for this trip day, used to check date-bound travel_constraints."""
+    try:
+        start = _date.fromisoformat(request.startDate)
+    except ValueError:
+        return None
+    return (start + timedelta(days=day_index)).isoformat()
+
+
+def _poi_closed_on_date(city_id: str, date_str: str | None, poi_id: str) -> bool:
+    """
+    True if this POI is genuinely inaccessible on this exact date (e.g. a
+    museum's weekly closure day) — a hard exclusion, not a soft nudge.
+    Mirrors itineraryEngine.ts's isPoiClosedOnDate on the frontend: only
+    non-daily "closure" constraints with severity "avoid" count. A "daily"
+    recurrence in this dataset is used for standing caution notes (e.g. a
+    temple dress code), not a real closure — a POI that's genuinely closed
+    every single day wouldn't be a recommendable attraction in the first
+    place, so treating "daily" as a closure would wrongly blacklist it from
+    every itinerary forever.
+    """
+    if not date_str:
+        return False
+    for constraint in check_travel_constraints(city_id, date_str, date_str):
+        if (
+            constraint.get("poiId") == poi_id
+            and constraint.get("type") == "closure"
+            and constraint.get("severity") == "avoid"
+            and constraint.get("recurrencePattern") != "daily"
+        ):
+            return True
+    return False
 
 
 def _parse_clock(value: str) -> int | None:
@@ -115,6 +150,7 @@ def _fallback_stop_ids(
     categories: list[str],
     used_ids: set[str],
     max_results: int,
+    date_str: str | None = None,
 ) -> list[str]:
     # search_pois sorts deterministically by profile fit, so once a repair
     # pass has already excluded several POIs (used elsewhere, already tried
@@ -128,13 +164,19 @@ def _fallback_stop_ids(
         group_type=request.profile.groupType,
         max_results=max_results * 3 + len(used_ids),
     )
-    return [p["id"] for p in results if p.get("id") not in used_ids][:max_results]
+    return [
+        p["id"]
+        for p in results
+        if p.get("id") not in used_ids
+        and not _poi_closed_on_date(request.cityId, date_str, p["id"])
+    ][:max_results]
 
 
 def _choose_dinner(
     request: ItineraryRequest,
     stops: list[StopOut],
     used_ids: set[str],
+    date_str: str | None = None,
 ) -> StopOut | None:
     restaurants = [
         (index, stop)
@@ -143,6 +185,7 @@ def _choose_dinner(
         and POIS[stop.id].get("category") == "restaurant"
         and _profile_poi_ok(request, POIS[stop.id])
         and stop.id not in used_ids
+        and not _poi_closed_on_date(request.cityId, date_str, stop.id)
     ]
     if restaurants:
         _, chosen = min(
@@ -154,7 +197,7 @@ def _choose_dinner(
         )
         return chosen
 
-    fallback_ids = _fallback_stop_ids(request, ["restaurant"], used_ids, 1)
+    fallback_ids = _fallback_stop_ids(request, ["restaurant"], used_ids, 1, date_str)
     if not fallback_ids:
         return None
     return StopOut(
@@ -172,6 +215,7 @@ def _candidate_non_restaurants(
     dinner_id: str | None,
     used_ids: set[str],
     max_count: int,
+    date_str: str | None = None,
 ) -> list[StopOut]:
     candidates: list[StopOut] = []
     seen: set[str] = set()
@@ -184,6 +228,8 @@ def _candidate_non_restaurants(
             continue
         if not _profile_poi_ok(request, POIS[stop.id]):
             continue
+        if _poi_closed_on_date(request.cityId, date_str, stop.id):
+            continue
         candidates.append(stop)
         seen.add(stop.id)
 
@@ -193,6 +239,7 @@ def _candidate_non_restaurants(
             ["attraction", "experience", "shopping", "nightlife"],
             used_ids | seen | ({dinner_id} if dinner_id else set()),
             max_count - len(candidates),
+            date_str,
         )
         for poi_id in fallback_ids:
             candidates.append(
@@ -316,7 +363,8 @@ def _repair_day(
 ) -> DayOut:
     max_total = MAX_STOPS_BY_PACE.get(request.profile.pace, 4)
     max_non_restaurants = max(1, max_total - 1)
-    dinner = _choose_dinner(request, source_day.stops, used_ids)
+    date_str = _day_date(request, day_index)
+    dinner = _choose_dinner(request, source_day.stops, used_ids, date_str)
     dinner_id = dinner.id if dinner else None
 
     candidate_pool = _candidate_non_restaurants(
@@ -325,6 +373,7 @@ def _repair_day(
         dinner_id,
         used_ids,
         max_non_restaurants,
+        date_str,
     )
 
     planned: list[StopOut] = []
@@ -373,6 +422,7 @@ def _repair_day(
             ["attraction", "experience", "shopping", "nightlife"],
             exclude,
             (max_non_restaurants - len(planned)) * 2,
+            date_str,
         )
         if not more_ids:
             break  # pool genuinely exhausted — nothing left to try

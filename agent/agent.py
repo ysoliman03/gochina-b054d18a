@@ -183,6 +183,13 @@ Call tools in this order:
     price level, best time of day, and suitable_for
   • Prefer POIs whose price level fits the traveller budget and whose
     suitable_for includes the traveller group type
+  • tool_check_constraints returns real, date-bound warnings (e.g. a museum's
+    weekly closure day, a holiday, a crowd/event window). Cross-reference
+    each day's actual calendar date (see dayDates in the trip data) against
+    these before placing a POI — do not schedule a POI on a day it is marked
+    closed. A deterministic repair pass double-checks this after you respond
+    and will drop/replace any POI still scheduled on a day it's closed, so
+    getting it right here avoids a wasted retry.
 
 ━━━ OUTPUT ━━━
   cityId:  the city code (e.g. "BJ")
