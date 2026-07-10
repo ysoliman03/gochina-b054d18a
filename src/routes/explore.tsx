@@ -324,7 +324,6 @@ function Explore() {
     setCuisineCityIds([]);
   }
 
-  const hubActiveCityIds = hubCityIds.length === 0 ? ALL_CITY_IDS : hubCityIds;
   const cuisineActiveCityIds = cuisineCityIds.length === 0 ? ALL_CITY_IDS : cuisineCityIds;
 
   const cityPois = useMemo(
@@ -341,10 +340,13 @@ function Explore() {
     return [...list].sort((a: any, b: any) => scorePoi(b, profile) - scorePoi(a, profile));
   }, [cityPois, categoryFilters, profile]);
 
-  const cityTransportHubs = useMemo(
-    () => transportHubs.filter((hub) => hubActiveCityIds.includes(hub.cityId)),
-    [hubActiveCityIds],
-  );
+  const cityTransportHubs = useMemo(() => {
+    const activeIds = hubCityIds.length === 0 ? ALL_CITY_IDS : hubCityIds;
+    const cityOrder = new Map(activeIds.map((id, index) => [id, index]));
+    return transportHubs
+      .filter((hub) => activeIds.includes(hub.cityId))
+      .sort((a, b) => (cityOrder.get(a.cityId) ?? 999) - (cityOrder.get(b.cityId) ?? 999));
+  }, [hubCityIds]);
 
   const mapMarkers = useMemo(
     () =>
@@ -560,7 +562,7 @@ function Explore() {
           </p>
         ) : (
           <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
-            {cityTransportHubs.slice(0, 6).map((hub) => {
+            {cityTransportHubs.map((hub) => {
               const HubIcon = hub.type === "airport" ? Plane : TrainFront;
               return (
                 <article
