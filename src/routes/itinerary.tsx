@@ -98,14 +98,24 @@ function ItineraryLeg({ from, to }: { from: any; to: any }) {
   const toPoi = resolvePoi(to);
   const distance = formatDistanceKm(getGaodeDistanceKm(fromPoi, toPoi));
   const gaodeUrl = getGaodeDirectionsUrl(fromPoi, toPoi);
-  const transitOptions = getTransitOptions(from?.id, to?.id);
+  const primaryOption = getTransitOptions(from?.id, to?.id)[0];
+  const durationLabel = primaryOption
+    ? primaryOption.mode === "estimated"
+      ? `est. ${primaryOption.duration} min`
+      : `${primaryOption.duration} min by ${transitModeLabel(primaryOption.mode)}`
+    : null;
 
-  if (!distance && transitOptions.length === 0) return null;
+  if (!distance && !durationLabel) return null;
 
   return (
     <li className="list-none px-1 py-1.5">
       <div className="flex items-center gap-2 text-[11px] font-semibold">
-        {distance && <span className="text-muted-foreground">{distance}</span>}
+        {(distance || durationLabel) && (
+          <span className="text-muted-foreground">
+            {distance}
+            {durationLabel ? ` (${durationLabel})` : ""}
+          </span>
+        )}
         {gaodeUrl && (
           <a
             href={gaodeUrl}
@@ -118,25 +128,6 @@ function ItineraryLeg({ from, to }: { from: any; to: any }) {
           </a>
         )}
       </div>
-      {transitOptions.length > 0 && (
-        <div className="mt-1 space-y-1.5">
-          {transitOptions.map((option) => {
-            const Icon = TRANSIT_MODE_ICON[option.mode] || Sparkles;
-            return (
-              <div key={`${option.from}-${option.to}-${option.mode}`} className="text-xs">
-                <p className="font-medium text-foreground flex items-center gap-1.5">
-                  <Icon className="w-3.5 h-3.5 text-primary shrink-0" />
-                  {option.duration} min by {transitModeLabel(option.mode)}
-                  {option.distanceKm != null ? ` · ${option.distanceKm} km` : ""}
-                </p>
-                {option.notes && (
-                  <p className="mt-0.5 text-muted-foreground leading-snug">{option.notes}</p>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
     </li>
   );
 }
