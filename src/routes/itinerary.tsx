@@ -14,7 +14,6 @@ import {
 import {
   Clock,
   MapPin,
-  RefreshCw,
   Trash2,
   Sparkles,
   Wand2,
@@ -159,7 +158,6 @@ function Itinerary() {
   const [builderOpen, setBuilderOpen] = useState(false);
   const [selectedPoi, setSelectedPoi] = useState<any | null>(null);
   const removePOIFromDay = useAppStore((s) => s.removePOIFromDay);
-  const replanDay = useAppStore((s) => s.replanDay);
   const updateTrip = useAppStore((s) => s.updateTrip);
   const movePOIToDay = useAppStore((s) => s.movePOIToDay);
   const reorderStopInDay = useAppStore((s) => s.reorderStopInDay);
@@ -430,21 +428,11 @@ function Itinerary() {
 
       <section className="px-5">
         {hasTrips ? (
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <h2 className="text-lg font-semibold">Day {activeDay + 1}</h2>
-              {activeDayDate && (
-                <p className="text-xs text-muted-foreground">{formatShortDate(activeDayDate)}</p>
-              )}
-            </div>
-            {days[activeDay] ? (
-              <button
-                onClick={() => replanDay(activeCity, activeDay)}
-                className="text-xs flex items-center gap-1 text-primary"
-              >
-                <RefreshCw className="w-3.5 h-3.5" /> Re-plan
-              </button>
-            ) : null}
+          <div className="mb-3">
+            <h2 className="text-lg font-semibold">Day {activeDay + 1}</h2>
+            {activeDayDate && (
+              <p className="text-xs text-muted-foreground">{formatShortDate(activeDayDate)}</p>
+            )}
           </div>
         ) : null}
         {hasTrips && days[activeDay] && (

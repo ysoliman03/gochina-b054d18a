@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import {
-  buildDayPlan,
   deriveDayDate,
   insertPOIIntoBestSlot,
   planBestPOIInsertion,
@@ -142,7 +141,6 @@ interface AppState {
   reorderStopInDay: (cityId: string, dayIndex: number, poiId: string, direction: "up" | "down") => void;
   setStopTime: (cityId: string, dayIndex: number, poiId: string, startMinutes: number) => void;
   replacePOIInDay: (cityId: string, dayIndex: number, oldPoiId: string, newPoi: any) => void;
-  replanDay: (cityId: string, dayIndex: number) => void;
   toggleSavePoi: (poiId: string, name: string) => void;
   addActivity: (item: any) => void;
   updateDigitalTool: (tool: string, status: string) => void;
@@ -446,23 +444,6 @@ export const useAppStore = create<AppState>()(
             });
             return { ...day, stops: recalculateTimes(stops) };
           });
-          return { trip: { ...s.trip, itinerary: { ...s.trip.itinerary, [cityId]: days } } };
-        });
-        syncWith((uid) => upsertActiveTrip(uid, useAppStore.getState()));
-      },
-
-      replanDay: (cityId, dayIndex) => {
-        set((s) => {
-          const profile = s.profile;
-          const allDays = s.trip.itinerary[cityId] || [];
-          const usedIds = allDays
-            .filter((_: any, i: number) => i !== dayIndex)
-            .flatMap((d: any) => (d.stops || []).map((p: any) => p.id));
-          const date = dayDateFor(s.trip.cities, cityId, dayIndex, allDays[dayIndex]?.date);
-          const newStops = buildDayPlan(cityId, date, profile, usedIds, true);
-          const days = allDays.map((day: any, i: number) =>
-            i === dayIndex ? { ...day, stops: newStops } : day,
-          );
           return { trip: { ...s.trip, itinerary: { ...s.trip.itinerary, [cityId]: days } } };
         });
         syncWith((uid) => upsertActiveTrip(uid, useAppStore.getState()));
