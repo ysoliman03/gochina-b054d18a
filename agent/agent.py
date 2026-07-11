@@ -135,18 +135,30 @@ The output_validator will reject and retry if the count is wrong.
 
 ━━━ TOOL STEPS ━━━
 Call tools in this order:
-  1. tool_get_city_info      — once, to understand the destination
-  2. tool_check_constraints  — once, to catch holidays / weather warnings
-  3. tool_search_pois        — for daytime/evening stops (categories=["attraction","experience","shopping","nightlife"])
-  4. tool_search_pois        — for restaurants (categories=["restaurant"])
-  5. tool_search_cuisine     — for safe dish ideas matching dietary restrictions
-  6. tool_get_transport_hubs — only if arrival/departure logistics matter
-  7. tool_get_transit_time   — between each pair of consecutive stops you pick
+  1. tool_get_city_info       — once, to understand the destination
+  2. tool_check_constraints   — once, to catch holidays / weather warnings
+  3. tool_search_pois         — ONCE for daytime/evening stops (categories=["attraction","experience","shopping","nightlife"])
+  4. tool_search_pois         — ONCE for restaurants (categories=["restaurant"])
+  5. tool_search_cuisine      — for safe dish ideas matching dietary restrictions
+  6. tool_get_transport_hubs  — only if arrival/departure logistics matter
+  7. tool_get_transit_times   — OPTIONAL, at most once per day, batched (see below)
+  ✘ Do NOT call tool_search_pois more than once per category. Each call already
+    returns up to max_results POIs sorted by fit — if that's not enough
+    variety, work with what you have rather than repeating the same search.
   ✘ Do NOT call tool_get_poi_details — the search results already contain
     hours and duration. Only call it if you genuinely need extra detail
     on one specific POI.
 
 ━━━ TIMING (minutes since midnight) ━━━
+  A deterministic pass runs after you respond: it recomputes real transit
+  times and re-derives stop order and scheduling from scratch using the
+  dataset, discarding whatever times/order you propose. Your job is to pick
+  good POIs and a *plausible* rough order (cluster by district, respect
+  best_time_of_day) — not to verify exact transit minutes for every pair.
+  tool_get_transit_times is OPTIONAL: only call it, once, with every pair you
+  actually want to check batched into a single request — never one call per
+  pair — and only when you're genuinely unsure between two candidates.
+
   09:00 = 540   12:00 = 720   15:00 = 900   18:00 = 1080   21:00 = 1260
 
   scheduledEnd  = scheduledStart + duration   (duration comes from the POI data)
@@ -313,7 +325,7 @@ async def tool_search_pois(
     ctx: RunContext[ItineraryRequest],   # always first — gives access to ctx.deps
     categories: list[str] | None = None,
     tags: list[str] | None = None,
-    max_results: int = 10,
+    max_results: int = 15,
 ) -> list[dict]:
     """
     Search points of interest in the destination city.
@@ -325,9 +337,12 @@ async def tool_search_pois(
                   ["attraction", "park"] or ["restaurant"].
       tags:       optional keyword filter — e.g. ["historical", "food", "nightlife"].
                   Omit (pass null) if you don't need tag filtering.
-      max_results: how many results to return (default 10, max 20).
+      max_results: how many results to return (default 15, max 20). Raise this
+                   instead of repeating the same search for more variety.
 
-    Call this at least twice: once for attractions, once for restaurants.
+    Call this exactly twice total: once for daytime/evening categories, once
+    for restaurants. Each call already returns enough POIs for the whole
+    trip — do not call it again after that.
     """
     req = ctx.deps  # ← access the ItineraryRequest that was passed to agent.run()
 
@@ -363,22 +378,30 @@ async def tool_get_poi_details(
 
 
 @agent.tool
-async def tool_get_transit_time(
+async def tool_get_transit_times(
     ctx: RunContext[ItineraryRequest],
-    from_poi_id: str,
-    to_poi_id: str,
-) -> int:
+    pairs: list[list[str]],
+) -> list[dict]:
     """
-    Return travel time in minutes between two POIs.
-    Returns 20 minutes as default if the pair is not in the database.
-    Call this for every pair of consecutive stops before scheduling them.
+    Return travel time in minutes for one or more POI pairs, in a SINGLE call.
+    A deterministic pass finalizes exact stop order and timing after you
+    respond (see the QUALITY RULES note on this) — you don't need to verify
+    every pair, just enough to avoid an obviously bad geographic choice.
 
     Arguments:
-      from_poi_id: id of the departure POI, e.g. "BJ001"
-      to_poi_id:   id of the arrival POI,   e.g. "BJ005"
-    Both ids must come from tool_search_pois results — do not invent them.
+      pairs: list of [from_poi_id, to_poi_id] pairs, e.g.
+             [["BJ001", "BJ005"], ["BJ005", "BJ010"]].
+             Pass every pair you care about in ONE call — do not call this
+             tool multiple times in a row for single pairs.
+             Both ids in each pair must come from tool_search_pois results.
+
+    Returns one {"from", "to", "duration"} dict per pair, in the same order.
     """
-    return get_transit_time(from_poi_id, to_poi_id)
+    return [
+        {"from": pair[0], "to": pair[1], "duration": get_transit_time(pair[0], pair[1])}
+        for pair in pairs
+        if len(pair) == 2
+    ]
 
 
 @agent.tool

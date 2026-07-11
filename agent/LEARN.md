@@ -282,8 +282,8 @@ Pydantic AI Agent             (agent.py)
   ├── calls tool_check_constraints()
   ├── calls tool_search_pois(categories=["attraction"])
   ├── calls tool_search_pois(categories=["restaurant"])
-  ├── calls tool_get_transit_time(from, to)
-  │   … (as many tool calls as needed)
+  ├── calls tool_get_transit_times([[from, to], …])   ← batched, optional
+  │   … (a deterministic pass recomputes real times/order afterward)
   │
   │  LLM produces ItineraryResult JSON
   │
