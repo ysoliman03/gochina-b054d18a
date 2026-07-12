@@ -4,7 +4,7 @@ import { MobileShell } from "@/components/MobileShell";
 import { useAppStore } from "@/store/useAppStore";
 import { pois } from "@/data/generated/pois";
 import { EssentialTools } from "@/components/EssentialTools";
-import { Bookmark, Camera, LogOut, Settings, Trash2, Upload } from "lucide-react";
+import { Bookmark, Camera, LogOut, Trash2, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { pageHead } from "@/lib/seo";
@@ -130,9 +130,6 @@ function Profile() {
             )}
           </div>
         </div>
-        <button aria-label="Settings" className="p-2 text-muted-foreground">
-          <Settings className="w-5 h-5" />
-        </button>
         <input
           ref={uploadInputRef}
           type="file"
