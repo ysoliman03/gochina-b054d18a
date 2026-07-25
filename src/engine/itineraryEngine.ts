@@ -48,46 +48,12 @@ function constraintScorePenalty(
   return penalty;
 }
 
-/**
- * True if this POI is genuinely inaccessible on this exact date (e.g. a
- * museum's weekly closure day) — a hard exclusion, not a scoring nudge.
- * Deliberately narrow: only non-daily "closure" constraints with severity
- * "avoid" count. A "daily" recurrence in this dataset is used for standing
- * caution notes (e.g. a temple dress code), not a real closure — a POI
- * that's genuinely closed every single day wouldn't be a recommendable
- * attraction in the first place, so treating "daily" as a closure would
- * wrongly blacklist it from every itinerary forever.
- */
-export function isPoiClosedOnDate(
-  cityId: string | undefined,
-  dateStr: string | null | undefined,
-  poiId: string,
-): boolean {
-  if (!cityId || !dateStr) return false;
-  const active = getActiveConstraints(cityId, { start: dateStr, end: dateStr });
-  return active.some(
-    (constraint) =>
-      constraint.poiId === poiId &&
-      constraint.type === "closure" &&
-      constraint.severity === "avoid" &&
-      constraint.recurrencePattern !== "daily",
-  );
-}
-
 const BEST_TIME_TARGET: Record<string, number> = {
   morning: DAY_START,
   daytime: DAY_START,
   any: DAY_START,
   afternoon: 13 * 60,
   evening: 17 * 60,
-};
-
-const TIME_ORDER: Record<string, number> = {
-  morning: 0,
-  daytime: 1,
-  any: 1,
-  afternoon: 2,
-  evening: 3,
 };
 
 function parseTime(timeStr: string) {
@@ -169,11 +135,6 @@ export function getTransitOptions(fromId?: string, toId?: string) {
 
 export function getTransitInfo(fromId?: string, toId?: string) {
   return getTransitOptions(fromId, toId)[0] ?? null;
-}
-
-export function getTransitTime(fromId?: string, toId?: string) {
-  if (!fromId || !toId) return 0;
-  return getTransitInfo(fromId, toId)?.duration ?? 20;
 }
 
 function resolveStopPoi(stop: any) {
@@ -431,15 +392,6 @@ function scheduleOrderedStops(stops: any[], preserve = false) {
   return scheduled;
 }
 
-function isDietCompatible(poi: any, profile: any) {
-  const r: string[] = profile?.dietaryRestrictions || [];
-  if (!r.length) return true;
-  if (r.includes("Halal") && poi.halal === false) return false;
-  if (r.includes("Vegetarian") && poi.vegetarian === false) return false;
-  if (r.includes("No Pork") && poi.containsPork === true) return false;
-  return true;
-}
-
 function budgetCeiling(profile: any) {
   if (profile?.budget === "budget") return 1;
   if (profile?.budget === "luxury") return 5;
@@ -456,14 +408,6 @@ function isGroupCompatible(poi: any, profile: any) {
   return suitableFor.includes(profile.groupType);
 }
 
-function isPlannerCompatible(poi: any, profile: any) {
-  return (
-    isDietCompatible(poi, profile) &&
-    isBudgetCompatible(poi, profile) &&
-    isGroupCompatible(poi, profile)
-  );
-}
-
 export function scorePoi(poi: any, profile: any, jitter = false) {
   let score = 0;
   const matched = matchedInterests(profile?.interests || [], poi.tags || []);
@@ -475,12 +419,6 @@ export function scorePoi(poi: any, profile: any, jitter = false) {
   return score;
 }
 
-function stopsPerDay(pace?: string) {
-  if (pace === "fast") return 5;
-  if (pace === "slow") return 3;
-  return 4;
-}
-
 export function recalculateTimes(stops: any[]) {
   if (!stops.length) return stops;
   return scheduleOrderedStops(stops, true) ?? stops.map((stop) => ({
@@ -488,108 +426,6 @@ export function recalculateTimes(stops: any[]) {
     scheduledStart: clampMinute(Number(stop.scheduledStart ?? DAY_START)),
     scheduledEnd: clampMinute(Number(stop.scheduledEnd ?? DAY_START + getStopDuration(stop))),
   }));
-}
-
-export function getAvailablePOIs(cityId: string, usedIds: string[] = [], profile: any = {}) {
-  return Object.values(pois)
-    .filter((p: any) => p.cityId === cityId && !usedIds.includes(p.id))
-    .map((p: any) => ({ ...p, score: scorePoi(p, profile) }))
-    .sort((a: any, b: any) => b.score - a.score);
-}
-
-export function getAlternativePOIs(
-  poi: any,
-  cityId: string,
-  usedIds: string[] = [],
-  profile: any = {},
-) {
-  return Object.values(pois)
-    .filter(
-      (p: any) =>
-        p.cityId === cityId &&
-        !usedIds.includes(p.id) &&
-        p.id !== poi.id &&
-        isDietCompatible(p, profile) &&
-        (p.category === poi.category || p.tags.some((t: string) => poi.tags.includes(t))),
-    )
-    .map((p: any) => ({ ...p, score: scorePoi(p, profile) }))
-    .sort((a: any, b: any) => b.score - a.score)
-    .slice(0, 4);
-}
-
-export function buildDayPlan(
-  cityId: string,
-  date: string | null,
-  profile: any,
-  usedPoiIds: string[] = [],
-  useJitter = false,
-) {
-  const maxStops = stopsPerDay(profile?.pace);
-  const nonRestaurantTarget = Math.max(1, maxStops - 1);
-  const candidateNonRestaurants = Object.values(pois).filter(
-    (p: any) =>
-      p.cityId === cityId &&
-      !usedPoiIds.includes(p.id) &&
-      p.category !== "restaurant" &&
-      isDietCompatible(p, profile) &&
-      !isPoiClosedOnDate(cityId, date, p.id),
-  );
-  const compatibleNonRestaurants = candidateNonRestaurants.filter((p: any) =>
-    isPlannerCompatible(p, profile),
-  );
-  const cityPois = compatibleNonRestaurants.length
-    ? compatibleNonRestaurants
-    : candidateNonRestaurants;
-
-  const scored = cityPois
-    .map((p: any) => ({
-      ...p,
-      score: scorePoi(p, profile, useJitter) - constraintScorePenalty(cityId, date, p.id) / 100,
-    }))
-    .sort(
-      (a: any, b: any) =>
-        b.score - a.score || (TIME_ORDER[a.bestTime] ?? 1) - (TIME_ORDER[b.bestTime] ?? 1),
-    );
-
-  const plan: any[] = [];
-  let currentTime = DAY_START;
-  let previousId: string | undefined;
-
-  for (const poi of scored) {
-    const scheduled = scheduleStop(poi, currentTime, previousId, DINNER_TARGET - 30);
-    if (!scheduled) continue;
-    plan.push(scheduled);
-    currentTime = scheduled.scheduledEnd;
-    previousId = scheduled.id;
-    if (plan.length >= nonRestaurantTarget) break;
-  }
-
-  const candidateRestaurants = Object.values(pois).filter(
-    (p: any) =>
-      p.cityId === cityId &&
-      p.category === "restaurant" &&
-      !usedPoiIds.includes(p.id) &&
-      isDietCompatible(p, profile) &&
-      !isPoiClosedOnDate(cityId, date, p.id),
-  );
-  const compatibleRestaurants = candidateRestaurants.filter((p: any) =>
-    isPlannerCompatible(p, profile),
-  );
-  const restaurants = (compatibleRestaurants.length ? compatibleRestaurants : candidateRestaurants).sort(
-    (a: any, b: any) =>
-      scorePoi(b, profile) -
-      constraintScorePenalty(cityId, date, b.id) / 100 -
-      (scorePoi(a, profile) - constraintScorePenalty(cityId, date, a.id) / 100),
-  );
-
-  for (const dinner of restaurants) {
-    const scheduled = scheduleStop(dinner, currentTime, previousId, DAY_END);
-    if (!scheduled) continue;
-    plan.push(scheduled);
-    break;
-  }
-
-  return plan;
 }
 
 export function planBestPOIInsertion(

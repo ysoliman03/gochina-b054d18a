@@ -126,7 +126,7 @@ def _stop_duration(poi: dict, default: int = 60) -> int:
     duration = poi.get("duration")
     if not isinstance(duration, int) or duration <= 0:
         return default
-    return duration
+    return max(15, duration)
 
 
 def _budget_max(request: ItineraryRequest) -> int:

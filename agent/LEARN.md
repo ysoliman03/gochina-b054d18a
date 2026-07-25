@@ -23,11 +23,14 @@ The two problems it solves:
 
 ```
 agent/
-  models.py    ← 1️⃣  Define data shapes (Pydantic models + validators)
-  data.py      ← 2️⃣  Load the travel database
-  tools.py     ← 3️⃣  Functions the AI can call
-  agent.py     ← 4️⃣  ⭐ The core — the Pydantic AI agent
-  server.py    ← 5️⃣  Wrap the agent in a web API (FastAPI)
+  models.py             ← 1️⃣  Define data shapes (Pydantic models + validators)
+  data.py                ← 2️⃣  Load the travel database
+  tools.py                ← 3️⃣  Functions the AI can call
+  agent.py                ← 4️⃣  ⭐ The core — the Pydantic AI agent
+  prompting.py            ← builds the sanitized user prompt (see guardrails.py)
+  guardrails.py           ← prompt-injection defense (input + output)
+  itinerary_repair.py     ← deterministic post-processing after the LLM responds
+  server.py                ← 5️⃣  Wrap the agent in a web API (FastAPI)
 ```
 
 ---
@@ -61,38 +64,43 @@ before anything reaches the LLM.
 
 ---
 
-## Concept 2 — `model_validator` (`models.py`)
+## Concept 2 — `computed_field` (`models.py`)
 
-A **`@model_validator`** runs *after* all individual fields are validated.
-Use it to derive one field from others, or to cross-check two fields.
+A **`@computed_field`** is a read-only property Pydantic treats like a real
+field — it's derived from other fields and can never be set by the caller.
+This project uses it for `days` on `ItineraryRequest`:
 
 ```python
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, computed_field
+from datetime import date
 
 class ItineraryRequest(BaseModel):
-    startDate: str = ""   # "2025-06-01"
-    endDate: str = ""     # "2025-06-06"
-    days: int = 3         # auto-computed below ↓
+    startDate: str   # "2025-06-01"
+    endDate: str     # "2025-06-06"
 
-    @model_validator(mode="after")
-    def compute_days_from_dates(self) -> "ItineraryRequest":
-        if self.startDate and self.endDate:
-            from datetime import date
-            start = date.fromisoformat(self.startDate)
-            end   = date.fromisoformat(self.endDate)
-            self.days = (end - start).days + 1   # inclusive
-        return self  # ← always return self
+    @computed_field
+    @property
+    def days(self) -> int:
+        start = date.fromisoformat(self.startDate)
+        end   = date.fromisoformat(self.endDate)
+        return (end - start).days + 1   # inclusive
 ```
 
 **What this does in practice:** the React form sends `startDate` and `endDate`.
-Pydantic automatically computes `days = 6` (Jun 1 → Jun 6) before the agent
-ever sees the request. The LLM always has the correct day count — no maths
-in JavaScript, no maths in the prompt.
+Pydantic automatically computes `days = 6` (Jun 1 → Jun 6) whenever it's read —
+the LLM always has the correct day count, and callers can never override it
+by sending their own `days` value.
 
-**Key rules for `@model_validator(mode="after")`:**
-1. All fields are already validated when your function runs
-2. Mutate `self` directly — it's a regular Python object at this point
-3. Always `return self` at the end
+**Why `computed_field` here instead of `@model_validator`?** Both can derive
+one field from others, but they mean different things:
+- `computed_field` — the value can *only* ever be calculated, never set from
+  outside. Use it when that's always true (like `days` here).
+- `model_validator(mode="after")` — the field exists normally and gets
+  *overwritten* after validation. Use it when the value could come from
+  either the caller or be derived, depending on the situation.
+
+Since `days` should never be settable by the client, `computed_field` is the
+correct tool — see the full reasoning in `models.py`'s own docstring.
 
 ---
 
@@ -106,15 +114,19 @@ The agent works like this:
 3. It calls tools, reads the results, calls more tools, etc.
 4. Eventually it produces the final answer
 
-In `tools.py` we have five tools:
+In `tools.py` we have eight tool functions, each wrapped by `@agent.tool` in
+`agent.py` (see Concept 4b):
 
 | Function | What it does |
 |---|---|
 | `search_pois()` | Browse the 158 points of interest by category/tags |
 | `get_poi_details()` | Get full info on one specific POI |
-| `get_transit_time()` | How long to travel between two POIs |
+| `get_transit_time()` | Travel time in minutes between two POIs — used internally by the repair pass; the LLM-facing tool (`tool_get_transit_times`) batches multiple pairs into one call |
 | `get_city_info()` | Overview of the destination city |
-| `check_travel_constraints()` | Public holidays, weather warnings |
+| `search_cuisine()` | Dishes matching the traveller's dietary restrictions |
+| `get_transport_hubs()` | Airports/stations for arrival-day logistics |
+| `get_city_connections()` | Train/flight connections between two cities |
+| `check_travel_constraints()` | Public holidays, weather warnings, closures |
 
 > **Key insight:** the functions in `tools.py` are *just regular Python*.
 > No Pydantic AI imports. You can run and test them without the agent at all.
@@ -250,16 +262,49 @@ repeat up to `retries` times
 result.output is returned  ✅
 ```
 
-**Smart validation strategy used in this project:**
+**Self-healing strategy actually used in this project** (see
+`validate_itinerary` in `agent.py`) — fix what can be fixed, never hard-fail:
 
 | Situation | Action | Why |
 |---|---|---|
+| Days out of order | Sort silently | Always safe |
+| A day has 0 stops | Drop it silently | Better than crashing the frontend |
 | Too many days (e.g. 7 instead of 6) | Trim silently | No retry wasted |
-| Too few days (e.g. 3 instead of 6) | `ModelRetry` with exact missing list | LLM can self-correct |
-| A day has < 2 stops | `ModelRetry` naming which days | LLM can self-correct |
+| Too few days (e.g. 3 instead of 6) | **Accept as-is, no retry** | A model that got the count wrong once tends to keep getting it wrong — retrying just burns time and cost. A partial itinerary beats an error screen. |
+| 0 days total | `ModelRetry` | The only case worth a retry — something went very wrong |
+
+Everything else (exact day count, min stops per day, no back-to-back
+restaurants, real transit-based timing) is enforced *deterministically*
+afterward by `itinerary_repair.py`, not by retrying the LLM — see Concept 7.
 
 **Key rule:** the `ModelRetry` message is read by the LLM — write it like
 you're telling a colleague exactly what went wrong and how to fix it.
+
+---
+
+## Concept 7 — Deterministic repair (`itinerary_repair.py`)
+
+An LLM can be *told* rules (exact day count, real transit times, no closed
+POIs), but it can't *guarantee* it follows them. So after `agent.run()`
+succeeds, `server.py` runs the model's output through a plain-Python pass
+that rebuilds the itinerary's *scheduling* from the same dataset the tools
+use — not by asking the model again, by recomputing it directly:
+
+- Drops invalid/duplicate POI ids, and POIs already used on another day
+- Enforces exactly one dinner per day, never two restaurants back-to-back
+- Recomputes real order and times from opening hours, avg duration, and
+  actual transit distances — the model's own proposed times are a rough
+  draft, not the final answer
+- Hard-excludes any POI with a matching "closed this weekday" constraint
+  for its exact scheduled date
+- If a candidate stop fails to schedule, pulls a replacement from a wider
+  fallback pool instead of leaving the day under-filled
+
+**Why not just ask the model to try harder?** Retrying costs time and money
+and doesn't *guarantee* correctness — the model could get it wrong again.
+Recomputing deterministically in Python is fast, free, and always correct
+relative to the dataset. The LLM's real job is picking good POIs that match
+the traveller's taste; the exact scheduling math is better left to code.
 
 ---
 
@@ -267,12 +312,15 @@ you're telling a colleague exactly what went wrong and how to fix it.
 
 ```
 React form
-  │  sends { cityId, startDate, endDate, profile }
+  │  sends { cityId, startDate, endDate, profile, notes }
   ▼
 FastAPI /generate-itinerary   (server.py)
   │
-  │  ItineraryRequest created
-  │  @model_validator runs → computes days from dates
+  │  ItineraryRequest created — `days` computed_field derives day count
+  │  server.py rejects the request (422) if startDate/endDate aren't valid
+  │
+  │  prompting.py sanitizes `notes` (guardrails.sanitize_notes) and builds
+  │  the prompt — untrusted input never reaches the model raw
   │
   │  agent.run(prompt, deps=request)
   ▼
@@ -280,18 +328,22 @@ Pydantic AI Agent             (agent.py)
   │
   ├── calls tool_get_city_info()
   ├── calls tool_check_constraints()
-  ├── calls tool_search_pois(categories=["attraction"])
+  ├── calls tool_search_pois(categories=["attraction", …])
   ├── calls tool_search_pois(categories=["restaurant"])
+  ├── calls tool_search_cuisine()
   ├── calls tool_get_transit_times([[from, to], …])   ← batched, optional
-  │   … (a deterministic pass recomputes real times/order afterward)
   │
   │  LLM produces ItineraryResult JSON
   │
-  │  @output_validator runs
-  │    → trim/retry if day count wrong
-  │    → retry if any day has < 2 stops
+  │  @output_validator runs (Concept 6)
+  │    → sort days, drop 0-stop days, trim excess, retry only if 0 days total
+  │    → guardrails.clean_output() rewrites a hijacked summary / strips
+  │      links and dangerous claims from tips
   │
   │  result.output  ← validated ItineraryResult
+  ▼
+itinerary_repair.py — deterministic repair pass (Concept 7)
+  │  rebuilds real order/timing/dates from the dataset — not another LLM call
   ▼
 server.py enriches each stop with full POI data
   │  fills day.date ("2025-06-01", "2025-06-02", …) from startDate
@@ -376,7 +428,8 @@ Run it with: `python hello_agent.py`
 | **output_type** | A Pydantic model that defines what shape the final answer must take |
 | **RunContext** | A container holding `ctx.deps` — always the first argument of a tool or validator |
 | **system_prompt** | Standing instructions that shape the agent's behaviour every time |
-| **model_validator** | A Pydantic hook that runs after all fields are set — use it to derive or cross-check fields |
+| **computed_field** | A read-only Pydantic property, always derived from other fields — callers can never set it directly |
+| **model_validator** | A Pydantic hook that runs after all fields are set — use it when a field could come from the caller *or* be derived |
 | **output_validator** | A Pydantic AI hook that runs after the LLM produces output — raise `ModelRetry` to reject and retry |
 | **ModelRetry** | An exception you raise inside `output_validator` — Pydantic AI sends your message back to the LLM |
 | **retries** | How many times the agent can retry after a `ModelRetry` before giving up |

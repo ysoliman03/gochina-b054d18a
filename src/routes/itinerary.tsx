@@ -15,11 +15,9 @@ import {
   Clock,
   MapPin,
   Trash2,
-  Sparkles,
   Wand2,
   ChevronUp,
   ChevronDown,
-  Footprints,
   TrainFront,
   Car,
   Plane,
@@ -27,12 +25,6 @@ import {
   CalendarDays,
   Plus,
 } from "lucide-react";
-
-const TRANSIT_MODE_ICON: Record<string, typeof Car> = {
-  walk: Footprints,
-  metro: TrainFront,
-  taxi: Car,
-};
 import { ItineraryBuilderSheet } from "@/components/ItineraryBuilderSheet";
 import { PoiDetailOverlay } from "@/components/PoiDetailOverlay";
 import { pageHead } from "@/lib/seo";
@@ -521,27 +513,6 @@ function Itinerary() {
                       </p>
                     </div>
                   </button>
-                  {false && stop.transitFromPrev > 0 && (
-                    <div className="text-xs text-muted-foreground mt-2">
-                      {stop.transitInfo ? (
-                        <p className="flex items-center gap-1">
-                          {(() => {
-                            const Icon = TRANSIT_MODE_ICON[stop.transitInfo.mode] || Sparkles;
-                            return <Icon className="w-3 h-3" />;
-                          })()}
-                          {stop.transitInfo.duration} min by {stop.transitInfo.mode}
-                          {stop.transitInfo.distanceKm != null
-                            ? ` · ${stop.transitInfo.distanceKm} km`
-                            : ""}
-                        </p>
-                      ) : (
-                        <p className="flex items-center gap-1">
-                          <Sparkles className="w-3 h-3" /> {stop.transitFromPrev} min transit from
-                          previous
-                        </p>
-                      )}
-                    </div>
-                  )}
                   <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
                     <button
                       onClick={() => reorderStopInDay(activeCity, activeDay, stop.id, "up")}
