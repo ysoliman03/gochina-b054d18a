@@ -15,7 +15,11 @@ dist-ssr
 .tanstack/**
 .nitro
 *.local
-.env
+# NOTE: root .env is intentionally tracked, not ignored — Lovable's build
+# (vite-tanstack-config's envDefine) reads VITE_* values straight out of the
+# checked-out .env file via Vite's loadEnv(). Untracking it breaks the live
+# Lovable build (confirmed 2026-07). If you need a local-only override, use
+# .env.local instead (already covered by *.local above).
 nohup.out
 
 # Wrangler / Cloudflare
